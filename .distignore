@@ -9,3 +9,4 @@ phpcs.xml.dist
 phpstan.neon
 phpunit.xml.dist
 tests
+vendor
