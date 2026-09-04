@@ -5,6 +5,8 @@
  * @package ShippingRulesTester
  */
 
+declare( strict_types=1 );
+
 namespace AmazingPlugins\SRT\Admin;
 
 defined( 'ABSPATH' ) || exit;
