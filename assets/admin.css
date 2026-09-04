@@ -1,9 +1,12 @@
 .srt-wrap { max-width: 1100px; }
 .srt-form, .srt-result-card { background: #fff; border: 1px solid #dcdcde; padding: 20px; margin-top: 20px; }
+.srt-form fieldset { border: 0; margin: 0 0 24px; padding: 0; }
+.srt-form legend { font-size: 1.2em; font-weight: 600; margin-bottom: 12px; }
 .srt-grid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; }
 .srt-grid label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
 .srt-grid input, .srt-grid select { max-width: none; }
-.srt-external { display: block; margin-top: 20px; }
 .srt-status { min-height: 24px; margin-top: 16px; font-weight: 600; }
+.srt-results table { margin-top: 16px; }
+.srt-results td, .srt-results th { vertical-align: top; }
 .srt-results[hidden] { display: none; }
 @media (max-width: 782px) { .srt-grid { grid-template-columns: 1fr; } }

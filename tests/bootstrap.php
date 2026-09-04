@@ -268,6 +268,13 @@ if ( ! class_exists( 'SRT_Test_Method' ) ) {
 		public $calls = 0;
 
 		/**
+		 * Last package received by the method.
+		*
+		 * @var array
+		 */
+		public $last_package = array();
+
+		/**
 		 * Constructor.
 		*
 		 * @param string $id Method ID.
@@ -315,7 +322,23 @@ if ( ! class_exists( 'SRT_Test_Method' ) ) {
 		 */
 		public function get_rates_for_package( $package ) {
 			$this->calls++;
+			$this->last_package = $package;
 			return $this->rates;
+		}
+	}
+}
+
+if ( ! class_exists( 'SRT_Test_Free_Shipping_Method' ) ) {
+	class SRT_Test_Free_Shipping_Method extends SRT_Test_Method {
+		/**
+		 * Return a cart-dependent requirement.
+		*
+		 * @param string $key Setting name.
+		* @param string $default Default value.
+		 * @return string
+		 */
+		public function get_option( $key, $default = '' ) {
+			return 'requires' === $key ? 'min_amount' : $default;
 		}
 	}
 }

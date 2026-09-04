@@ -24,6 +24,8 @@ class Test_SRT_Tester extends TestCase {
 	 * Valid input returns a zone and calculated rate.
 	 */
 	public function test_valid_input_returns_calculated_rate() {
+		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
 		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country' => 'US',
@@ -39,6 +41,8 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( 'matched', $result['methods'][0]['status'] );
 		$this->assertSame( '$12.50', $result['methods'][0]['cost'] );
 		$this->assertSame( 'NY', $result['package']['state'] );
+		$this->assertSame( 2, $method->last_package['contents']['srt-sample-item']['quantity'] );
+		$this->assertTrue( $method->last_package['contents']['srt-sample-item']['data']->needs_shipping() );
 	}
 
 	/**
@@ -89,6 +93,33 @@ class Test_SRT_Tester extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $result );
+	}
+
+	/**
+	 * Array input is rejected without a PHP warning or type coercion.
+	 */
+	public function test_array_numeric_value_returns_error() {
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+			array(
+				'country' => 'US',
+				'value'   => array( '50' ),
+			)
+		);
+
+		$this->assertInstanceOf( WP_Error::class, $result );
+	}
+
+	/**
+	 * Cart-dependent free shipping is not falsely calculated.
+	 */
+	public function test_cart_dependent_free_shipping_is_skipped() {
+		$method = new SRT_Test_Free_Shipping_Method( 'free_shipping', 'Free shipping', array( new WC_Shipping_Rate( 0 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+
+		$this->assertSame( 'not-tested', $result['methods'][0]['status'] );
+		$this->assertSame( 0, $method->calls );
 	}
 
 	/**
