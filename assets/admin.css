@@ -1,0 +1,9 @@
+.srt-wrap { max-width: 1100px; }
+.srt-form, .srt-result-card { background: #fff; border: 1px solid #dcdcde; padding: 20px; margin-top: 20px; }
+.srt-grid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; }
+.srt-grid label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
+.srt-grid input, .srt-grid select { max-width: none; }
+.srt-external { display: block; margin-top: 20px; }
+.srt-status { min-height: 24px; margin-top: 16px; font-weight: 600; }
+.srt-results[hidden] { display: none; }
+@media (max-width: 782px) { .srt-grid { grid-template-columns: 1fr; } }
