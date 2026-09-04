@@ -1,0 +1,11 @@
+.git
+.github
+.gitignore
+.phpunit.result.cache
+.playwright-mcp
+composer.json
+composer.lock
+phpcs.xml.dist
+phpstan.neon
+phpunit.xml.dist
+tests

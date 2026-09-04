@@ -1,9 +1,13 @@
-/* Shipping Rules Tester admin UI. */
-(function ($) {
+/**
+ * Shipping Rules Tester admin UI.
+ */
+(function () {
   'use strict';
 
   function escapeHtml(value) {
-    return $('<div>').text(value == null ? '' : value).html();
+    var element = document.createElement('div');
+    element.textContent = value == null ? '' : value;
+    return element.innerHTML;
   }
 
   function renderResults(data) {
@@ -13,39 +17,50 @@
       html += '<p>' + escapeHtml(srtData.i18n.noMethods) + '</p>';
     } else {
       html += '<table class="widefat striped"><thead><tr><th>' + escapeHtml(srtData.i18n.method) + '</th><th>' + escapeHtml(srtData.i18n.result) + '</th><th>' + escapeHtml(srtData.i18n.details) + '</th></tr></thead><tbody>';
-      $.each(data.methods, function (_, method) {
+      data.methods.forEach(function (method) {
         var result = method.status === 'matched' ? method.cost : method.status === 'no-rate' ? srtData.i18n.noRate : srtData.i18n.notTested;
         html += '<tr><td>' + escapeHtml(method.id) + '</td><td>' + escapeHtml(result) + '</td><td>' + escapeHtml(method.note) + '</td></tr>';
       });
       html += '</tbody></table>';
     }
     html += '</div>';
-    $('#srt-results').html(html).prop('hidden', false);
+    document.getElementById('srt-results').innerHTML = html;
+    document.getElementById('srt-results').hidden = false;
   }
 
-  $(function () {
-    $('#srt-form').on('submit', function (event) {
+  function getFormData(form) {
+    var data = {};
+    new FormData(form).forEach(function (value, key) {
+      data[key] = value;
+    });
+    return data;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('srt-form');
+    var button = document.getElementById('srt-submit');
+    var status = document.getElementById('srt-status');
+    var results = document.getElementById('srt-results');
+
+    form.addEventListener('submit', function (event) {
       event.preventDefault();
-      var $form = $(this);
-      var $button = $('#srt-submit');
-      $('#srt-results').prop('hidden', true).empty();
-      $('#srt-status').text(srtData.i18n.testing);
-      $button.prop('disabled', true);
-      $.post(srtData.ajaxUrl, $form.serialize() + '&action=srt_test_shipping&nonce=' + encodeURIComponent(srtData.nonce))
-        .done(function (response) {
-          if (!response.success) {
-            $('#srt-status').text(response.data && response.data.message ? response.data.message : srtData.i18n.error);
-            return;
-          }
-          $('#srt-status').text('');
-          renderResults(response.data);
-        })
-        .fail(function () {
-          $('#srt-status').text(srtData.i18n.error);
-        })
-        .always(function () {
-          $button.prop('disabled', false);
-        });
+      results.hidden = true;
+      results.innerHTML = '';
+      status.textContent = srtData.i18n.testing;
+      button.disabled = true;
+
+      wp.apiFetch({
+        path: srtData.restUrl,
+        method: 'POST',
+        data: getFormData(form)
+      }).then(function (data) {
+        status.textContent = '';
+        renderResults(data);
+      }).catch(function (error) {
+        status.textContent = error && error.message ? error.message : srtData.i18n.error;
+      }).finally(function () {
+        button.disabled = false;
+      });
     });
   });
-}(jQuery));
+}());
