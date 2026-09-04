@@ -18,8 +18,14 @@
     } else {
       html += '<table class="widefat striped"><thead><tr><th>' + escapeHtml(srtData.i18n.method) + '</th><th>' + escapeHtml(srtData.i18n.result) + '</th><th>' + escapeHtml(srtData.i18n.details) + '</th></tr></thead><tbody>';
       data.methods.forEach(function (method) {
-        var result = method.status === 'matched' ? method.cost : method.status === 'no-rate' ? srtData.i18n.noRate : srtData.i18n.notTested;
-        html += '<tr><td>' + escapeHtml(method.id) + '</td><td>' + escapeHtml(result) + '</td><td>' + escapeHtml(method.note) + '</td></tr>';
+        var result = method.status === 'matched' ? method.cost : method.status === 'no-rate' ? srtData.i18n.noRate : method.status === 'unavailable' ? srtData.i18n.unavailable : srtData.i18n.notTested;
+        var details = method.note;
+        if (method.rates && method.rates.length) {
+          details = method.rates.map(function (rate) {
+            return (rate.id ? rate.id + ': ' : '') + (rate.cost ? rate.cost + ' + ' + rate.tax + ' ' + srtData.i18n.tax + ' = ' + rate.total + ' ' + srtData.i18n.total : srtData.i18n.unavailable);
+          }).join('; ');
+        }
+        html += '<tr><td>' + escapeHtml(method.id) + '</td><td>' + escapeHtml(result) + '</td><td>' + escapeHtml(details) + '</td></tr>';
       });
       html += '</tbody></table>';
     }

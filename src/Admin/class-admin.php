@@ -80,7 +80,10 @@ class Admin {
 					'method'      => __( 'Method', 'shipping-rules-tester' ),
 					'result'      => __( 'Result', 'shipping-rules-tester' ),
 					'details'     => __( 'Details', 'shipping-rules-tester' ),
+					'tax'         => __( 'tax', 'shipping-rules-tester' ),
+					'total'       => __( 'total', 'shipping-rules-tester' ),
 					'noRate'      => __( 'No rate', 'shipping-rules-tester' ),
+					'unavailable' => __( 'Unavailable', 'shipping-rules-tester' ),
 					'notTested'   => __( 'Not tested', 'shipping-rules-tester' ),
 				),
 			)

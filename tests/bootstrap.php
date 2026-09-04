@@ -125,12 +125,30 @@ if ( ! class_exists( 'WC_Shipping_Rate' ) ) {
 		private $cost;
 
 		/**
+		 * Rate identifier.
+		*
+		 * @var string
+		 */
+		private $id;
+
+		/**
+		 * Tax amounts.
+		*
+		 * @var array
+		 */
+		private $taxes;
+
+		/**
 		 * Constructor.
 		*
 		 * @param float $cost Rate cost.
+		 * @param array $taxes Tax amounts.
+		 * @param string $id Rate identifier.
 		 */
-		public function __construct( $cost ) {
-			$this->cost = $cost;
+		public function __construct( $cost, $taxes = array(), $id = 'flat_rate:1' ) {
+			$this->cost  = $cost;
+			$this->taxes = $taxes;
+			$this->id    = $id;
 		}
 
 		/**
@@ -148,7 +166,16 @@ if ( ! class_exists( 'WC_Shipping_Rate' ) ) {
 		 * @return array
 		 */
 		public function get_taxes() {
-			return array();
+			return $this->taxes;
+		}
+
+		/**
+		 * Get rate identifier.
+		*
+		 * @return string
+		 */
+		public function get_id() {
+			return $this->id;
 		}
 	}
 }

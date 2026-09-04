@@ -53,6 +53,7 @@ class Shipping_Tester {
 				'instance' => absint( $method->get_instance_id() ),
 				'method'   => (string) $method->id,
 				'cost'     => '',
+				'rates'    => array(),
 				'status'   => 'not-tested',
 				'note'     => '',
 			);
@@ -68,12 +69,21 @@ class Shipping_Tester {
 				}
 				if ( 'error' !== $row['status'] ) {
 					if ( is_array( $rates ) && ! empty( $rates ) ) {
-						$row['status'] = 'matched';
-						$costs         = array();
+						$costs = array();
 						foreach ( $rates as $rate ) {
-							$costs[] = $this->format_rate( $rate );
+							$formatted_rate = $this->format_rate( $rate );
+							$row['rates'][] = $formatted_rate;
+							if ( $formatted_rate['available'] ) {
+								$costs[] = $formatted_rate['total'];
+							}
 						}
-						$row['cost'] = implode( ', ', $costs );
+						if ( ! empty( $costs ) ) {
+							$row['status'] = 'matched';
+							$row['cost']   = implode( ', ', $costs );
+						} else {
+							$row['status'] = 'unavailable';
+							$row['note']   = __( 'The method returned a rate that could not be read.', 'shipping-rules-tester' );
+						}
 					} else {
 						$row['status'] = 'no-rate';
 						$row['note']   = __( 'The method did not return a rate for this package.', 'shipping-rules-tester' );
@@ -88,9 +98,10 @@ class Shipping_Tester {
 		}
 
 		return array(
-			'zone'    => $zone->get_zone_name(),
-			'package' => $input,
-			'methods' => $rows,
+			'zone'     => $zone->get_zone_name(),
+			'fallback' => method_exists( $zone, 'get_id' ) && 0 === absint( $zone->get_id() ),
+			'package'  => $input,
+			'methods'  => $rows,
 		);
 	}
 
@@ -233,14 +244,55 @@ class Shipping_Tester {
 	 * Format a WooCommerce shipping rate for the response.
 	 *
 	 * @param object $rate Rate object.
-	 * @return string
+	 * @return array
 	 */
 	private function format_rate( $rate ) {
 		if ( ! is_object( $rate ) || ! method_exists( $rate, 'get_cost' ) || ! method_exists( $rate, 'get_taxes' ) ) {
-			return __( 'Unavailable', 'shipping-rules-tester' );
+			return array(
+				'id'        => '',
+				'cost'      => '',
+				'tax'       => '',
+				'total'     => '',
+				'available' => false,
+			);
 		}
 
-		$cost = (float) $rate->get_cost() + (float) array_sum( $rate->get_taxes() );
-		return html_entity_decode( wp_strip_all_tags( wc_price( $cost ) ), ENT_QUOTES, 'UTF-8' );
+		$raw_cost = $rate->get_cost();
+		$taxes    = $rate->get_taxes();
+		if ( ! is_scalar( $raw_cost ) || ! is_array( $taxes ) ) {
+			return array(
+				'id'        => '',
+				'cost'      => '',
+				'tax'       => '',
+				'total'     => '',
+				'available' => false,
+			);
+		}
+
+		$tax = 0;
+		foreach ( $taxes as $tax_amount ) {
+			if ( is_scalar( $tax_amount ) && is_numeric( $tax_amount ) ) {
+				$tax += (float) $tax_amount;
+			}
+		}
+
+		$cost = (float) $raw_cost;
+		return array(
+			'id'        => method_exists( $rate, 'get_id' ) ? sanitize_text_field( (string) $rate->get_id() ) : '',
+			'cost'      => $this->format_money( $cost ),
+			'tax'       => $this->format_money( $tax ),
+			'total'     => $this->format_money( $cost + $tax ),
+			'available' => true,
+		);
+	}
+
+	/**
+	 * Format an amount using the store currency.
+	 *
+	 * @param float $amount Amount.
+	 * @return string
+	 */
+	private function format_money( $amount ) {
+		return html_entity_decode( wp_strip_all_tags( wc_price( $amount ) ), ENT_QUOTES, 'UTF-8' );
 	}
 }

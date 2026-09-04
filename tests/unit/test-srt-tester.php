@@ -40,9 +40,26 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( 'United States', $result['zone'] );
 		$this->assertSame( 'matched', $result['methods'][0]['status'] );
 		$this->assertSame( '$12.50', $result['methods'][0]['cost'] );
+		$this->assertSame( 'flat_rate:1', $result['methods'][0]['rates'][0]['id'] );
+		$this->assertSame( '$0.00', $result['methods'][0]['rates'][0]['tax'] );
 		$this->assertSame( 'NY', $result['package']['state'] );
 		$this->assertSame( 2, $method->last_package['contents']['srt-sample-item']['quantity'] );
 		$this->assertTrue( $method->last_package['contents']['srt-sample-item']['data']->needs_shipping() );
+	}
+
+	/**
+	 * Rate tax is reported separately and included in the total.
+	 */
+	public function test_rate_tax_is_included_in_total() {
+		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5, array( 1.25 ), 'flat_rate:7' ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+
+		$this->assertSame( '$12.50', $result['methods'][0]['rates'][0]['cost'] );
+		$this->assertSame( '$1.25', $result['methods'][0]['rates'][0]['tax'] );
+		$this->assertSame( '$13.75', $result['methods'][0]['rates'][0]['total'] );
+		$this->assertSame( '$13.75', $result['methods'][0]['cost'] );
 	}
 
 	/**

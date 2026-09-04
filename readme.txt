@@ -1,6 +1,6 @@
 === AP Shipping Rules Tester for WooCommerce ===
 Contributors: amazingplugins
-Tags: woocommerce, shipping, shipping zones, shipping rates, debugging
+Tags: woocommerce, shipping, shipping zones, shipping rates
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
