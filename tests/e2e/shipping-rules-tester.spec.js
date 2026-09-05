@@ -86,3 +86,11 @@ test('keeps all form controls keyboard focusable', async ({ page }) => {
     await expect(control).toBeFocused();
   }
 });
+
+test('does not add assets or output to the frontend', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.locator('script[src*="shipping-rules-tester-for-woocommerce"]')).toHaveCount(0);
+  await expect(page.locator('link[href*="shipping-rules-tester-for-woocommerce"]')).toHaveCount(0);
+  await expect(page.locator('.srt-wrap')).toHaveCount(0);
+});
