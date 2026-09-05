@@ -75,10 +75,10 @@ class Shipping_Tester {
 			return new \WP_Error( 'srt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'shipping-rules-tester-for-woocommerce' ) );
 		}
 
-		$methods = $zone->get_shipping_methods( true );
+		$methods = $zone->get_shipping_methods( false );
 		$rows    = array();
 		foreach ( $methods as $method ) {
-			if ( ! is_object( $method ) || ! $method->is_enabled() ) {
+			if ( ! is_object( $method ) ) {
 				continue;
 			}
 
@@ -91,6 +91,12 @@ class Shipping_Tester {
 				'status'   => 'not-tested',
 				'note'     => '',
 			);
+			if ( ! $method->is_enabled() ) {
+				$row['status'] = 'disabled';
+				$row['note']   = __( 'Skipped because this shipping method is disabled.', 'shipping-rules-tester-for-woocommerce' );
+				$rows[]        = $row;
+				continue;
+			}
 
 			$requires_cart = 'free_shipping' === $method->id && method_exists( $method, 'get_option' ) && '' !== $method->get_option( 'requires', '' );
 			if ( ! $requires_cart && in_array( $method->id, self::LOCAL_METHODS, true ) ) {

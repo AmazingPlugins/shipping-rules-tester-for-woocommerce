@@ -84,6 +84,7 @@ class Admin {
 					'total'       => __( 'total', 'shipping-rules-tester-for-woocommerce' ),
 					'noRate'      => __( 'No rate', 'shipping-rules-tester-for-woocommerce' ),
 					'unavailable' => __( 'Unavailable', 'shipping-rules-tester-for-woocommerce' ),
+					'disabled'    => __( 'Disabled', 'shipping-rules-tester-for-woocommerce' ),
 					'notTested'   => __( 'Not tested', 'shipping-rules-tester-for-woocommerce' ),
 				),
 			)

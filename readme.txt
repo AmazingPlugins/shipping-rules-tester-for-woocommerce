@@ -24,7 +24,7 @@ External rate methods are not called. Methods that need live cart data or an ext
 * Test built-in flat rate, free shipping, and local pickup methods.
 * Use package value, weight, and quantity in the test.
 * Clearly identify methods that need live cart data or an external provider.
-* Show no-rate and skipped-method explanations.
+* Show disabled, no-rate, and skipped-method explanations.
 * Use WooCommerce's shipping APIs without changing shipping settings, products, orders, or customers.
 * Keep the tool local to the WooCommerce admin screen.
 

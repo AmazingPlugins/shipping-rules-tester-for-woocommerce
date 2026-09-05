@@ -370,6 +370,19 @@ if ( ! class_exists( 'SRT_Test_Free_Shipping_Method' ) ) {
 	}
 }
 
+if ( ! class_exists( 'SRT_Test_Disabled_Method' ) ) {
+	class SRT_Test_Disabled_Method extends SRT_Test_Method {
+		/**
+		 * Disabled methods must remain visible in the result.
+		*
+		 * @return bool
+		 */
+		public function is_enabled() {
+			return false;
+		}
+	}
+}
+
 if ( ! class_exists( 'SRT_Test_Throwing_Method' ) ) {
 	class SRT_Test_Throwing_Method extends SRT_Test_Method {
 		/**

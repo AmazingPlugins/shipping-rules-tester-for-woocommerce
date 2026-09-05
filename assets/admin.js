@@ -18,7 +18,7 @@
     } else {
       html += '<table class="widefat striped"><thead><tr><th>' + escapeHtml(srtData.i18n.method) + '</th><th>' + escapeHtml(srtData.i18n.result) + '</th><th>' + escapeHtml(srtData.i18n.details) + '</th></tr></thead><tbody>';
       data.methods.forEach(function (method) {
-        var result = method.status === 'matched' ? method.cost : method.status === 'no-rate' ? srtData.i18n.noRate : method.status === 'unavailable' ? srtData.i18n.unavailable : srtData.i18n.notTested;
+        var result = method.status === 'matched' ? method.cost : method.status === 'no-rate' ? srtData.i18n.noRate : method.status === 'unavailable' ? srtData.i18n.unavailable : method.status === 'disabled' ? srtData.i18n.disabled : srtData.i18n.notTested;
         var details = method.note;
         if (method.rates && method.rates.length) {
           details = method.rates.map(function (rate) {

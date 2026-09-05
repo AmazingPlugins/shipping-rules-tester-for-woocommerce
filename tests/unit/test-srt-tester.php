@@ -89,6 +89,19 @@ class Test_SRT_Tester extends TestCase {
 	}
 
 	/**
+	 * Disabled methods remain visible and are not calculated.
+	 */
+	public function test_disabled_method_is_reported() {
+		$method = new SRT_Test_Disabled_Method( 'flat_rate', 'Disabled rate', array( new WC_Shipping_Rate( 20 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+
+		$this->assertSame( 'disabled', $result['methods'][0]['status'] );
+		$this->assertSame( 0, $method->calls );
+	}
+
+	/**
 	 * A method exception becomes a safe row-level error.
 	 */
 	public function test_method_exception_is_contained() {
