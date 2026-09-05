@@ -45,10 +45,10 @@ class Admin {
 	public function add_menu() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Shipping Rules Tester', 'shipping-rules-tester' ),
-			__( 'Shipping Rules Tester', 'shipping-rules-tester' ),
+			__( 'Shipping Rules Tester', 'shipping-rules-tester-for-woocommerce' ),
+			__( 'Shipping Rules Tester', 'shipping-rules-tester-for-woocommerce' ),
 			'manage_woocommerce',
-			'shipping-rules-tester',
+			'shipping-rules-tester-for-woocommerce',
 			array( $this, 'render_page' )
 		);
 	}
@@ -59,7 +59,7 @@ class Admin {
 	 * @param string $hook Admin page hook.
 	 */
 	public function enqueue_assets( $hook ) {
-		if ( 'woocommerce_page_shipping-rules-tester' !== $hook ) {
+		if ( 'woocommerce_page_shipping-rules-tester-for-woocommerce' !== $hook ) {
 			return;
 		}
 
@@ -72,19 +72,19 @@ class Admin {
 				'restUrl' => rest_url( 'srt/v1/test' ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'i18n'    => array(
-					'error'       => __( 'The shipping test could not be completed.', 'shipping-rules-tester' ),
-					'testing'     => __( 'Testing shipping rules…', 'shipping-rules-tester' ),
-					'matchedZone' => __( 'Matched shipping zone', 'shipping-rules-tester' ),
-					'methods'     => __( 'Shipping methods', 'shipping-rules-tester' ),
-					'noMethods'   => __( 'No enabled shipping methods were found in this zone.', 'shipping-rules-tester' ),
-					'method'      => __( 'Method', 'shipping-rules-tester' ),
-					'result'      => __( 'Result', 'shipping-rules-tester' ),
-					'details'     => __( 'Details', 'shipping-rules-tester' ),
-					'tax'         => __( 'tax', 'shipping-rules-tester' ),
-					'total'       => __( 'total', 'shipping-rules-tester' ),
-					'noRate'      => __( 'No rate', 'shipping-rules-tester' ),
-					'unavailable' => __( 'Unavailable', 'shipping-rules-tester' ),
-					'notTested'   => __( 'Not tested', 'shipping-rules-tester' ),
+					'error'       => __( 'The shipping test could not be completed.', 'shipping-rules-tester-for-woocommerce' ),
+					'testing'     => __( 'Testing shipping rules…', 'shipping-rules-tester-for-woocommerce' ),
+					'matchedZone' => __( 'Matched shipping zone', 'shipping-rules-tester-for-woocommerce' ),
+					'methods'     => __( 'Shipping methods', 'shipping-rules-tester-for-woocommerce' ),
+					'noMethods'   => __( 'No enabled shipping methods were found in this zone.', 'shipping-rules-tester-for-woocommerce' ),
+					'method'      => __( 'Method', 'shipping-rules-tester-for-woocommerce' ),
+					'result'      => __( 'Result', 'shipping-rules-tester-for-woocommerce' ),
+					'details'     => __( 'Details', 'shipping-rules-tester-for-woocommerce' ),
+					'tax'         => __( 'tax', 'shipping-rules-tester-for-woocommerce' ),
+					'total'       => __( 'total', 'shipping-rules-tester-for-woocommerce' ),
+					'noRate'      => __( 'No rate', 'shipping-rules-tester-for-woocommerce' ),
+					'unavailable' => __( 'Unavailable', 'shipping-rules-tester-for-woocommerce' ),
+					'notTested'   => __( 'Not tested', 'shipping-rules-tester-for-woocommerce' ),
 				),
 			)
 		);

@@ -54,7 +54,7 @@ class REST_Controller {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return new \WP_Error(
 				'srt_forbidden',
-				__( 'You do not have permission to run this test.', 'shipping-rules-tester' ),
+				__( 'You do not have permission to run this test.', 'shipping-rules-tester-for-woocommerce' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -63,7 +63,7 @@ class REST_Controller {
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new \WP_Error(
 				'srt_invalid_nonce',
-				__( 'Security check failed.', 'shipping-rules-tester' ),
+				__( 'Security check failed.', 'shipping-rules-tester-for-woocommerce' ),
 				array( 'status' => 403 )
 			);
 		}

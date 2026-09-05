@@ -56,24 +56,14 @@ final class Plugin {
 			return;
 		}
 
+		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-input-normalizer.php';
+		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-package-builder.php';
+		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-result-formatter.php';
 		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-shipping-tester.php';
 		require_once SRT_PLUGIN_DIR . 'src/Admin/class-rest-controller.php';
 		require_once SRT_PLUGIN_DIR . 'src/Admin/class-admin.php';
 
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
 		$admin = new \AmazingPlugins\SRT\Admin\Admin();
 		$admin->init();
-	}
-
-	/**
-	 * Load translations.
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain(
-			'shipping-rules-tester',
-			false,
-			dirname( plugin_basename( SRT_PLUGIN_FILE ) ) . '/languages'
-		);
 	}
 }

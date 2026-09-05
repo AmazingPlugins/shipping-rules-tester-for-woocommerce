@@ -58,6 +58,9 @@
       wp.apiFetch({
         path: srtData.restUrl,
         method: 'POST',
+        headers: {
+          'X-WP-Nonce': srtData.nonce
+        },
         data: getFormData(form)
       }).then(function (data) {
         status.textContent = '';

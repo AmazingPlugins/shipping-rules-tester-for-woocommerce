@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 async function openTester(page) {
-  await page.goto('/wp-admin/admin.php?page=shipping-rules-tester');
+  await page.goto('/wp-admin/admin.php?page=shipping-rules-tester-for-woocommerce');
 
   if (page.url().includes('wp-login.php')) {
     if (!process.env.SRT_ADMIN_USER || !process.env.SRT_ADMIN_PASSWORD) {
@@ -11,7 +11,7 @@ async function openTester(page) {
     await page.locator('#user_login').fill(process.env.SRT_ADMIN_USER);
     await page.locator('#user_pass').fill(process.env.SRT_ADMIN_PASSWORD);
     await page.locator('#wp-submit').click();
-    await page.goto('/wp-admin/admin.php?page=shipping-rules-tester');
+    await page.goto('/wp-admin/admin.php?page=shipping-rules-tester-for-woocommerce');
   }
 
   await page.goto('/wp-admin/plugins.php');
@@ -21,12 +21,14 @@ async function openTester(page) {
     await activateLink.click();
   }
 
-  await page.goto('/wp-admin/admin.php?page=shipping-rules-tester');
+  await page.goto('/wp-admin/admin.php?page=shipping-rules-tester-for-woocommerce');
   await expect(page.locator('h1')).toHaveText('Shipping Rules Tester');
 }
 
 test('runs a local shipping test and renders the result', async ({ page }) => {
   const pluginRequests = [];
+  const externalRequests = [];
+  const baseOrigin = new URL(process.env.SRT_TEST_URL || 'http://localhost:8089').origin;
   page.on('request', (request) => {
     if (request.url().includes('/shipping-rules-tester-for-woocommerce/')) {
       pluginRequests.push(request.url());
@@ -34,6 +36,11 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   });
 
   await openTester(page);
+  page.on('request', (request) => {
+    if (/^https?:/.test(request.url()) && new URL(request.url()).origin !== baseOrigin) {
+      externalRequests.push(request.url());
+    }
+  });
   await page.locator('select[name="country"]').selectOption('US');
   await page.locator('input[name="value"]').fill('50');
   await page.locator('input[name="weight"]').fill('2');
@@ -43,7 +50,8 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   await expect(page.locator('#srt-results')).toContainText('Matched shipping zone');
   await expect(page.locator('#srt-results')).toContainText('Shipping methods');
   await expect(page.locator('#srt-results')).toBeVisible();
-  expect(pluginRequests.every((url) => new URL(url).origin === new URL(process.env.SRT_TEST_URL || 'http://localhost:8089').origin)).toBeTruthy();
+  expect(pluginRequests.every((url) => new URL(url).origin === baseOrigin)).toBeTruthy();
+  expect(externalRequests).toEqual([]);
 });
 
 test('shows a server validation error for malformed input', async ({ page }) => {

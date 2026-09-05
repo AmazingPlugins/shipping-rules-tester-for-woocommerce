@@ -385,4 +385,7 @@ if ( ! class_exists( 'SRT_Test_Throwing_Method' ) ) {
 	}
 }
 
+require_once dirname( __DIR__ ) . '/src/Shipping/class-input-normalizer.php';
+require_once dirname( __DIR__ ) . '/src/Shipping/class-package-builder.php';
+require_once dirname( __DIR__ ) . '/src/Shipping/class-result-formatter.php';
 require_once dirname( __DIR__ ) . '/src/Shipping/class-shipping-tester.php';
