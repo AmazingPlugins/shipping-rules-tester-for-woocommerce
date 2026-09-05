@@ -48,7 +48,7 @@ No. The plugin never calls external shipping providers. Methods that need one ar
 
 = Does this test real cart contents? =
 
-No. The test uses a synthetic package with the value, weight, and quantity you enter. Methods that require specific product data may need a real checkout test.
+No. The test uses a synthetic package with the value, weight, and quantity you enter. It doesn't include product-specific shipping classes, dimensions, coupons, customer roles, subscriptions, or live-cart state. Methods that require that context may need a real checkout test.
 
 = Does this work with HPOS? =
 

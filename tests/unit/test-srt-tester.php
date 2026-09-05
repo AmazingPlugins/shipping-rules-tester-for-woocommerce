@@ -63,6 +63,19 @@ class Test_SRT_Tester extends TestCase {
 	}
 
 	/**
+	 * Malformed rate objects are reported as unavailable.
+	 */
+	public function test_malformed_rate_is_unavailable() {
+		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( array( 'bad' ) ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+
+		$this->assertSame( 'unavailable', $result['methods'][0]['status'] );
+		$this->assertFalse( $result['methods'][0]['rates'][0]['available'] );
+	}
+
+	/**
 	 * Non-built-in methods are reported without being called.
 	 */
 	public function test_external_method_is_skipped() {

@@ -47,7 +47,7 @@ class Package_Builder {
 			),
 			'contents_cost'        => (float) $input['value'],
 			'applied_coupons'      => array(),
-			'user'                 => array( 'ID' => get_current_user_id() ),
+			'user'                 => array( 'ID' => 0 ),
 			'destination'          => array(
 				'country'   => $input['country'],
 				'state'     => $input['state'],

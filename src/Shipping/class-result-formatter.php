@@ -29,7 +29,7 @@ class Result_Formatter {
 
 		$raw_cost = $rate->get_cost();
 		$taxes    = $rate->get_taxes();
-		if ( ! is_scalar( $raw_cost ) || ! is_array( $taxes ) ) {
+		if ( ! is_scalar( $raw_cost ) || ! is_numeric( $raw_cost ) || ! is_array( $taxes ) ) {
 			return $this->unavailable_rate();
 		}
 

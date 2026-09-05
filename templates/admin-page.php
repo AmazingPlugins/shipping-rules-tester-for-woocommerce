@@ -40,7 +40,7 @@ defined( 'ABSPATH' ) || exit;
 		</fieldset>
 		<fieldset>
 			<legend><?php echo esc_html__( 'Sample package', 'shipping-rules-tester-for-woocommerce' ); ?></legend>
-			<p class="description"><?php echo esc_html__( 'This uses an unsaved synthetic product. Product-specific shipping classes, dimensions, coupons, and live-cart rules are not included.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+			<p class="description"><?php echo esc_html__( 'This uses an unsaved synthetic product. Product-specific shipping classes, dimensions, coupons, customer roles, subscriptions, and live-cart rules are not included.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 			<div class="srt-grid">
 				<label><?php echo esc_html__( 'Package value', 'shipping-rules-tester-for-woocommerce' ); ?>
 					<input type="number" name="value" min="0" max="100000" step="0.01" value="0">
