@@ -2,13 +2,16 @@
 
 set -eu
 
-PLUGIN_DIR=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+SOURCE_DIR=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+PLUGIN_DIR=$(CDPATH= cd -- "${SRT_PLUGIN_DIR:-$SOURCE_DIR}" && pwd)
+TEST_DIR=$(CDPATH= cd -- "${SRT_TEST_DIR:-$SOURCE_DIR}" && pwd)
 SUFFIX="srt-hpos-$$"
 NETWORK="$SUFFIX-network"
 DB_CONTAINER="$SUFFIX-db"
 WP_CONTAINER="$SUFFIX-wordpress"
 WP_IMAGE=${SRT_WP_IMAGE:-wordpress:latest}
 HPOS_MODE=${SRT_HPOS_MODE:-yes}
+WC_VERSION=${SRT_WC_VERSION:-}
 
 case "$HPOS_MODE" in
 	yes|no) ;;
@@ -49,6 +52,7 @@ docker run -d \
 	-e WORDPRESS_DB_PASSWORD=wppass \
 	-e WORDPRESS_DB_NAME=wordpress \
 	-v "$PLUGIN_DIR:/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce:ro" \
+	-v "$TEST_DIR/tests:/tmp/srt-tests:ro" \
 	"$WP_IMAGE" >/dev/null
 
 until docker exec "$WP_CONTAINER" sh -c 'curl -fsS http://localhost >/dev/null' >/dev/null 2>&1; do
@@ -65,15 +69,19 @@ docker exec "$WP_CONTAINER" wp core install \
 	--admin_email=srt@example.test \
 	--skip-email \
 	--allow-root >/dev/null
-docker exec "$WP_CONTAINER" wp plugin install woocommerce --activate --allow-root >/dev/null
+if [ -n "$WC_VERSION" ]; then
+	docker exec "$WP_CONTAINER" wp plugin install woocommerce --version="$WC_VERSION" --activate --allow-root >/dev/null
+else
+	docker exec "$WP_CONTAINER" wp plugin install woocommerce --activate --allow-root >/dev/null
+fi
 docker exec "$WP_CONTAINER" wp plugin activate shipping-rules-tester-for-woocommerce --allow-root >/dev/null
 docker exec "$WP_CONTAINER" wp option update woocommerce_custom_orders_table_enabled "$HPOS_MODE" --allow-root >/dev/null
 
 docker exec "$WP_CONTAINER" wp eval-file \
-	/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce/tests/integration/sandbox-smoke.php \
+	/tmp/srt-tests/integration/sandbox-smoke.php \
 	--allow-root
 docker exec "$WP_CONTAINER" wp eval-file \
-	/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce/tests/integration/sandbox-method-matrix.php \
+	/tmp/srt-tests/integration/sandbox-method-matrix.php \
 	--allow-root
 
 if [ "$HPOS_MODE" != "$(docker exec "$WP_CONTAINER" wp option get woocommerce_custom_orders_table_enabled --allow-root)" ]; then

@@ -8,6 +8,7 @@
  * Author URI:  https://amazingplugins.com
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 6.6
  * Text Domain: shipping-rules-tester-for-woocommerce
  * Requires Plugins: woocommerce
  * Requires PHP: 7.4
