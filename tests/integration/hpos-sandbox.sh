@@ -1,0 +1,84 @@
+#!/usr/bin/env sh
+
+set -eu
+
+PLUGIN_DIR=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+SUFFIX="srt-hpos-$$"
+NETWORK="$SUFFIX-network"
+DB_CONTAINER="$SUFFIX-db"
+WP_CONTAINER="$SUFFIX-wordpress"
+WP_IMAGE=${SRT_WP_IMAGE:-wordpress:latest}
+HPOS_MODE=${SRT_HPOS_MODE:-yes}
+
+case "$HPOS_MODE" in
+	yes|no) ;;
+	*)
+		echo 'SRT_HPOS_MODE must be yes or no.' >&2
+		exit 2
+		;;
+esac
+
+cleanup() {
+	docker rm -f "$WP_CONTAINER" "$DB_CONTAINER" >/dev/null 2>&1 || true
+	docker network rm "$NETWORK" >/dev/null 2>&1 || true
+}
+
+trap cleanup EXIT INT TERM
+
+docker network create "$NETWORK" >/dev/null
+docker run -d \
+	--name "$DB_CONTAINER" \
+	--network "$NETWORK" \
+	--network-alias db \
+	-e MYSQL_ROOT_PASSWORD=rootpass \
+	-e MYSQL_DATABASE=wordpress \
+	-e MYSQL_USER=wpuser \
+	-e MYSQL_PASSWORD=wppass \
+	mysql:8.0 >/dev/null
+
+until docker exec "$DB_CONTAINER" mysqladmin ping -h 127.0.0.1 -uroot -prootpass --silent >/dev/null 2>&1; do
+	sleep 2
+done
+
+docker run -d \
+	--name "$WP_CONTAINER" \
+	--network "$NETWORK" \
+	--network-alias wordpress \
+	-e WORDPRESS_DB_HOST=db:3306 \
+	-e WORDPRESS_DB_USER=wpuser \
+	-e WORDPRESS_DB_PASSWORD=wppass \
+	-e WORDPRESS_DB_NAME=wordpress \
+	-v "$PLUGIN_DIR:/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce:ro" \
+	"$WP_IMAGE" >/dev/null
+
+until docker exec "$WP_CONTAINER" sh -c 'curl -fsS http://localhost >/dev/null' >/dev/null 2>&1; do
+	sleep 2
+done
+
+docker exec "$WP_CONTAINER" sh -c 'curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /usr/local/bin/wp && chmod +x /usr/local/bin/wp'
+
+docker exec "$WP_CONTAINER" wp core install \
+	--url=http://wordpress \
+	--title='Shipping Rules Tester HPOS sandbox' \
+	--admin_user=srt-admin \
+	--admin_password=srt-admin-password \
+	--admin_email=srt@example.test \
+	--skip-email \
+	--allow-root >/dev/null
+docker exec "$WP_CONTAINER" wp plugin install woocommerce --activate --allow-root >/dev/null
+docker exec "$WP_CONTAINER" wp plugin activate shipping-rules-tester-for-woocommerce --allow-root >/dev/null
+docker exec "$WP_CONTAINER" wp option update woocommerce_custom_orders_table_enabled "$HPOS_MODE" --allow-root >/dev/null
+
+docker exec "$WP_CONTAINER" wp eval-file \
+	/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce/tests/integration/sandbox-smoke.php \
+	--allow-root
+docker exec "$WP_CONTAINER" wp eval-file \
+	/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce/tests/integration/sandbox-method-matrix.php \
+	--allow-root
+
+if [ "$HPOS_MODE" != "$(docker exec "$WP_CONTAINER" wp option get woocommerce_custom_orders_table_enabled --allow-root)" ]; then
+	echo "FAIL: WooCommerce order storage mode was not set to $HPOS_MODE." >&2
+	exit 1
+fi
+
+echo "WooCommerce order storage sandbox passed ($HPOS_MODE)."

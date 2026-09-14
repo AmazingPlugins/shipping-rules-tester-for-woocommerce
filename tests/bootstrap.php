@@ -15,7 +15,11 @@ if ( ! function_exists( '__' ) ) {
 
 if ( ! function_exists( 'wp_unslash' ) ) {
 	function wp_unslash( $value ) {
-		return is_array( $value ) ? array_map( 'wp_unslash', $value ) : stripslashes( $value );
+		if ( is_array( $value ) ) {
+			return array_map( 'wp_unslash', $value );
+		}
+
+		return is_string( $value ) ? stripslashes( $value ) : $value;
 	}
 }
 
@@ -64,6 +68,13 @@ if ( ! function_exists( 'is_wp_error' ) ) {
 if ( ! class_exists( 'WP_Error' ) ) {
 	class WP_Error {
 		/**
+		 * Error code.
+		 *
+		 * @var string
+		 */
+		private $code;
+
+		/**
 		 * Error message.
 		 *
 		 * @var string
@@ -77,6 +88,7 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		 * @param string $message Error message.
 		 */
 		public function __construct( $code = '', $message = '' ) {
+			$this->code    = $code;
 			$this->message = $message;
 		}
 
@@ -87,6 +99,15 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		 */
 		public function get_error_message() {
 			return $this->message;
+		}
+
+		/**
+		 * Get the error code.
+		 *
+		 * @return string
+		 */
+		public function get_error_code() {
+			return $this->code;
 		}
 	}
 }
