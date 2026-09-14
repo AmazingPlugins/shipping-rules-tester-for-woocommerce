@@ -40,12 +40,14 @@ class Result_Formatter {
 			}
 		}
 
-		$cost = (float) $raw_cost;
+		$cost  = (float) $raw_cost;
+		$total = $cost + $tax;
 		return array(
 			'id'        => method_exists( $rate, 'get_id' ) ? sanitize_text_field( (string) $rate->get_id() ) : '',
 			'cost'      => $this->format_money( $cost ),
 			'tax'       => $this->format_money( $tax ),
-			'total'     => $this->format_money( $cost + $tax ),
+			'total'     => $this->format_money( $total ),
+			'zero_cost' => 0.0 === $total,
 			'available' => true,
 		);
 	}

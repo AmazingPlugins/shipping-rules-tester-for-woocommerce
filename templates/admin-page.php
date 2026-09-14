@@ -4,6 +4,8 @@
  *
  * @package ShippingRulesTester
  * @var array $countries WooCommerce countries.
+ * @var string $currency Store currency code.
+ * @var string $weight_unit Store weight unit.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -41,11 +43,15 @@ defined( 'ABSPATH' ) || exit;
 		<fieldset>
 			<legend><?php echo esc_html__( 'Sample package', 'shipping-rules-tester-for-woocommerce' ); ?></legend>
 			<p class="description"><?php echo esc_html__( 'This uses an unsaved synthetic product. Product-specific shipping classes, dimensions, coupons, customer roles, subscriptions, and live-cart rules are not included.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+			<?php /* translators: 1: currency code, 2: weight unit. */ ?>
+			<p class="description"><?php echo esc_html( sprintf( __( 'Package value is the total value of all items in %1$s. Weight is the total package weight in %2$s, not the weight of one item.', 'shipping-rules-tester-for-woocommerce' ), $currency, $weight_unit ) ); ?></p>
 			<div class="srt-grid">
-				<label><?php echo esc_html__( 'Package value', 'shipping-rules-tester-for-woocommerce' ); ?>
+				<?php /* translators: %s: currency code. */ ?>
+				<label><?php echo esc_html( sprintf( __( 'Package value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?>
 					<input type="number" name="value" min="0" max="100000" step="0.01" value="0">
 				</label>
-				<label><?php echo esc_html__( 'Weight', 'shipping-rules-tester-for-woocommerce' ); ?>
+				<?php /* translators: %s: weight unit. */ ?>
+				<label><?php echo esc_html( sprintf( __( 'Total package weight (%s)', 'shipping-rules-tester-for-woocommerce' ), $weight_unit ) ); ?>
 					<input type="number" name="weight" min="0" max="100000" step="0.001" value="0">
 				</label>
 				<label><?php echo esc_html__( 'Item quantity', 'shipping-rules-tester-for-woocommerce' ); ?>

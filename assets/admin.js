@@ -24,6 +24,9 @@
           details = method.rates.map(function (rate) {
             return (rate.id ? rate.id + ': ' : '') + (rate.cost ? rate.cost + ' + ' + rate.tax + ' ' + srtData.i18n.tax + ' = ' + rate.total + ' ' + srtData.i18n.total : srtData.i18n.unavailable);
           }).join('; ');
+          if (method.rates.every(function (rate) { return rate.available && rate.zero_cost; })) {
+            details += ' ' + srtData.i18n.zeroCost;
+          }
         }
         html += '<tr><td>' + escapeHtml(method.id) + '</td><td>' + escapeHtml(result) + '</td><td>' + escapeHtml(details) + '</td></tr>';
       });

@@ -36,6 +36,8 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   });
 
   await openTester(page);
+  await expect(page.locator('label').filter({ hasText: /Package value \([A-Z]+\)/ })).toHaveCount(1);
+  await expect(page.locator('label').filter({ hasText: /Total package weight \([^)]+\)/ })).toHaveCount(1);
   page.on('request', (request) => {
     if (/^https?:/.test(request.url()) && new URL(request.url()).origin !== baseOrigin) {
       externalRequests.push(request.url());

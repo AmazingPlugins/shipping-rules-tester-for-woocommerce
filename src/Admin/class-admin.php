@@ -111,6 +111,7 @@ class Admin {
 					'unavailable' => __( 'Unavailable', 'shipping-rules-tester-for-woocommerce' ),
 					'disabled'    => __( 'Disabled', 'shipping-rules-tester-for-woocommerce' ),
 					'notTested'   => __( 'Not tested', 'shipping-rules-tester-for-woocommerce' ),
+					'zeroCost'    => __( 'This method returned a zero-cost rate. Check its configured cost; free shipping and local pickup commonly return zero.', 'shipping-rules-tester-for-woocommerce' ),
 				),
 			)
 		);
@@ -120,7 +121,9 @@ class Admin {
 	 * Render the tester form.
 	 */
 	public function render_page() {
-		$countries = WC()->countries->get_countries();
+		$countries   = WC()->countries->get_countries();
+		$currency    = strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) );
+		$weight_unit = sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) );
 		require SRT_PLUGIN_DIR . 'templates/admin-page.php';
 	}
 }

@@ -43,6 +43,7 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( 'flat_rate:1', $result['methods'][0]['rates'][0]['id'] );
 		$this->assertSame( '$0.00', $result['methods'][0]['rates'][0]['tax'] );
 		$this->assertSame( 'NY', $result['package']['state'] );
+		$this->assertFalse( $result['methods'][0]['rates'][0]['zero_cost'] );
 		$this->assertSame( 2, $method->last_package['contents']['srt-sample-item']['quantity'] );
 		$this->assertTrue( $method->last_package['contents']['srt-sample-item']['data']->needs_shipping() );
 		$this->assertSame( 0, $method->last_package['user']['ID'] );
@@ -82,7 +83,20 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( '$12.50', $result['methods'][0]['rates'][0]['cost'] );
 		$this->assertSame( '$1.25', $result['methods'][0]['rates'][0]['tax'] );
 		$this->assertSame( '$13.75', $result['methods'][0]['rates'][0]['total'] );
+		$this->assertFalse( $result['methods'][0]['rates'][0]['zero_cost'] );
 		$this->assertSame( '$13.75', $result['methods'][0]['cost'] );
+	}
+
+	/**
+	 * Zero-cost rates are identified for the admin explanation.
+	 */
+	public function test_zero_cost_rate_is_marked() {
+		$method = new SRT_Test_Method( 'local_pickup', 'Local pickup', array( new WC_Shipping_Rate( 0 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+
+		$this->assertTrue( $result['methods'][0]['rates'][0]['zero_cost'] );
 	}
 
 	/**
