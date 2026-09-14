@@ -62,4 +62,14 @@ if ( 403 !== $srt_response->get_status() ) {
 	$srt_fail( 'The REST route did not reject an unauthenticated request.' );
 }
 
+wp_set_current_user( 2 );
+$_SERVER['HTTP_X_WP_NONCE'] = 'invalid';
+$srt_nonce_request  = new WP_REST_Request( 'POST', '/srt/v1/test' );
+$srt_nonce_response = rest_get_server()->dispatch( $srt_nonce_request );
+if ( 403 !== $srt_nonce_response->get_status() || 'srt_invalid_nonce' !== $srt_nonce_response->get_data()['code'] ) {
+	$srt_fail( 'The REST route did not reject an invalid nonce.' );
+}
+wp_set_current_user( 0 );
+unset( $_SERVER['HTTP_X_WP_NONCE'] );
+
 echo "Shipping Rules Tester integration smoke passed.\n";
