@@ -30,7 +30,8 @@ $srt_before = $srt_matrix_snapshot();
 $srt_zone   = new WC_Shipping_Zone();
 $srt_zone->set_zone_name( 'SRT temporary matrix zone' );
 $srt_zone_id = $srt_zone->save();
-$srt_zone->add_location( 'US', 'country' );
+$srt_zone->add_location( 'AQ', 'country' );
+$srt_zone->add_location( '00000', 'postcode' );
 $srt_zone->save();
 
 try {
@@ -40,8 +41,8 @@ try {
 
 	$srt_result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
 		array(
-			'country'  => 'US',
-			'postcode' => '10001',
+			'country'  => 'AQ',
+			'postcode' => '00000',
 			'value'    => '50',
 			'weight'   => '2',
 			'quantity' => '2',

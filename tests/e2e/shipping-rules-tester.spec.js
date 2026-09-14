@@ -94,3 +94,14 @@ test('does not add assets or output to the frontend', async ({ page }) => {
   await expect(page.locator('link[href*="shipping-rules-tester-for-woocommerce"]')).toHaveCount(0);
   await expect(page.locator('.srt-wrap')).toHaveCount(0);
 });
+
+test('exposes a direct tester link on the Plugins screen', async ({ page }) => {
+  await openTester(page);
+  await page.goto('/wp-admin/plugins.php');
+
+  const pluginRow = page.locator('tr').filter({ hasText: 'AP Shipping Rules Tester for WooCommerce' });
+  await expect(pluginRow.getByRole('link', { name: 'Test shipping rules' })).toHaveAttribute(
+    'href',
+    /admin\.php\?page=shipping-rules-tester-for-woocommerce/
+  );
+});

@@ -37,6 +37,7 @@ class Admin {
 		add_action( 'admin_menu', array( $this, 'add_menu' ), 50 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'rest_api_init', array( $this->rest_controller, 'register_routes' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( SRT_PLUGIN_FILE ), array( $this, 'add_plugin_action_link' ) );
 	}
 
 	/**
@@ -51,6 +52,30 @@ class Admin {
 			'shipping-rules-tester-for-woocommerce',
 			array( $this, 'render_page' )
 		);
+	}
+
+	/**
+	 * Add a direct link to the tester from the Plugins screen.
+	 *
+	 * @param string[] $links Existing plugin action links.
+	 * @return string[]
+	 */
+	public function add_plugin_action_link( $links ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return $links;
+		}
+
+		$url = admin_url( 'admin.php?page=shipping-rules-tester-for-woocommerce' );
+		array_unshift(
+			$links,
+			sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( $url ),
+				esc_html__( 'Test shipping rules', 'shipping-rules-tester-for-woocommerce' )
+			)
+		);
+
+		return $links;
 	}
 
 	/**
@@ -69,7 +94,7 @@ class Admin {
 			'srt-admin',
 			'srtData',
 			array(
-				'restUrl' => rest_url( 'srt/v1/test' ),
+				'restUrl' => '/srt/v1/test',
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'i18n'    => array(
 					'error'       => __( 'The shipping test could not be completed.', 'shipping-rules-tester-for-woocommerce' ),
