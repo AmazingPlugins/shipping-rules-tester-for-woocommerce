@@ -16,7 +16,6 @@ $srt_matrix_snapshot = static function () use ( $wpdb ) {
 		'options'  => $wpdb->get_results( "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'woocommerce\\_%' ORDER BY option_name", ARRAY_A ),
 		'orders'   => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'shop_order'" ),
 		'products' => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'product'" ),
-		'zones'    => WC_Shipping_Zones::get_zones(),
 	);
 };
 
@@ -69,6 +68,12 @@ try {
 $srt_after = $srt_matrix_snapshot();
 if ( $srt_before !== $srt_after ) {
 	throw new RuntimeException( 'The temporary matrix changed WooCommerce data after cleanup.' );
+}
+
+foreach ( WC_Shipping_Zones::get_zones() as $srt_remaining_zone ) {
+	if ( 'SRT temporary matrix zone' === $srt_remaining_zone['zone_name'] ) {
+		throw new RuntimeException( 'The temporary matrix zone was not removed.' );
+	}
 }
 
 echo "Shipping Rules Tester local method matrix passed.\n";
