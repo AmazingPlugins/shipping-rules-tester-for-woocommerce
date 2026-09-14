@@ -84,6 +84,9 @@ docker exec "$WP_CONTAINER" wp eval-file \
 	/tmp/srt-tests/integration/sandbox-method-matrix.php \
 	--allow-root
 docker exec "$WP_CONTAINER" wp eval-file \
+	/tmp/srt-tests/integration/sandbox-zone-matrix.php \
+	--allow-root
+docker exec "$WP_CONTAINER" wp eval-file \
 	/tmp/srt-tests/integration/sandbox-admin-config.php \
 	--allow-root
 
