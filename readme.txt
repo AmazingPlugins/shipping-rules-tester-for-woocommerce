@@ -42,6 +42,10 @@ External rate methods are not called. Methods that need live cart data or an ext
 
 No. The plugin reads the current configuration and calculates a sample result. It does not save changes.
 
+= Which units does the tester use? =
+
+Package value uses the store currency. Weight uses the weight unit configured in WooCommerce. Both values describe the complete sample package, not one product unit.
+
 = Are external shipping providers contacted? =
 
 No. The plugin never calls external shipping providers. Methods that need one are listed as skipped.

@@ -83,6 +83,9 @@ docker exec "$WP_CONTAINER" wp eval-file \
 docker exec "$WP_CONTAINER" wp eval-file \
 	/tmp/srt-tests/integration/sandbox-method-matrix.php \
 	--allow-root
+docker exec "$WP_CONTAINER" wp eval-file \
+	/tmp/srt-tests/integration/sandbox-admin-config.php \
+	--allow-root
 
 if [ "$HPOS_MODE" != "$(docker exec "$WP_CONTAINER" wp option get woocommerce_custom_orders_table_enabled --allow-root)" ]; then
 	echo "FAIL: WooCommerce order storage mode was not set to $HPOS_MODE." >&2
