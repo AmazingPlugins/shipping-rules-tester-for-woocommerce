@@ -48,10 +48,10 @@ try {
 
 	$srt_tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
 	$srt_cases  = array(
-		array( 'country' => 'US', 'state' => 'NY', 'postcode' => '10001', 'zone' => 'SRT postcode zone', 'fallback' => false ),
-		array( 'country' => 'US', 'state' => 'NY', 'postcode' => '10002', 'zone' => 'SRT state zone', 'fallback' => false ),
-		array( 'country' => 'US', 'state' => 'CA', 'postcode' => '90001', 'zone' => 'SRT country zone', 'fallback' => false ),
-		array( 'country' => 'GB', 'state' => '', 'postcode' => 'SW1A 1AA', 'zone' => 'Locations not covered by your other zones', 'fallback' => true ),
+		array( 'country' => 'US', 'state' => 'NY', 'postcode' => '10001', 'zone' => 'SRT postcode zone', 'fallback' => false, 'location' => array( 'type' => 'postcode', 'code' => '10001' ) ),
+		array( 'country' => 'US', 'state' => 'NY', 'postcode' => '10002', 'zone' => 'SRT state zone', 'fallback' => false, 'location' => array( 'type' => 'state', 'code' => 'US:NY' ) ),
+		array( 'country' => 'US', 'state' => 'CA', 'postcode' => '90001', 'zone' => 'SRT country zone', 'fallback' => false, 'location' => array( 'type' => 'country', 'code' => 'US' ) ),
+		array( 'country' => 'GB', 'state' => '', 'postcode' => 'SW1A 1AA', 'zone' => 'Locations not covered by your other zones', 'fallback' => true, 'location' => null ),
 	);
 
 	foreach ( $srt_cases as $srt_case ) {
@@ -59,6 +59,11 @@ try {
 		$srt_zone_assert( is_array( $srt_result ), 'The zone test did not return an array.' );
 		$srt_zone_assert( $srt_case['zone'] === $srt_result['zone'], "Unexpected zone for {$srt_case['postcode']}." );
 		$srt_zone_assert( $srt_case['fallback'] === $srt_result['fallback'], "Unexpected fallback flag for {$srt_case['postcode']}." );
+		if ( null === $srt_case['location'] ) {
+			$srt_zone_assert( empty( $srt_result['zone_locations'] ), 'The fallback zone should not expose explicit location rules.' );
+		} else {
+			$srt_zone_assert( $srt_case['location'] === $srt_result['zone_locations'][0], "Unexpected location rule for {$srt_case['postcode']}." );
+		}
 	}
 } finally {
 	foreach ( $srt_zones as $srt_zone_id ) {

@@ -50,6 +50,7 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   await page.locator('#srt-submit').click();
 
   await expect(page.locator('#srt-results')).toContainText('Matched shipping zone');
+  await expect(page.locator('#srt-results')).toContainText('Zone matching rules');
   await expect(page.locator('#srt-results')).toContainText('Shipping methods');
   await expect(page.locator('#srt-results')).toBeVisible();
   expect(pluginRequests.every((url) => new URL(url).origin === baseOrigin)).toBeTruthy();
@@ -106,4 +107,25 @@ test('exposes a direct tester link on the Plugins screen', async ({ page }) => {
     'href',
     /admin\.php\?page=shipping-rules-tester-for-woocommerce/
   );
+});
+
+test('compares two scenarios in the browser without saving them', async ({ page }) => {
+  await openTester(page);
+  await page.locator('select[name="country"]').selectOption('US');
+  await page.locator('input[name="value"]').fill('20');
+  await page.locator('input[name="weight"]').fill('1');
+  await page.locator('#srt-submit').click();
+  await expect(page.locator('#srt-keep')).toBeVisible();
+
+  await page.locator('#srt-keep').click();
+  await page.locator('input[name="value"]').fill('40');
+  await page.locator('input[name="weight"]').fill('3');
+  await page.locator('#srt-submit').click();
+
+  await expect(page.locator('#srt-results')).toContainText('Scenario comparison');
+  await expect(page.locator('#srt-results')).toContainText('20.00');
+  await expect(page.locator('#srt-results')).toContainText('40.00');
+  await expect(page.locator('#srt-clear')).toBeVisible();
+  await page.locator('#srt-clear').click();
+  await expect(page.locator('#srt-results')).toBeHidden();
 });

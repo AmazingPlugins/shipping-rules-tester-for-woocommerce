@@ -10,9 +10,20 @@
     return element.innerHTML;
   }
 
-  function renderResults(data) {
-    var html = '<div class="srt-result-card"><h2>' + escapeHtml(srtData.i18n.matchedZone) + '</h2><p><strong>' + escapeHtml(data.zone) + '</strong></p></div>';
-    html += '<div class="srt-result-card"><h2>' + escapeHtml(srtData.i18n.methods) + '</h2>';
+  function renderScenario(data, index) {
+    var scenario = srtData.i18n.scenario.replace('%d', String(index));
+    var destination = [data.package.country, data.package.state, data.package.postcode, data.package.city].filter(function (value) { return value; }).join(', ');
+    var packageSummary = srtData.i18n.value + ': ' + srtData.currency + ' ' + data.package.value + '; ' + srtData.i18n.weight + ': ' + data.package.weight + ' ' + srtData.weightUnit + '; ' + srtData.i18n.quantity + ': ' + data.package.quantity;
+    var zone = data.fallback ? data.zone + ' (' + srtData.i18n.fallback + ')' : data.zone;
+    var zoneRules = '';
+    if (data.zone_locations && data.zone_locations.length) {
+      zoneRules = '<p><strong>' + escapeHtml(srtData.i18n.zoneRules) + ':</strong> ' + data.zone_locations.map(function (location) {
+        return escapeHtml(location.type + ': ' + location.code);
+      }).join(', ') + '</p>';
+    } else if (data.fallback) {
+      zoneRules = '<p>' + escapeHtml(srtData.i18n.fallbackRule) + '</p>';
+    }
+    var html = '<div class="srt-scenario"><h3>' + escapeHtml(scenario) + '</h3><p><strong>' + escapeHtml(srtData.i18n.destination) + ':</strong> ' + escapeHtml(destination) + '</p><p><strong>' + escapeHtml(srtData.i18n.package) + ':</strong> ' + escapeHtml(packageSummary) + '</p><div class="srt-result-card"><h4>' + escapeHtml(srtData.i18n.matchedZone) + '</h4><p><strong>' + escapeHtml(zone) + '</strong></p>' + zoneRules + '</div><div class="srt-result-card"><h4>' + escapeHtml(srtData.i18n.methods) + '</h4>';
     if (!data.methods.length) {
       html += '<p>' + escapeHtml(srtData.i18n.noMethods) + '</p>';
     } else {
@@ -32,8 +43,20 @@
       });
       html += '</tbody></table>';
     }
-    html += '</div>';
-    document.getElementById('srt-results').innerHTML = html;
+    return html + '</div></div>';
+  }
+
+  function renderResults(data) {
+    document.getElementById('srt-results').innerHTML = renderScenario(data, 1);
+    document.getElementById('srt-results').hidden = false;
+  }
+
+  function renderComparison(data) {
+    var html = '<div class="srt-result-card"><h2>' + escapeHtml(srtData.i18n.comparison) + '</h2>';
+    data.forEach(function (scenario, index) {
+      html += renderScenario(scenario, index + 1);
+    });
+    document.getElementById('srt-results').innerHTML = html + '</div>';
     document.getElementById('srt-results').hidden = false;
   }
 
@@ -48,8 +71,17 @@
   document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('srt-form');
     var button = document.getElementById('srt-submit');
+    var keepButton = document.getElementById('srt-keep');
+    var clearButton = document.getElementById('srt-clear');
     var status = document.getElementById('srt-status');
     var results = document.getElementById('srt-results');
+    var currentResult = null;
+    var comparisonResults = [];
+
+    function updateComparisonControls() {
+      keepButton.hidden = !currentResult;
+      clearButton.hidden = !comparisonResults.length;
+    }
 
     form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -67,12 +99,42 @@
         data: getFormData(form)
       }).then(function (data) {
         status.textContent = '';
-        renderResults(data);
+        currentResult = data;
+        if (comparisonResults.length) {
+          renderComparison(comparisonResults.concat([data]));
+        } else {
+          renderResults(data);
+        }
+        updateComparisonControls();
       }).catch(function (error) {
         status.textContent = error && error.message ? error.message : srtData.i18n.error;
       }).finally(function () {
         button.disabled = false;
       });
     });
+
+    keepButton.addEventListener('click', function () {
+      if (!currentResult) {
+        return;
+      }
+
+      comparisonResults.push(currentResult);
+      currentResult = null;
+      results.hidden = true;
+      results.innerHTML = '';
+      status.textContent = srtData.i18n.kept;
+      updateComparisonControls();
+    });
+
+    clearButton.addEventListener('click', function () {
+      comparisonResults = [];
+      currentResult = null;
+      results.hidden = true;
+      results.innerHTML = '';
+      status.textContent = '';
+      updateComparisonControls();
+    });
+
+    updateComparisonControls();
   });
 }());

@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, shipping zones, shipping rates
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,8 @@ External rate methods are not called. Methods that need live cart data or an ext
 * Use package value, weight, and quantity in the test.
 * Clearly identify methods that need live cart data or an external provider.
 * Show disabled, no-rate, and skipped-method explanations.
+* Show the location rules for the matched shipping zone.
+* Compare multiple test scenarios in the browser without saving them.
 * Use WooCommerce's shipping APIs without changing shipping settings, products, orders, or customers.
 * Keep the tool local to the WooCommerce admin screen.
 
@@ -41,6 +43,10 @@ External rate methods are not called. Methods that need live cart data or an ext
 = Does this change my shipping settings? =
 
 No. The plugin reads the current configuration and calculates a sample result. It does not save changes.
+
+= Can I compare destinations or packages? =
+
+Yes. Run one test, choose **Keep result and test another**, change the inputs, and run the next test. The comparison stays in the current browser tab and is cleared when you leave the page or choose **Clear comparison**.
 
 = Which units does the tester use? =
 

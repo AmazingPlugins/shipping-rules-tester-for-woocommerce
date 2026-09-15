@@ -138,10 +138,43 @@ class Shipping_Tester {
 		}
 
 		return array(
-			'zone'     => $zone->get_zone_name(),
-			'fallback' => method_exists( $zone, 'get_id' ) && 0 === absint( $zone->get_id() ),
-			'package'  => $input,
-			'methods'  => $rows,
+			'zone'           => $zone->get_zone_name(),
+			'fallback'       => method_exists( $zone, 'get_id' ) && 0 === absint( $zone->get_id() ),
+			'zone_locations' => $this->get_zone_locations( $zone ),
+			'package'        => $input,
+			'methods'        => $rows,
 		);
+	}
+
+	/**
+	 * Return safe location rules for the matched zone.
+	 *
+	 * @param object $zone Matched shipping zone.
+	 * @return array
+	 */
+	private function get_zone_locations( $zone ) {
+		if ( ! method_exists( $zone, 'get_zone_locations' ) ) {
+			return array();
+		}
+
+		$locations = array();
+		foreach ( (array) $zone->get_zone_locations() as $location ) {
+			if ( ! is_object( $location ) ) {
+				continue;
+			}
+
+			$type = isset( $location->type ) ? sanitize_key( (string) $location->type ) : '';
+			$code = isset( $location->code ) ? sanitize_text_field( (string) $location->code ) : '';
+			if ( '' === $type || '' === $code ) {
+				continue;
+			}
+
+			$locations[] = array(
+				'type' => $type,
+				'code' => $code,
+			);
+		}
+
+		return $locations;
 	}
 }

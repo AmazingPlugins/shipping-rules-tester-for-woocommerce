@@ -59,7 +59,11 @@ defined( 'ABSPATH' ) || exit;
 				</label>
 			</div>
 		</fieldset>
-		<p><button type="submit" class="button button-primary" id="srt-submit"><?php echo esc_html__( 'Test shipping rules', 'shipping-rules-tester-for-woocommerce' ); ?></button></p>
+		<p class="srt-actions">
+			<button type="submit" class="button button-primary" id="srt-submit"><?php echo esc_html__( 'Test shipping rules', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+			<button type="button" class="button" id="srt-keep" hidden><?php echo esc_html__( 'Keep result and test another', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+			<button type="button" class="button" id="srt-clear" hidden><?php echo esc_html__( 'Clear comparison', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+		</p>
 	</form>
 	<div id="srt-status" class="srt-status" role="status" aria-live="polite"></div>
 	<div id="srt-results" class="srt-results" hidden></div>

@@ -3,7 +3,7 @@
  * Plugin Name: AP Shipping Rules Tester for WooCommerce
  * Plugin URI:  https://amazingplugins.com/plugins/shipping-rules-tester/
  * Description: Test WooCommerce shipping zones and methods with a sample destination and package.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      AmazingPlugins
  * Author URI:  https://amazingplugins.com
  * License:     GPL v2 or later

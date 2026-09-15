@@ -6,7 +6,11 @@
 .srt-grid label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
 .srt-grid input, .srt-grid select { max-width: none; }
 .srt-status { min-height: 24px; margin-top: 16px; font-weight: 600; }
+.srt-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.srt-actions [hidden] { display: none; }
 .srt-results table { margin-top: 16px; }
 .srt-results td, .srt-results th { vertical-align: top; }
+.srt-scenario { border-top: 1px solid #dcdcde; margin-top: 20px; padding-top: 4px; }
+.srt-scenario:first-child { border-top: 0; margin-top: 0; }
 .srt-results[hidden] { display: none; }
 @media (max-width: 782px) { .srt-grid { grid-template-columns: 1fr; } }
