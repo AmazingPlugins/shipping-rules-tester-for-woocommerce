@@ -29,6 +29,12 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 	}
 }
 
+if ( ! function_exists( 'sanitize_key' ) ) {
+	function sanitize_key( $key ) {
+		return strtolower( preg_replace( '/[^a-z0-9_\-]/', '', (string) $key ) );
+	}
+}
+
 if ( ! function_exists( 'absint' ) ) {
 	function absint( $value ) {
 		return abs( (int) $value );
@@ -234,6 +240,62 @@ if ( ! class_exists( 'WC_Product_Simple' ) ) {
 		public function get_shipping_class() {
 			return '';
 		}
+	}
+}
+
+if ( ! function_exists( 'wc_get_product' ) ) {
+	/**
+	 * Return a product from the unit-test product map.
+	 *
+	 * @param int $product_id Product ID.
+	 * @return object|null
+	 */
+	function wc_get_product( $product_id ) {
+		return isset( $GLOBALS['srt_test_products'][ absint( $product_id ) ] ) ? $GLOBALS['srt_test_products'][ absint( $product_id ) ] : null;
+	}
+}
+
+if ( ! class_exists( 'SRT_Test_Product' ) ) {
+	class SRT_Test_Product {
+		/** @var int */
+		private $id;
+		/** @var string */
+		private $name;
+		/** @var string */
+		private $price;
+		/** @var string */
+		private $weight;
+		/** @var bool */
+		private $needs_shipping;
+
+		/**
+		 * @param int    $id Product ID.
+		 * @param string $name Product name.
+		 * @param string $price Product price.
+		 * @param string $weight Product weight.
+		 * @param bool   $needs_shipping Whether the product needs shipping.
+		 */
+		public function __construct( $id, $name, $price, $weight, $needs_shipping = true ) {
+			$this->id              = $id;
+			$this->name            = $name;
+			$this->price            = $price;
+			$this->weight           = $weight;
+			$this->needs_shipping  = $needs_shipping;
+		}
+
+		public function get_id() { return $this->id; }
+		public function get_name() { return $this->name; }
+		public function get_price() { return $this->price; }
+		public function get_weight() { return $this->weight; }
+		public function needs_shipping() { return $this->needs_shipping; }
+		public function get_type() { return 'simple'; }
+		public function is_type( $type ) { return 'simple' === $type; }
+		public function get_parent_id() { return 0; }
+		public function get_length() { return '10'; }
+		public function get_width() { return '20'; }
+		public function get_height() { return '30'; }
+		public function get_shipping_class() { return 'fragile'; }
+		public function get_tax_class() { return 'reduced-rate'; }
 	}
 }
 

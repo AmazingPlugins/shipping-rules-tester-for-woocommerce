@@ -33,6 +33,24 @@ function wc_price( $price ): string {
 }
 
 /**
+ * Get one WooCommerce product.
+ *
+ * @param int $product_id Product ID.
+ * @return object|null
+ */
+function wc_get_product( $product_id ) {
+}
+
+/**
+ * Get WooCommerce products.
+ *
+ * @param array $args Query arguments.
+ * @return array
+ */
+function wc_get_products( array $args = array() ): array {
+}
+
+/**
  * Shipping zones API.
  */
 class WC_Shipping_Zones {

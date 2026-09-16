@@ -4,6 +4,7 @@
  *
  * @package ShippingRulesTester
  * @var array $countries WooCommerce countries.
+ * @var array $products Available WooCommerce products.
  * @var string $currency Store currency code.
  * @var string $weight_unit Store weight unit.
  */
@@ -42,7 +43,24 @@ defined( 'ABSPATH' ) || exit;
 		</fieldset>
 		<fieldset>
 			<legend><?php echo esc_html__( 'Sample package', 'shipping-rules-tester-for-woocommerce' ); ?></legend>
-			<p class="description"><?php echo esc_html__( 'This uses an unsaved synthetic product. Product-specific shipping classes, dimensions, coupons, customer roles, subscriptions, and live-cart rules are not included.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+			<p class="description"><?php echo esc_html__( 'Use a saved product to include its shipping class, dimensions, weight, price, and tax class. Leave it as a synthetic package to enter totals manually.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+			<label><?php echo esc_html__( 'Product context', 'shipping-rules-tester-for-woocommerce' ); ?>
+				<select name="product_id" id="srt-product">
+					<option value="0"><?php echo esc_html__( 'Synthetic package', 'shipping-rules-tester-for-woocommerce' ); ?></option>
+					<?php
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local template loop variable.
+					foreach ( $products as $shipping_rules_tester_product ) :
+						?>
+						<?php if ( ! is_object( $shipping_rules_tester_product ) || ! method_exists( $shipping_rules_tester_product, 'get_id' ) || ! method_exists( $shipping_rules_tester_product, 'get_name' ) ) : ?>
+							<?php continue; ?>
+						<?php endif; ?>
+						<option value="<?php echo esc_attr( (string) absint( $shipping_rules_tester_product->get_id() ) ); ?>">
+							<?php echo esc_html( sprintf( '%s (#%d)', $shipping_rules_tester_product->get_name(), absint( $shipping_rules_tester_product->get_id() ) ) ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</label>
+			<p class="description"><?php echo esc_html__( 'Selecting a product uses its saved price and weight multiplied by the quantity. The manual value and weight fields are ignored for that test.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 			<?php /* translators: 1: currency code, 2: weight unit. */ ?>
 			<p class="description"><?php echo esc_html( sprintf( __( 'Package value is the total value of all items in %1$s. Weight is the total package weight in %2$s, not the weight of one item.', 'shipping-rules-tester-for-woocommerce' ), $currency, $weight_unit ) ); ?></p>
 			<div class="srt-grid">

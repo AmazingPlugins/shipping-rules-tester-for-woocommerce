@@ -129,3 +129,19 @@ test('compares two scenarios in the browser without saving them', async ({ page 
   await page.locator('#srt-clear').click();
   await expect(page.locator('#srt-results')).toBeHidden();
 });
+
+test('uses saved product context for a local test', async ({ page }) => {
+  await openTester(page);
+  const productOption = page.locator('#srt-product option').nth(1);
+  await expect(productOption).toHaveCount(1);
+  const productName = (await productOption.innerText()).replace(/ \(#\d+\)$/, '');
+  await page.locator('#srt-product').selectOption({ index: 1 });
+  await expect(page.locator('input[name="value"]')).toBeDisabled();
+  await expect(page.locator('input[name="weight"]')).toBeDisabled();
+  await page.locator('select[name="country"]').selectOption('US');
+  await page.locator('input[name="quantity"]').fill('2');
+  await page.locator('#srt-submit').click();
+
+  await expect(page.locator('#srt-results')).toContainText('Product details');
+  await expect(page.locator('#srt-results')).toContainText(productName);
+});

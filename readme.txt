@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, shipping zones, shipping rates
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,7 @@ External rate methods are not called. Methods that need live cart data or an ext
 * Match a sample destination to a WooCommerce shipping zone.
 * Test built-in flat rate, free shipping, and local pickup methods.
 * Use package value, weight, and quantity in the test.
+* Test a saved product's shipping class, dimensions, weight, price, and tax class.
 * Clearly identify methods that need live cart data or an external provider.
 * Show disabled, no-rate, and skipped-method explanations.
 * Show the location rules for the matched shipping zone.
@@ -58,7 +59,11 @@ No. The plugin never calls external shipping providers. Methods that need one ar
 
 = Does this test real cart contents? =
 
-No. The test uses a synthetic package with the value, weight, and quantity you enter. It doesn't include product-specific shipping classes, dimensions, coupons, customer roles, subscriptions, or live-cart state. Methods that require that context may need a real checkout test.
+No. The test uses either a synthetic package with the value, weight, and quantity you enter, or one saved product multiplied by the quantity. It doesn't include multiple products, coupons, customer roles, subscriptions, or live-cart state. Methods that require that context may need a real checkout test.
+
+= What happens when I select a product? =
+
+The tester reads the saved product's current price, weight, dimensions, shipping class, and tax class. It doesn't save changes. The selected product's price and weight replace the manual package fields for that test.
 
 = Does this work with HPOS? =
 
@@ -70,6 +75,10 @@ Yes. The tester does not read or change order data and does not depend on the or
 2. Matched zone and shipping method results.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added read-only saved product context for local shipping tests.
+* Added product-aware integration and browser coverage.
 
 = 1.0.0 =
 * Initial development release.

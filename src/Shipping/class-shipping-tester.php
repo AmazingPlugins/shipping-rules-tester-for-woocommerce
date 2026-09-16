@@ -69,7 +69,22 @@ class Shipping_Tester {
 			return $input;
 		}
 
-		$package = $this->package_builder->build( $input );
+		$product = null;
+		if ( ! empty( $input['product_id'] ) ) {
+			$product = wc_get_product( absint( $input['product_id'] ) );
+			if ( ! is_object( $product ) ) {
+				return new \WP_Error( 'srt_invalid_product', __( 'The selected product could not be found.', 'shipping-rules-tester-for-woocommerce' ) );
+			}
+
+			if ( method_exists( $product, 'needs_shipping' ) && ! $product->needs_shipping() ) {
+				return new \WP_Error( 'srt_non_shippable_product', __( 'Choose a product that requires shipping.', 'shipping-rules-tester-for-woocommerce' ) );
+			}
+
+			$input['value']  = wc_format_decimal( $this->get_product_number( $product, 'get_price' ) * absint( $input['quantity'] ), 2 );
+			$input['weight'] = wc_format_decimal( $this->get_product_number( $product, 'get_weight' ) * absint( $input['quantity'] ), 3 );
+		}
+
+		$package = $this->package_builder->build( $input, $product );
 		$zone    = \WC_Shipping_Zones::get_zone_matching_package( $package );
 		if ( ! is_a( $zone, 'WC_Shipping_Zone' ) ) {
 			return new \WP_Error( 'srt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'shipping-rules-tester-for-woocommerce' ) );
@@ -142,7 +157,52 @@ class Shipping_Tester {
 			'fallback'       => method_exists( $zone, 'get_id' ) && 0 === absint( $zone->get_id() ),
 			'zone_locations' => $this->get_zone_locations( $zone ),
 			'package'        => $input,
+			'product'        => $this->get_product_summary( $product ),
 			'methods'        => $rows,
+		);
+	}
+
+	/**
+	 * Read a numeric product property without trusting malformed data.
+	 *
+	 * @param object $product Product object.
+	 * @param string $method Getter method.
+	 * @return float
+	 */
+	private function get_product_number( $product, $method ) {
+		if ( ! method_exists( $product, $method ) ) {
+			return 0;
+		}
+
+		$value = $product->$method();
+		return is_scalar( $value ) && is_numeric( $value ) ? (float) $value : 0;
+	}
+
+	/**
+	 * Return safe product details for the result panel.
+	 *
+	 * @param object|null $product Product object.
+	 * @return array|null
+	 */
+	private function get_product_summary( $product ) {
+		if ( ! is_object( $product ) ) {
+			return null;
+		}
+
+		$dimensions = array();
+		foreach ( array( 'length', 'width', 'height' ) as $dimension ) {
+			$dimensions[ $dimension ] = $this->get_product_number( $product, 'get_' . $dimension );
+		}
+
+		return array(
+			'id'             => method_exists( $product, 'get_id' ) ? absint( $product->get_id() ) : 0,
+			'name'           => method_exists( $product, 'get_name' ) ? sanitize_text_field( (string) $product->get_name() ) : '',
+			'type'           => method_exists( $product, 'get_type' ) ? sanitize_key( (string) $product->get_type() ) : '',
+			'price'          => $this->get_product_number( $product, 'get_price' ),
+			'weight'         => $this->get_product_number( $product, 'get_weight' ),
+			'dimensions'     => $dimensions,
+			'shipping_class' => method_exists( $product, 'get_shipping_class' ) ? sanitize_text_field( (string) $product->get_shipping_class() ) : '',
+			'tax_class'      => method_exists( $product, 'get_tax_class' ) ? sanitize_text_field( (string) $product->get_tax_class() ) : '',
 		);
 	}
 

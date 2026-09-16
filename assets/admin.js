@@ -15,6 +15,14 @@
     var destination = [data.package.country, data.package.state, data.package.postcode, data.package.city].filter(function (value) { return value; }).join(', ');
     var packageSummary = srtData.i18n.value + ': ' + srtData.currency + ' ' + data.package.value + '; ' + srtData.i18n.weight + ': ' + data.package.weight + ' ' + srtData.weightUnit + '; ' + srtData.i18n.quantity + ': ' + data.package.quantity;
     var zone = data.fallback ? data.zone + ' (' + srtData.i18n.fallback + ')' : data.zone;
+    var productSummary = '';
+    if (data.product) {
+      var product = data.product;
+      var dimensions = ['length', 'width', 'height'].map(function (dimension) {
+        return product.dimensions[dimension] || '0';
+      }).join(' × ');
+      productSummary = '<div class="srt-product-details"><h4>' + escapeHtml(srtData.i18n.productDetails) + '</h4><p><strong>' + escapeHtml(srtData.i18n.product) + ':</strong> ' + escapeHtml(product.name + ' (#' + product.id + ')') + '</p><p><strong>' + escapeHtml(srtData.i18n.productPrice) + ':</strong> ' + escapeHtml(srtData.currency + ' ' + product.price) + '; <strong>' + escapeHtml(srtData.i18n.productWeight) + ':</strong> ' + escapeHtml(product.weight + ' ' + srtData.weightUnit) + '; <strong>' + escapeHtml(srtData.i18n.shippingClass) + ':</strong> ' + escapeHtml(product.shipping_class || srtData.i18n.none) + '; <strong>' + escapeHtml(srtData.i18n.dimensions) + ':</strong> ' + escapeHtml(dimensions + ' ' + srtData.dimensionUnit) + '; <strong>' + escapeHtml(srtData.i18n.taxClass) + ':</strong> ' + escapeHtml(product.tax_class || srtData.i18n.standard) + '</p></div>';
+    }
     var zoneRules = '';
     if (data.zone_locations && data.zone_locations.length) {
       zoneRules = '<p><strong>' + escapeHtml(srtData.i18n.zoneRules) + ':</strong> ' + data.zone_locations.map(function (location) {
@@ -23,7 +31,7 @@
     } else if (data.fallback) {
       zoneRules = '<p>' + escapeHtml(srtData.i18n.fallbackRule) + '</p>';
     }
-    var html = '<div class="srt-scenario"><h3>' + escapeHtml(scenario) + '</h3><p><strong>' + escapeHtml(srtData.i18n.destination) + ':</strong> ' + escapeHtml(destination) + '</p><p><strong>' + escapeHtml(srtData.i18n.package) + ':</strong> ' + escapeHtml(packageSummary) + '</p><div class="srt-result-card"><h4>' + escapeHtml(srtData.i18n.matchedZone) + '</h4><p><strong>' + escapeHtml(zone) + '</strong></p>' + zoneRules + '</div><div class="srt-result-card"><h4>' + escapeHtml(srtData.i18n.methods) + '</h4>';
+    var html = '<div class="srt-scenario"><h3>' + escapeHtml(scenario) + '</h3><p><strong>' + escapeHtml(srtData.i18n.destination) + ':</strong> ' + escapeHtml(destination) + '</p><p><strong>' + escapeHtml(srtData.i18n.package) + ':</strong> ' + escapeHtml(packageSummary) + '</p>' + productSummary + '<div class="srt-result-card"><h4>' + escapeHtml(srtData.i18n.matchedZone) + '</h4><p><strong>' + escapeHtml(zone) + '</strong></p>' + zoneRules + '</div><div class="srt-result-card"><h4>' + escapeHtml(srtData.i18n.methods) + '</h4>';
     if (!data.methods.length) {
       html += '<p>' + escapeHtml(srtData.i18n.noMethods) + '</p>';
     } else {
@@ -73,6 +81,9 @@
     var button = document.getElementById('srt-submit');
     var keepButton = document.getElementById('srt-keep');
     var clearButton = document.getElementById('srt-clear');
+    var productSelect = document.getElementById('srt-product');
+    var valueInput = form.querySelector('input[name="value"]');
+    var weightInput = form.querySelector('input[name="weight"]');
     var status = document.getElementById('srt-status');
     var results = document.getElementById('srt-results');
     var currentResult = null;
@@ -81,6 +92,12 @@
     function updateComparisonControls() {
       keepButton.hidden = !currentResult;
       clearButton.hidden = !comparisonResults.length;
+    }
+
+    function updateProductInputs() {
+      var usesProduct = productSelect.value !== '0';
+      valueInput.disabled = usesProduct;
+      weightInput.disabled = usesProduct;
     }
 
     form.addEventListener('submit', function (event) {
@@ -135,6 +152,8 @@
       updateComparisonControls();
     });
 
+    productSelect.addEventListener('change', updateProductInputs);
+    updateProductInputs();
     updateComparisonControls();
   });
 }());

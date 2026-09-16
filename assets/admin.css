@@ -12,5 +12,6 @@
 .srt-results td, .srt-results th { vertical-align: top; }
 .srt-scenario { border-top: 1px solid #dcdcde; margin-top: 20px; padding-top: 4px; }
 .srt-scenario:first-child { border-top: 0; margin-top: 0; }
+.srt-product-details { background: #f6f7f7; border-left: 4px solid #2271b1; margin: 16px 0; padding: 1px 12px; }
 .srt-results[hidden] { display: none; }
 @media (max-width: 782px) { .srt-grid { grid-template-columns: 1fr; } }

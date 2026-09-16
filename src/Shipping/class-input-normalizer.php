@@ -30,22 +30,38 @@ class Input_Normalizer {
 			return new \WP_Error( 'srt_invalid_country', __( 'Choose a valid destination country.', 'shipping-rules-tester-for-woocommerce' ) );
 		}
 
-		$value    = $this->parse_decimal( isset( $raw['value'] ) ? $raw['value'] : 0, 2 );
-		$weight   = $this->parse_decimal( isset( $raw['weight'] ) ? $raw['weight'] : 0, 3 );
-		$quantity = $this->parse_quantity( isset( $raw['quantity'] ) ? $raw['quantity'] : 1 );
-		if ( is_wp_error( $value ) || is_wp_error( $weight ) || is_wp_error( $quantity ) ) {
+		$value      = $this->parse_decimal( isset( $raw['value'] ) ? $raw['value'] : 0, 2 );
+		$weight     = $this->parse_decimal( isset( $raw['weight'] ) ? $raw['weight'] : 0, 3 );
+		$quantity   = $this->parse_quantity( isset( $raw['quantity'] ) ? $raw['quantity'] : 1 );
+		$product_id = $this->parse_product_id( isset( $raw['product_id'] ) ? $raw['product_id'] : 0 );
+		if ( is_wp_error( $value ) || is_wp_error( $weight ) || is_wp_error( $quantity ) || is_wp_error( $product_id ) ) {
 			return new \WP_Error( 'srt_invalid_package', __( 'Enter package values within the supported ranges.', 'shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		return array(
-			'country'  => $country,
-			'state'    => $this->sanitize_text_input( isset( $raw['state'] ) ? $raw['state'] : '', true, 100 ),
-			'postcode' => $this->sanitize_text_input( isset( $raw['postcode'] ) ? $raw['postcode'] : '', false, 20 ),
-			'city'     => $this->sanitize_text_input( isset( $raw['city'] ) ? $raw['city'] : '', false, 100 ),
-			'value'    => wc_format_decimal( $value, 2 ),
-			'weight'   => wc_format_decimal( $weight, 3 ),
-			'quantity' => $quantity,
+			'country'    => $country,
+			'state'      => $this->sanitize_text_input( isset( $raw['state'] ) ? $raw['state'] : '', true, 100 ),
+			'postcode'   => $this->sanitize_text_input( isset( $raw['postcode'] ) ? $raw['postcode'] : '', false, 20 ),
+			'city'       => $this->sanitize_text_input( isset( $raw['city'] ) ? $raw['city'] : '', false, 100 ),
+			'value'      => wc_format_decimal( $value, 2 ),
+			'weight'     => wc_format_decimal( $weight, 3 ),
+			'quantity'   => $quantity,
+			'product_id' => $product_id,
 		);
+	}
+
+	/**
+	 * Parse an optional saved product ID.
+	 *
+	 * @param mixed $value Raw product ID.
+	 * @return int|\WP_Error
+	 */
+	private function parse_product_id( $value ) {
+		if ( ! is_scalar( $value ) || ! preg_match( '/^\d+$/D', trim( (string) $value ) ) ) {
+			return new \WP_Error( 'srt_invalid_product' );
+		}
+
+		return absint( $value );
 	}
 
 	/**

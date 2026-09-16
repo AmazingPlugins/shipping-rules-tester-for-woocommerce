@@ -17,6 +17,7 @@ class Test_SRT_Tester extends TestCase {
 	 */
 	protected function tearDown(): void {
 		WC_Shipping_Zone::$methods = array();
+		$GLOBALS['srt_test_products'] = array();
 		parent::tearDown();
 	}
 
@@ -47,6 +48,50 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( 2, $method->last_package['contents']['srt-sample-item']['quantity'] );
 		$this->assertTrue( $method->last_package['contents']['srt-sample-item']['data']->needs_shipping() );
 		$this->assertSame( 0, $method->last_package['user']['ID'] );
+	}
+
+	/**
+	 * A saved product supplies shipping-specific package context.
+	 */
+	public function test_saved_product_context_is_used_without_mutating_the_product() {
+		$product = new SRT_Test_Product( 42, 'Glass vase', '15.75', '2.5' );
+		$GLOBALS['srt_test_products'][42] = $product;
+		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+			array(
+				'country'   => 'US',
+				'product_id' => '42',
+				'quantity'  => '3',
+			)
+		);
+
+		$this->assertSame( '47.25', $result['package']['value'] );
+		$this->assertSame( '7.500', $result['package']['weight'] );
+		$this->assertSame( 42, $result['product']['id'] );
+		$this->assertSame( 'Glass vase', $result['product']['name'] );
+		$this->assertSame( 15.75, $result['product']['price'] );
+		$this->assertSame( 2.5, $result['product']['weight'] );
+		$this->assertSame( 'fragile', $result['product']['shipping_class'] );
+		$this->assertSame( array( 'length' => 10.0, 'width' => 20.0, 'height' => 30.0 ), $result['product']['dimensions'] );
+		$this->assertSame( 42, $method->last_package['contents']['srt-sample-item']['product_id'] );
+		$this->assertSame( 'fragile', $method->last_package['contents']['srt-sample-item']['data']->get_shipping_class() );
+		$this->assertSame( '15.75', $product->get_price() );
+	}
+
+	/**
+	 * Missing and virtual products are rejected before shipping runs.
+	 */
+	public function test_invalid_product_context_returns_error() {
+		$tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+
+		$missing = $tester->test( array( 'country' => 'US', 'product_id' => '404' ) );
+		$this->assertSame( 'srt_invalid_product', $missing->get_error_code() );
+
+		$GLOBALS['srt_test_products'][9] = new SRT_Test_Product( 9, 'Download', '5', '0', false );
+		$virtual = $tester->test( array( 'country' => 'US', 'product_id' => '9' ) );
+		$this->assertSame( 'srt_non_shippable_product', $virtual->get_error_code() );
 	}
 
 	/**
