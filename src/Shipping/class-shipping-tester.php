@@ -69,22 +69,53 @@ class Shipping_Tester {
 			return $input;
 		}
 
-		$product = null;
-		if ( ! empty( $input['product_id'] ) ) {
-			$product = wc_get_product( absint( $input['product_id'] ) );
-			if ( ! is_object( $product ) ) {
-				return new \WP_Error( 'srt_invalid_product', __( 'The selected product could not be found.', 'shipping-rules-tester-for-woocommerce' ) );
+		$resolved_items = array();
+		$item_summaries = array();
+		$total_value    = 0.0;
+		$total_weight   = 0.0;
+		$total_quantity = 0;
+		foreach ( $input['items'] as $item ) {
+			$product = null;
+			if ( 'product' === $item['source'] ) {
+				$product = wc_get_product( absint( $item['product_id'] ) );
+				if ( ! is_object( $product ) ) {
+					return new \WP_Error( 'srt_invalid_product', __( 'One of the selected products could not be found.', 'shipping-rules-tester-for-woocommerce' ) );
+				}
+
+				if ( method_exists( $product, 'needs_shipping' ) && ! $product->needs_shipping() ) {
+					return new \WP_Error( 'srt_non_shippable_product', __( 'Choose products that require shipping.', 'shipping-rules-tester-for-woocommerce' ) );
+				}
+
+				$item['value']  = wc_format_decimal( $this->get_product_number( $product, 'get_price' ) * absint( $item['quantity'] ), 2 );
+				$item['weight'] = wc_format_decimal( $this->get_product_number( $product, 'get_weight' ) * absint( $item['quantity'] ), 3 );
+			} elseif ( empty( $item['legacy_totals'] ) ) {
+				$item['value']  = wc_format_decimal( (float) $item['value'] * absint( $item['quantity'] ), 2 );
+				$item['weight'] = wc_format_decimal( (float) $item['weight'] * absint( $item['quantity'] ), 3 );
 			}
 
-			if ( method_exists( $product, 'needs_shipping' ) && ! $product->needs_shipping() ) {
-				return new \WP_Error( 'srt_non_shippable_product', __( 'Choose a product that requires shipping.', 'shipping-rules-tester-for-woocommerce' ) );
-			}
-
-			$input['value']  = wc_format_decimal( $this->get_product_number( $product, 'get_price' ) * absint( $input['quantity'] ), 2 );
-			$input['weight'] = wc_format_decimal( $this->get_product_number( $product, 'get_weight' ) * absint( $input['quantity'] ), 3 );
+			$total_value     += (float) $item['value'];
+			$total_weight    += (float) $item['weight'];
+			$total_quantity  += absint( $item['quantity'] );
+			$resolved_items[] = array(
+				'input'   => $item,
+				'product' => $product,
+				'value'   => $item['value'],
+				'weight'  => $item['weight'],
+			);
+			$item_summaries[] = $this->get_item_summary( $item, $product );
 		}
 
-		$package = $this->package_builder->build( $input, $product );
+		$input['value']      = wc_format_decimal( $total_value, 2 );
+		$input['weight']     = wc_format_decimal( $total_weight, 3 );
+		$input['quantity']   = $total_quantity;
+		$input['product_id'] = count( $resolved_items ) === 1 && is_object( $resolved_items[0]['product'] ) ? absint( $resolved_items[0]['product']->get_id() ) : 0;
+		foreach ( $input['items'] as &$item ) {
+			unset( $item['legacy_totals'] );
+		}
+		unset( $item );
+		$single_product = count( $resolved_items ) === 1 ? $resolved_items[0]['product'] : null;
+
+		$package = $this->package_builder->build( $input, $single_product, $resolved_items );
 		$zone    = \WC_Shipping_Zones::get_zone_matching_package( $package );
 		if ( ! is_a( $zone, 'WC_Shipping_Zone' ) ) {
 			return new \WP_Error( 'srt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'shipping-rules-tester-for-woocommerce' ) );
@@ -157,7 +188,8 @@ class Shipping_Tester {
 			'fallback'       => method_exists( $zone, 'get_id' ) && 0 === absint( $zone->get_id() ),
 			'zone_locations' => $this->get_zone_locations( $zone ),
 			'package'        => $input,
-			'product'        => $this->get_product_summary( $product ),
+			'product'        => 1 === count( $item_summaries ) && 'product' === $item_summaries[0]['source'] ? $item_summaries[0] : null,
+			'items'          => $item_summaries,
 			'methods'        => $rows,
 		);
 	}
@@ -176,6 +208,45 @@ class Shipping_Tester {
 
 		$value = $product->$method();
 		return is_scalar( $value ) && is_numeric( $value ) ? (float) $value : 0;
+	}
+
+	/**
+	 * Return a safe summary for a package item.
+	 *
+	 * @param array       $item    Normalized item.
+	 * @param object|null $product Saved product, if selected.
+	 * @return array
+	 */
+	private function get_item_summary( array $item, $product ) {
+		if ( is_object( $product ) ) {
+			$summary                = $this->get_product_summary( $product );
+			$summary['source']      = 'product';
+			$summary['quantity']    = absint( $item['quantity'] );
+			$summary['line_value']  = (float) $item['value'];
+			$summary['line_weight'] = (float) $item['weight'];
+			return $summary;
+		}
+
+		$quantity = absint( $item['quantity'] );
+		return array(
+			'source'            => 'custom',
+			'id'                => 0,
+			'name'              => __( 'Synthetic item', 'shipping-rules-tester-for-woocommerce' ),
+			'type'              => 'custom',
+			'price'             => $quantity > 0 ? (float) $item['value'] / $quantity : 0,
+			'weight'            => $quantity > 0 ? (float) $item['weight'] / $quantity : 0,
+			'dimensions'        => array(
+				'length' => (float) $item['length'],
+				'width'  => (float) $item['width'],
+				'height' => (float) $item['height'],
+			),
+			'shipping_class'    => '',
+			'shipping_class_id' => absint( $item['shipping_class_id'] ),
+			'tax_class'         => '',
+			'quantity'          => $quantity,
+			'line_value'        => (float) $item['value'],
+			'line_weight'       => (float) $item['weight'],
+		);
 	}
 
 	/**

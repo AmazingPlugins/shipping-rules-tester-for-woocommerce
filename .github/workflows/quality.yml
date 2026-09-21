@@ -50,3 +50,35 @@ jobs:
 
       - name: Check diff whitespace
         run: git diff --check
+
+  integration:
+    name: WordPress ${{ matrix.wordpress }} / WooCommerce ${{ matrix.woocommerce || 'latest' }} / HPOS ${{ matrix.hpos }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - wordpress: '6.6-php8.2-apache'
+            woocommerce: '7.0.0'
+            hpos: 'no'
+          - wordpress: '6.6-php8.2-apache'
+            woocommerce: '7.0.0'
+            hpos: 'yes'
+          - wordpress: 'latest'
+            woocommerce: ''
+            hpos: 'no'
+          - wordpress: 'latest'
+            woocommerce: ''
+            hpos: 'yes'
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Run WooCommerce integration sandbox
+        env:
+          SRT_HPOS_MODE: ${{ matrix.hpos }}
+          SRT_WP_IMAGE: wordpress:${{ matrix.wordpress }}
+          SRT_WC_VERSION: ${{ matrix.woocommerce }}
+        run: plugins/shipping-rules-tester-for-woocommerce/tests/integration/hpos-sandbox.sh

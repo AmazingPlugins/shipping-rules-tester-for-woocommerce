@@ -209,6 +209,10 @@ if ( ! class_exists( 'WC_Shipping_Rate' ) ) {
 
 if ( ! class_exists( 'WC_Product_Simple' ) ) {
 	class WC_Product_Simple {
+		/** @var int */
+		public $shipping_class_id = 0;
+		/** @var array */
+		public $dimensions = array();
 		/**
 		 * Set sample price.
 		*
@@ -222,6 +226,24 @@ if ( ! class_exists( 'WC_Product_Simple' ) ) {
 		 * @param string $weight Product weight.
 		 */
 		public function set_weight( $weight ) {}
+
+		/**
+		 * Set sample shipping class.
+		 *
+		 * @param int $shipping_class_id Shipping class term ID.
+		 */
+		public function set_shipping_class_id( $shipping_class_id ) {
+			$this->shipping_class_id = absint( $shipping_class_id );
+		}
+
+		/**
+		 * Set a sample dimension.
+		 *
+		 * @param string $value Dimension value.
+		 */
+		public function set_length( $value ) { $this->dimensions['length'] = $value; }
+		public function set_width( $value ) { $this->dimensions['width'] = $value; }
+		public function set_height( $value ) { $this->dimensions['height'] = $value; }
 
 		/**
 		 * Whether the sample needs shipping.

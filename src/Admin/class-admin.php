@@ -102,6 +102,34 @@ class Admin {
 				'i18n'          => array(
 					'error'          => __( 'The shipping test could not be completed.', 'shipping-rules-tester-for-woocommerce' ),
 					'testing'        => __( 'Testing shipping rules…', 'shipping-rules-tester-for-woocommerce' ),
+					'advanced'       => __( 'Advanced scenario', 'shipping-rules-tester-for-woocommerce' ),
+					'hideAdvanced'   => __( 'Hide advanced scenario', 'shipping-rules-tester-for-woocommerce' ),
+					'quickPresets'   => __( 'Quick scenarios', 'shipping-rules-tester-for-woocommerce' ),
+					'presetStandard' => __( 'Standard order', 'shipping-rules-tester-for-woocommerce' ),
+					'presetFree'     => __( 'Free-shipping check', 'shipping-rules-tester-for-woocommerce' ),
+					'presetHeavy'    => __( 'Heavy parcel', 'shipping-rules-tester-for-woocommerce' ),
+					'presetPickup'   => __( 'Local pickup', 'shipping-rules-tester-for-woocommerce' ),
+					'item'           => __( 'Item', 'shipping-rules-tester-for-woocommerce' ),
+					'itemType'       => __( 'Item type', 'shipping-rules-tester-for-woocommerce' ),
+					'syntheticItem'  => __( 'Synthetic item', 'shipping-rules-tester-for-woocommerce' ),
+					'savedProduct'   => __( 'Saved product', 'shipping-rules-tester-for-woocommerce' ),
+					'addItem'        => __( 'Add another item', 'shipping-rules-tester-for-woocommerce' ),
+					'removeItem'     => __( 'Remove item', 'shipping-rules-tester-for-woocommerce' ),
+					'reset'          => __( 'Reset', 'shipping-rules-tester-for-woocommerce' ),
+					'packageItems'   => __( 'Package items', 'shipping-rules-tester-for-woocommerce' ),
+					'packageTotals'  => __( 'Package totals', 'shipping-rules-tester-for-woocommerce' ),
+					'itemsChecked'   => __( 'Items', 'shipping-rules-tester-for-woocommerce' ),
+					'methodsChecked' => __( 'Methods checked', 'shipping-rules-tester-for-woocommerce' ),
+					'ratesFound'     => __( 'Rates found', 'shipping-rules-tester-for-woocommerce' ),
+					'rate'           => __( 'Rate', 'shipping-rules-tester-for-woocommerce' ),
+					'cost'           => __( 'Cost', 'shipping-rules-tester-for-woocommerce' ),
+					'matched'        => __( 'Matched', 'shipping-rules-tester-for-woocommerce' ),
+					'errorStatus'    => __( 'Error', 'shipping-rules-tester-for-woocommerce' ),
+					'countryOnly'    => __( 'Country only', 'shipping-rules-tester-for-woocommerce' ),
+					'chooseCountry'  => __( 'Choose a country', 'shipping-rules-tester-for-woocommerce' ),
+					'testingShort'   => __( 'Testing…', 'shipping-rules-tester-for-woocommerce' ),
+					'testButton'     => __( 'Test shipping rules', 'shipping-rules-tester-for-woocommerce' ),
+					'comparisonHint' => __( 'Results stay in this browser tab only.', 'shipping-rules-tester-for-woocommerce' ),
 					'matchedZone'    => __( 'Matched shipping zone', 'shipping-rules-tester-for-woocommerce' ),
 					'methods'        => __( 'Shipping methods', 'shipping-rules-tester-for-woocommerce' ),
 					'noMethods'      => __( 'No enabled shipping methods were found in this zone.', 'shipping-rules-tester-for-woocommerce' ),
@@ -147,8 +175,8 @@ class Admin {
 	 * Render the tester form.
 	 */
 	public function render_page() {
-		$countries   = WC()->countries->get_countries();
-		$products    = wc_get_products(
+		$countries        = WC()->countries->get_countries();
+		$products         = wc_get_products(
 			array(
 				'limit'   => 100,
 				'orderby' => 'name',
@@ -157,8 +185,18 @@ class Admin {
 				'return'  => 'objects',
 			)
 		);
-		$currency    = strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) );
-		$weight_unit = sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) );
+		$shipping_classes = get_terms(
+			array(
+				'taxonomy'   => 'product_shipping_class',
+				'hide_empty' => false,
+			)
+		);
+		if ( is_wp_error( $shipping_classes ) ) {
+			$shipping_classes = array();
+		}
+		$currency       = strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) );
+		$weight_unit    = sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) );
+		$dimension_unit = sanitize_text_field( (string) get_option( 'woocommerce_dimension_unit', 'cm' ) );
 		require SRT_PLUGIN_DIR . 'templates/admin-page.php';
 	}
 }

@@ -51,6 +51,70 @@ class Test_SRT_Tester extends TestCase {
 	}
 
 	/**
+	 * Legacy single-package fields remain package totals when quantity is greater than one.
+	 */
+	public function test_legacy_package_fields_are_not_multiplied_twice() {
+		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+			array(
+				'country'  => 'US',
+				'value'    => '50',
+				'weight'   => '2.5',
+				'quantity' => '2',
+			)
+		);
+
+		$this->assertSame( '50.00', $result['package']['value'] );
+		$this->assertSame( '2.500', $result['package']['weight'] );
+		$this->assertSame( 2, $result['package']['quantity'] );
+		$this->assertSame( 50.0, $method->last_package['contents_cost'] );
+	}
+
+	/**
+	 * The advanced item builder creates multiple unsaved package lines.
+	 */
+	public function test_advanced_items_build_a_multi_line_package() {
+		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
+		WC_Shipping_Zone::$methods = array( $method );
+
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+			array(
+				'country' => 'US',
+				'items'   => array(
+					array(
+						'source'   => 'custom',
+						'value'    => '10',
+						'weight'   => '1.25',
+						'quantity' => '2',
+						'length'   => '10',
+						'width'    => '5',
+						'height'   => '4',
+						'shipping_class_id' => '7',
+					),
+					array(
+						'source'   => 'custom',
+						'value'    => '5',
+						'weight'   => '0.5',
+						'quantity' => '1',
+					),
+				),
+			)
+		);
+
+		$this->assertSame( '25.00', $result['package']['value'] );
+		$this->assertSame( '3.000', $result['package']['weight'] );
+		$this->assertSame( 3, $result['package']['quantity'] );
+		$this->assertCount( 2, $result['items'] );
+		$this->assertCount( 2, $method->last_package['contents'] );
+		$this->assertSame( 20.0, $method->last_package['contents']['srt-sample-item']['line_total'] );
+		$this->assertSame( 5.0, $method->last_package['contents']['srt-sample-item-2']['line_total'] );
+		$this->assertSame( 7, $method->last_package['contents']['srt-sample-item']['data']->shipping_class_id );
+		$this->assertSame( '10.000', $method->last_package['contents']['srt-sample-item']['data']->dimensions['length'] );
+	}
+
+	/**
 	 * A saved product supplies shipping-specific package context.
 	 */
 	public function test_saved_product_context_is_used_without_mutating_the_product() {

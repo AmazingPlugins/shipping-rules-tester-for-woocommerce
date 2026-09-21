@@ -52,6 +52,7 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   await expect(page.locator('#srt-results')).toContainText('Matched shipping zone');
   await expect(page.locator('#srt-results')).toContainText('Zone matching rules');
   await expect(page.locator('#srt-results')).toContainText('Shipping methods');
+  await expect(page.locator('#srt-results')).not.toContainText('This method returned a zero-cost rate.');
   await expect(page.locator('#srt-results')).toBeVisible();
   expect(pluginRequests.every((url) => new URL(url).origin === baseOrigin)).toBeTruthy();
   expect(externalRequests).toEqual([]);
@@ -73,7 +74,7 @@ test('keeps the form usable at a mobile width', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openTester(page);
 
-  const grid = page.locator('.srt-grid').first();
+  const grid = page.locator('.srt-field-grid').first();
   const columns = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns);
   expect(columns.split(' ').length).toBe(1);
   await expect(page.locator('select[name="country"]')).toBeEnabled();
@@ -82,7 +83,7 @@ test('keeps the form usable at a mobile width', async ({ page }) => {
 test('keeps all form controls keyboard focusable', async ({ page }) => {
   await openTester(page);
 
-  const controls = page.locator('#srt-form input, #srt-form select, #srt-submit');
+  const controls = page.locator('#srt-form input:not([type="hidden"]):visible, #srt-form select:visible, #srt-submit:visible');
   for (let index = 0; index < await controls.count(); index += 1) {
     const control = controls.nth(index);
     await control.focus();
@@ -134,7 +135,7 @@ test('uses saved product context for a local test', async ({ page }) => {
   await openTester(page);
   const productOption = page.locator('#srt-product option').nth(1);
   await expect(productOption).toHaveCount(1);
-  const productName = (await productOption.innerText()).replace(/ \(#\d+\)$/, '');
+  const productName = (await productOption.innerText()).trim().replace(/\s+/g, ' ').replace(/ \(#\d+\)$/, '');
   await page.locator('#srt-product').selectOption({ index: 1 });
   await expect(page.locator('input[name="value"]')).toBeDisabled();
   await expect(page.locator('input[name="weight"]')).toBeDisabled();
@@ -142,6 +143,33 @@ test('uses saved product context for a local test', async ({ page }) => {
   await page.locator('input[name="quantity"]').fill('2');
   await page.locator('#srt-submit').click();
 
-  await expect(page.locator('#srt-results')).toContainText('Product details');
+  await expect(page.locator('#srt-results')).toContainText('Package items');
   await expect(page.locator('#srt-results')).toContainText(productName);
+});
+
+test('builds and tests an advanced multi-item package', async ({ page }) => {
+  await openTester(page);
+  await page.locator('select[name="country"]').selectOption('US');
+  await page.locator('#srt-advanced-toggle').click();
+  await expect(page.locator('#srt-advanced-panel')).toBeVisible();
+  await page.locator('#srt-items-list [data-item-row] .srt-item-value').first().fill('12');
+  await page.locator('#srt-items-list [data-item-row] .srt-item-weight').first().fill('1.5');
+  await page.locator('#srt-items-list [data-item-row] .srt-item-quantity').first().fill('2');
+  await page.locator('#srt-add-item').click();
+  await expect(page.locator('#srt-items-list [data-item-row]')).toHaveCount(2);
+  await page.locator('#srt-items-list [data-item-row]').nth(1).locator('.srt-item-value').fill('8');
+  await page.locator('#srt-items-list [data-item-row]').nth(1).locator('.srt-item-weight').fill('0.5');
+  await page.locator('#srt-submit').click();
+
+  await expect(page.locator('#srt-results')).toContainText('Package items');
+  await expect(page.locator('#srt-results')).toContainText('Items');
+  await expect(page.locator('#srt-results')).toContainText('32.00');
+});
+
+test('applies a quick scenario preset without leaving the page', async ({ page }) => {
+  await openTester(page);
+  await page.locator('[data-preset="heavy"]').click();
+  await expect(page.locator('input[name="value"]')).toHaveValue('120');
+  await expect(page.locator('input[name="weight"]')).toHaveValue('25');
+  await expect(page.locator('#srt-summary-totals')).toContainText('25.00');
 });
