@@ -58,6 +58,15 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   expect(externalRequests).toEqual([]);
 });
 
+test('labels unrelated WordPress and WooCommerce notices', async ({ page }) => {
+  await openTester(page);
+
+  const notice = page.locator('.srt-hero-copy > .notice.notice-info');
+  await expect(notice).toContainText('About other admin notices:');
+  await expect(notice).toContainText('unrelated to Shipping Rules Tester');
+  await expect(notice).toContainText('does not schedule tasks or send notifications');
+});
+
 test('shows a server validation error for malformed input', async ({ page }) => {
   await openTester(page);
   await page.locator('select[name="country"]').selectOption('US');

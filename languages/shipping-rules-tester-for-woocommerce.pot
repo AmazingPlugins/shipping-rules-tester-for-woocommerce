@@ -402,22 +402,30 @@ msgid "Skipped because this method may need an external rate provider or product
 msgstr ""
 
 #: templates/admin-page.php:20
-msgid "Shipping diagnostics"
+msgid "About other admin notices:"
 msgstr ""
 
-#: templates/admin-page.php:22
-msgid "See exactly which zone and rates WooCommerce will choose for a package before a customer reaches checkout."
+#: templates/admin-page.php:21
+msgid "Scheduled Actions and other WordPress or WooCommerce notices are unrelated to Shipping Rules Tester. This plugin does not schedule tasks or send notifications."
 msgstr ""
 
 #: templates/admin-page.php:24
-msgid "Test properties"
-msgstr ""
-
-#: templates/admin-page.php:25
-msgid "Local only"
+msgid "Shipping diagnostics"
 msgstr ""
 
 #: templates/admin-page.php:26
+msgid "See exactly which zone and rates WooCommerce will choose for a package before a customer reaches checkout."
+msgstr ""
+
+#: templates/admin-page.php:28
+msgid "Test properties"
+msgstr ""
+
+#: templates/admin-page.php:29
+msgid "Local only"
+msgstr ""
+
+#: templates/admin-page.php:30
 msgid "Nothing saved"
 msgstr ""
 

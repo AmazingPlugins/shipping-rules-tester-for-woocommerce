@@ -17,6 +17,9 @@ defined( 'ABSPATH' ) || exit;
 	<div class="srt-app">
 		<header class="srt-hero">
 			<div class="srt-hero-copy">
+				<div class="notice notice-info inline" role="note">
+					<p><strong><?php echo esc_html__( 'About other admin notices:', 'shipping-rules-tester-for-woocommerce' ); ?></strong> <?php echo esc_html__( 'Scheduled Actions and other WordPress or WooCommerce notices are unrelated to Shipping Rules Tester. This plugin does not schedule tasks or send notifications.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+				</div>
 				<p class="srt-eyebrow"><?php echo esc_html__( 'Shipping diagnostics', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 				<h1><?php echo esc_html__( 'Shipping Rules Tester', 'shipping-rules-tester-for-woocommerce' ); ?></h1>
 				<p><?php echo esc_html__( 'See exactly which zone and rates WooCommerce will choose for a package before a customer reaches checkout.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
