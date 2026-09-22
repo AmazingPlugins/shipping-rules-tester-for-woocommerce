@@ -1,0 +1,84 @@
+name: Quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.2', '8.3']
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+
+      - name: Validate Composer configuration
+        run: composer validate --strict
+
+      - name: Install development dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Run unit tests
+        run: composer test
+
+      - name: Run PHPCS
+        run: composer cs
+
+      - name: Run PHPStan
+        run: composer stan
+
+      - name: Check PHP syntax
+        run: find src templates -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Check JavaScript syntax
+        run: node --check assets/admin.js
+
+      - name: Check diff whitespace
+        run: git diff --check
+
+  integration:
+    name: WordPress ${{ matrix.wordpress }} / WooCommerce ${{ matrix.woocommerce || 'latest' }} / HPOS ${{ matrix.hpos }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - wordpress: '6.6-php8.2-apache'
+            woocommerce: '7.0.0'
+            hpos: 'no'
+          - wordpress: '6.6-php8.2-apache'
+            woocommerce: '7.0.0'
+            hpos: 'yes'
+          - wordpress: 'latest'
+            woocommerce: ''
+            hpos: 'no'
+          - wordpress: 'latest'
+            woocommerce: ''
+            hpos: 'yes'
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Run WooCommerce integration sandbox
+        env:
+          SRT_HPOS_MODE: ${{ matrix.hpos }}
+          SRT_WP_IMAGE: wordpress:${{ matrix.wordpress }}
+          SRT_WC_VERSION: ${{ matrix.woocommerce }}
+        run: tests/integration/hpos-sandbox.sh

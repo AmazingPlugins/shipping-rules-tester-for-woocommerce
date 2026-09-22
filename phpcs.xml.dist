@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="Shipping Rules Tester">
 	<description>WordPress Coding Standards for Shipping Rules Tester.</description>
+	<arg name="extensions" value="php" />
 	<rule ref="WordPress">
 		<properties>
 			<property name="custom_capabilities" type="array">
@@ -9,9 +10,12 @@
 		</properties>
 	</rule>
 	<file>shipping-rules-tester-for-woocommerce.php</file>
-	<file>includes</file>
+	<file>src</file>
+	<file>templates</file>
 	<file>uninstall.php</file>
 	<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-	<exclude-pattern>/vendor/</exclude-pattern>
-	<exclude-pattern>/tests/</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/tests/*</exclude-pattern>
+	<exclude-pattern>/stubs/*</exclude-pattern>
+	<exclude-pattern>/phpstan-bootstrap.php</exclude-pattern>
 </ruleset>

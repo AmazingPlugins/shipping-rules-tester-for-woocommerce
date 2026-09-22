@@ -1,0 +1,108 @@
+<?php
+/**
+ * Minimal WooCommerce declarations used by PHPStan.
+ *
+ * @package ShippingRulesTester
+ */
+
+/**
+ * Get the WooCommerce singleton.
+ *
+ * @return object
+ */
+function WC(): object {
+}
+
+/**
+ * Format a decimal.
+ *
+ * @param mixed $number Number.
+ * @param int   $dp Decimal places.
+ * @return string
+ */
+function wc_format_decimal( $number, $dp = false ): string {
+}
+
+/**
+ * Format a price.
+ *
+ * @param float $price Price.
+ * @return string
+ */
+function wc_price( $price ): string {
+}
+
+/**
+ * Get one WooCommerce product.
+ *
+ * @param int $product_id Product ID.
+ * @return object|null
+ */
+function wc_get_product( $product_id ) {
+}
+
+/**
+ * Get WooCommerce products.
+ *
+ * @param array $args Query arguments.
+ * @return array
+ */
+function wc_get_products( array $args = array() ): array {
+}
+
+/**
+ * Shipping zones API.
+ */
+class WC_Shipping_Zones {
+	/**
+	 * Get the matching zone.
+	*
+	 * @param array $package Package.
+	 * @return WC_Shipping_Zone
+	 */
+	public static function get_zone_matching_package( array $package ): WC_Shipping_Zone {
+	}
+}
+
+/**
+ * Shipping zone.
+ */
+class WC_Shipping_Zone {
+	/**
+	 * Get enabled methods.
+	*
+	 * @param bool $enabled_only Enabled only.
+	 * @return array
+	 */
+	public function get_shipping_methods( $enabled_only = false ): array {
+	}
+
+	/**
+	 * Get zone name.
+	*
+	 * @return string
+	 */
+	public function get_zone_name(): string {
+	}
+}
+
+/**
+ * Synthetic product.
+ */
+class WC_Product_Simple {
+	/**
+	 * Set price.
+	*
+	 * @param float $price Price.
+	 */
+	public function set_price( $price ): void {
+	}
+
+	/**
+	 * Set weight.
+	*
+	 * @param string $weight Weight.
+	 */
+	public function set_weight( $weight ): void {
+	}
+}

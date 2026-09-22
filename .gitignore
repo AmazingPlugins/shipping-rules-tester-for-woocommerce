@@ -1,0 +1,9 @@
+*.log
+.DS_Store
+.vscode/
+node_modules/
+vendor/
+.phpunit.result.cache
+dist/
+playwright-report/
+test-results/
