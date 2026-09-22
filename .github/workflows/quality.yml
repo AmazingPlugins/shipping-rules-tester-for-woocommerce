@@ -81,4 +81,4 @@ jobs:
           SRT_HPOS_MODE: ${{ matrix.hpos }}
           SRT_WP_IMAGE: wordpress:${{ matrix.wordpress }}
           SRT_WC_VERSION: ${{ matrix.woocommerce }}
-        run: plugins/shipping-rules-tester-for-woocommerce/tests/integration/hpos-sandbox.sh
+        run: tests/integration/hpos-sandbox.sh
