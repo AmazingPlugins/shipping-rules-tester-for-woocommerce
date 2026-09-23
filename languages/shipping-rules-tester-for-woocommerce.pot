@@ -55,6 +55,22 @@ msgstr ""
 msgid "The shipping test could not be completed."
 msgstr ""
 
+#: templates/admin-page.php:210
+msgid "Result actions"
+msgstr ""
+
+#: templates/admin-page.php:211
+msgid "Edit parameters"
+msgstr ""
+
+#: src/Admin/class-admin.php:105
+msgid "Choose a country from the list."
+msgstr ""
+
+#: src/Admin/class-admin.php:106
+msgid "No countries found."
+msgstr ""
+
 #: src/Admin/class-admin.php:104
 msgid "Testing shipping rules…"
 msgstr ""
@@ -437,24 +453,44 @@ msgstr ""
 msgid "Use the destination a customer would enter at checkout."
 msgstr ""
 
-#: templates/admin-page.php:44
+#: templates/admin-page.php:49
+msgid "Search by name or code"
+msgstr ""
+
+#: templates/admin-page.php:48
 msgid "Country"
 msgstr ""
 
-#: templates/admin-page.php:46
+#: templates/admin-page.php:51
+msgid "Country options"
+msgstr ""
+
+#: templates/admin-page.php:53
 msgid "Select a country"
 msgstr ""
 
-#: templates/admin-page.php:55
-msgid "State or province"
-msgstr ""
-
-#: templates/admin-page.php:59
-msgid "Postcode"
-msgstr ""
-
 #: templates/admin-page.php:63
-msgid "City"
+msgid "State or province (optional)"
+msgstr ""
+
+#: templates/admin-page.php:65
+msgid "Select a state or province"
+msgstr ""
+
+#: templates/admin-page.php:68
+msgid "No state or province? Continue"
+msgstr ""
+
+#: templates/admin-page.php:72
+msgid "Postcode (optional)"
+msgstr ""
+
+#: templates/admin-page.php:75
+msgid "No postcode? Continue"
+msgstr ""
+
+#: templates/admin-page.php:78
+msgid "City (optional)"
 msgstr ""
 
 #: templates/admin-page.php:73
@@ -466,7 +502,7 @@ msgid "Start with a quick package, or open the advanced builder for product-leve
 msgstr ""
 
 #: templates/admin-page.php:80
-msgid "Product context"
+msgid "Product context (optional)"
 msgstr ""
 
 #: templates/admin-page.php:82

@@ -13,13 +13,13 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
+<div class="notice notice-info">
+	<p><strong><?php echo esc_html__( 'About other admin notices:', 'shipping-rules-tester-for-woocommerce' ); ?></strong> <?php echo esc_html__( 'Scheduled Actions and other WordPress or WooCommerce notices are unrelated to Shipping Rules Tester. This plugin does not schedule tasks or send notifications.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+</div>
 <div class="wrap srt-wrap">
 	<div class="srt-app">
 		<header class="srt-hero">
 			<div class="srt-hero-copy">
-				<div class="notice notice-info inline" role="note">
-					<p><strong><?php echo esc_html__( 'About other admin notices:', 'shipping-rules-tester-for-woocommerce' ); ?></strong> <?php echo esc_html__( 'Scheduled Actions and other WordPress or WooCommerce notices are unrelated to Shipping Rules Tester. This plugin does not schedule tasks or send notifications.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
-				</div>
 				<p class="srt-eyebrow"><?php echo esc_html__( 'Shipping diagnostics', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 				<h1><?php echo esc_html__( 'Shipping Rules Tester', 'shipping-rules-tester-for-woocommerce' ); ?></h1>
 				<p><?php echo esc_html__( 'See exactly which zone and rates WooCommerce will choose for a package before a customer reaches checkout.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
@@ -43,33 +43,45 @@ defined( 'ABSPATH' ) || exit;
 							</div>
 						</div>
 						<div class="srt-field-grid srt-field-grid-destination">
-							<label class="srt-field srt-field-wide">
-								<span><?php echo esc_html__( 'Country', 'shipping-rules-tester-for-woocommerce' ); ?> <em>*</em></span>
-								<select name="country" required>
-									<option value=""><?php echo esc_html__( 'Select a country', 'shipping-rules-tester-for-woocommerce' ); ?></option>
-									<?php // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- These are local loop variables in the template.
-									foreach ( $countries as $srt_code => $srt_name ) :
-										?>
-										<option value="<?php echo esc_attr( $srt_code ); ?>"><?php echo esc_html( $srt_name ); ?></option>
-									<?php endforeach; ?>
-								</select>
-							</label>
-							<label class="srt-field">
-								<span><?php echo esc_html__( 'State or province', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-								<input type="text" name="state" maxlength="100" autocomplete="address-level1">
-							</label>
-							<label class="srt-field">
-								<span><?php echo esc_html__( 'Postcode', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-								<input type="text" name="postcode" maxlength="20" autocomplete="postal-code">
-							</label>
-							<label class="srt-field">
-								<span><?php echo esc_html__( 'City', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-								<input type="text" name="city" maxlength="100" autocomplete="address-level2">
+							<div class="srt-destination-step srt-country-picker">
+								<label class="srt-field" for="srt-country-search">
+									<span><?php echo esc_html__( 'Country', 'shipping-rules-tester-for-woocommerce' ); ?> <em>*</em></span>
+									<input id="srt-country-search" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="srt-country-options" aria-required="true" placeholder="<?php echo esc_attr__( 'Search by name or code', 'shipping-rules-tester-for-woocommerce' ); ?>" autocomplete="off" required>
+								</label>
+								<div class="srt-country-options" id="srt-country-options" role="listbox" aria-label="<?php echo esc_attr__( 'Country options', 'shipping-rules-tester-for-woocommerce' ); ?>" hidden></div>
+								<select id="srt-country" name="country" autocomplete="country-name" aria-hidden="true" tabindex="-1" hidden>
+										<option value=""><?php echo esc_html__( 'Select a country', 'shipping-rules-tester-for-woocommerce' ); ?></option>
+										<?php // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- These are local loop variables in the template.
+										foreach ( $countries as $srt_code => $srt_name ) :
+											?>
+											<option value="<?php echo esc_attr( $srt_code ); ?>"><?php echo esc_html( $srt_name ); ?></option>
+										<?php endforeach; ?>
+									</select>
+							</div>
+							<div class="srt-destination-step" id="srt-state-step" hidden>
+								<label class="srt-field" for="srt-state">
+									<span><?php echo esc_html__( 'State or province (optional)', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+									<select id="srt-state" name="state" autocomplete="address-level1" disabled>
+										<option value=""><?php echo esc_html__( 'Select a state or province', 'shipping-rules-tester-for-woocommerce' ); ?></option>
+									</select>
+								</label>
+								<button class="srt-location-skip" id="srt-skip-state" type="button"><?php echo esc_html__( 'No state or province? Continue', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+							</div>
+							<div class="srt-destination-step" id="srt-postcode-step" hidden>
+								<label class="srt-field" for="srt-postcode">
+									<span><?php echo esc_html__( 'Postcode (optional)', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+									<input id="srt-postcode" type="text" name="postcode" maxlength="20" autocomplete="postal-code" disabled>
+								</label>
+								<button class="srt-location-skip" id="srt-skip-postcode" type="button"><?php echo esc_html__( 'No postcode? Continue', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+							</div>
+							<label class="srt-field srt-destination-step" id="srt-city-step" for="srt-city" hidden>
+								<span><?php echo esc_html__( 'City (optional)', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+								<input id="srt-city" type="text" name="city" maxlength="100" autocomplete="address-level2" disabled>
 							</label>
 						</div>
 					</section>
 
-					<section class="srt-form-section srt-package-section">
+					<section class="srt-form-section srt-package-section" id="srt-package-section" hidden>
 						<div class="srt-section-heading">
 							<span class="srt-step" aria-hidden="true">02</span>
 							<div>
@@ -80,7 +92,7 @@ defined( 'ABSPATH' ) || exit;
 
 						<div class="srt-quick-package">
 							<label class="srt-field srt-field-product">
-								<span><?php echo esc_html__( 'Product context', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+								<span><?php echo esc_html__( 'Product context (optional)', 'shipping-rules-tester-for-woocommerce' ); ?></span>
 								<select name="product_id" id="srt-product">
 									<option value="0"><?php echo esc_html__( 'Synthetic package', 'shipping-rules-tester-for-woocommerce' ); ?></option>
 									<?php // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- This is a local loop variable in the template.
@@ -96,20 +108,18 @@ defined( 'ABSPATH' ) || exit;
 								</select>
 								<small><?php echo esc_html__( 'Use a real product when shipping class, dimensions, or product weight matter.', 'shipping-rules-tester-for-woocommerce' ); ?></small>
 							</label>
-							<div class="srt-field-grid srt-field-grid-package">
-								<label class="srt-field">
-									<span><?php /* translators: %s: currency code. */ echo esc_html( sprintf( __( 'Package value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?></span>
-									<input type="number" name="value" min="0" max="100000" step="0.01" value="0" inputmode="decimal">
-								</label>
-								<label class="srt-field">
-										<span><?php /* translators: %s: weight unit. */ echo esc_html( sprintf( __( 'Total package weight (%s)', 'shipping-rules-tester-for-woocommerce' ), $weight_unit ) ); ?></span>
-									<input type="number" name="weight" min="0" max="100000" step="0.001" value="0" inputmode="decimal">
-								</label>
-								<label class="srt-field">
-									<span><?php echo esc_html__( 'Item quantity', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-									<input type="number" name="quantity" min="1" max="10000" step="1" value="1" inputmode="numeric">
-								</label>
-							</div>
+							<label class="srt-field">
+								<span><?php /* translators: %s: currency code. */ echo esc_html( sprintf( __( 'Package value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?> <em>*</em></span>
+								<input type="number" name="value" min="0" max="100000" step="0.01" value="0" inputmode="decimal" required>
+							</label>
+							<label class="srt-field">
+								<span><?php /* translators: %s: weight unit. */ echo esc_html( sprintf( __( 'Total package weight (%s)', 'shipping-rules-tester-for-woocommerce' ), $weight_unit ) ); ?> <em>*</em></span>
+								<input type="number" name="weight" min="0" max="100000" step="0.001" value="0" inputmode="decimal" required>
+							</label>
+							<label class="srt-field">
+								<span><?php echo esc_html__( 'Item quantity', 'shipping-rules-tester-for-woocommerce' ); ?> <em>*</em></span>
+								<input type="number" name="quantity" min="1" max="10000" step="1" value="1" inputmode="numeric" required>
+							</label>
 						</div>
 
 						<div class="srt-preset-row">
@@ -157,15 +167,15 @@ defined( 'ABSPATH' ) || exit;
 											<select class="srt-item-product" data-item-field="product_id"></select>
 										</label>
 										<label class="srt-field">
-											<span><?php /* translators: %s: currency code. */ echo esc_html( sprintf( __( 'Item value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?></span>
+											<span><?php /* translators: %s: currency code. */ echo esc_html( sprintf( __( 'Item value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?> <em>*</em></span>
 											<input type="number" class="srt-item-value" data-item-field="value" min="0" max="100000" step="0.01" value="0" inputmode="decimal">
 										</label>
 										<label class="srt-field">
-											<span><?php /* translators: %s: weight unit. */ echo esc_html( sprintf( __( 'Item weight (%s)', 'shipping-rules-tester-for-woocommerce' ), $weight_unit ) ); ?></span>
+											<span><?php /* translators: %s: weight unit. */ echo esc_html( sprintf( __( 'Item weight (%s)', 'shipping-rules-tester-for-woocommerce' ), $weight_unit ) ); ?> <em>*</em></span>
 											<input type="number" class="srt-item-weight" data-item-field="weight" min="0" max="100000" step="0.001" value="0" inputmode="decimal">
 										</label>
 										<label class="srt-field">
-											<span><?php echo esc_html__( 'Quantity', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+											<span><?php echo esc_html__( 'Quantity', 'shipping-rules-tester-for-woocommerce' ); ?> <em>*</em></span>
 											<input type="number" class="srt-item-quantity" data-item-field="quantity" min="1" max="10000" step="1" value="1" inputmode="numeric">
 										</label>
 										<label class="srt-field">
@@ -189,19 +199,23 @@ defined( 'ABSPATH' ) || exit;
 						</div>
 					</section>
 
-					<div class="srt-form-actions">
+					<div class="srt-form-actions" id="srt-form-actions" hidden>
 						<button type="submit" class="button button-primary srt-submit" id="srt-submit"><span class="srt-submit-label"><?php echo esc_html__( 'Test shipping rules', 'shipping-rules-tester-for-woocommerce' ); ?></span><span class="srt-submit-arrow" aria-hidden="true">→</span></button>
 						<button type="button" class="button srt-reset" id="srt-reset"><?php echo esc_html__( 'Reset', 'shipping-rules-tester-for-woocommerce' ); ?></button>
-						<button type="button" class="button srt-keep" id="srt-keep" hidden><?php echo esc_html__( 'Keep result and test another', 'shipping-rules-tester-for-woocommerce' ); ?></button>
-						<button type="button" class="button srt-clear" id="srt-clear" hidden><?php echo esc_html__( 'Clear comparison', 'shipping-rules-tester-for-woocommerce' ); ?></button>
 					</div>
 				</form>
 				<div id="srt-status" class="srt-status" role="status" aria-live="polite"></div>
+				<div class="srt-result-actions" id="srt-result-actions" aria-label="<?php echo esc_attr__( 'Result actions', 'shipping-rules-tester-for-woocommerce' ); ?>" hidden>
+					<button type="button" class="button" id="srt-edit-parameters"><?php echo esc_html__( 'Edit parameters', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+					<button type="button" class="button srt-reset" id="srt-result-reset"><?php echo esc_html__( 'Reset', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+					<button type="button" class="button srt-keep" id="srt-keep" hidden><?php echo esc_html__( 'Keep result and test another', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+					<button type="button" class="button srt-clear" id="srt-clear" hidden><?php echo esc_html__( 'Clear comparison', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+				</div>
 				<div id="srt-results" class="srt-results" hidden></div>
 			</main>
 
 			<aside class="srt-sidebar">
-				<section class="srt-side-card srt-summary-card" aria-labelledby="srt-summary-title">
+					<section class="srt-side-card srt-summary-card" id="srt-summary-card" aria-labelledby="srt-summary-title" hidden>
 					<div class="srt-side-card-heading"><span class="srt-side-icon" aria-hidden="true">↗</span><h2 id="srt-summary-title"><?php echo esc_html__( 'Live scenario', 'shipping-rules-tester-for-woocommerce' ); ?></h2></div>
 					<p class="srt-side-description"><?php echo esc_html__( 'Your test updates here as you work.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 					<div id="srt-live-summary" class="srt-live-summary">

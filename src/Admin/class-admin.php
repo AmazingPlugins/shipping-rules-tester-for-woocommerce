@@ -88,19 +88,22 @@ class Admin {
 			return;
 		}
 
-		wp_enqueue_style( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.css', array(), \AmazingPlugins\SRT\Core\Plugin::VERSION );
-		wp_enqueue_script( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.js', array( 'wp-api-fetch' ), \AmazingPlugins\SRT\Core\Plugin::VERSION, true );
+		wp_enqueue_style( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.css', array(), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.css' ) );
+		wp_enqueue_script( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.js', array( 'wp-api-fetch' ), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.js' ), true );
 		wp_localize_script(
 			'srt-admin',
 			'srtData',
 			array(
 				'restUrl'       => '/srt/v1/test',
 				'nonce'         => wp_create_nonce( 'wp_rest' ),
+				'states'        => WC()->countries->get_states(),
 				'currency'      => strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) ),
 				'weightUnit'    => sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) ),
 				'dimensionUnit' => sanitize_text_field( (string) get_option( 'woocommerce_dimension_unit', 'cm' ) ),
 				'i18n'          => array(
 					'error'          => __( 'The shipping test could not be completed.', 'shipping-rules-tester-for-woocommerce' ),
+					'chooseFromList' => __( 'Choose a country from the list.', 'shipping-rules-tester-for-woocommerce' ),
+					'noResults'      => __( 'No countries found.', 'shipping-rules-tester-for-woocommerce' ),
 					'testing'        => __( 'Testing shipping rules…', 'shipping-rules-tester-for-woocommerce' ),
 					'advanced'       => __( 'Advanced scenario', 'shipping-rules-tester-for-woocommerce' ),
 					'hideAdvanced'   => __( 'Hide advanced scenario', 'shipping-rules-tester-for-woocommerce' ),
