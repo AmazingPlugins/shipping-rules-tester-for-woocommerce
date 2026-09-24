@@ -146,6 +146,7 @@ class Input_Normalizer {
 
 		return array(
 			'source'            => $source,
+			'legacy_totals'     => isset( $raw_item['totals'] ) && true === $raw_item['totals'],
 			'product_id'        => 'product' === $source ? $product_id : 0,
 			'value'             => wc_format_decimal( $value, 2 ),
 			'weight'            => wc_format_decimal( $weight, 3 ),

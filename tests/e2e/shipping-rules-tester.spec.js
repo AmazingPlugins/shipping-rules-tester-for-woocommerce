@@ -34,6 +34,16 @@ async function selectCountry(page, code) {
   await expect(page.locator('select[name="country"]')).toHaveValue(code);
 }
 
+async function chooseFirstProduct(page, root = page.locator('.srt-field-product')) {
+  await root.locator('.srt-product-search').focus();
+  const option = root.locator('.srt-product-option:not(.is-synthetic)').first();
+  await expect(option).toBeVisible();
+  const name = await option.innerText();
+  const id = await option.getAttribute('data-product-id');
+  await option.click();
+  return { name, id };
+}
+
 test('runs a local shipping test and renders the result', async ({ page }) => {
   const pluginRequests = [];
   const externalRequests = [];
@@ -64,7 +74,8 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   await expect(page.locator('#srt-result-actions')).toBeVisible();
   await expect(page.locator('#srt-results')).toBeFocused();
   await expect(page.locator('#srt-results')).toContainText('Shipping methods');
-  await expect(page.locator('#srt-results')).not.toContainText('This method returned a zero-cost rate.');
+  const paidFlatRate = page.locator('.srt-method-card').filter({ hasText: 'Flat rate' }).first();
+  await expect(paidFlatRate).not.toContainText('This method returned a zero-cost rate.');
   await expect(page.locator('#srt-results')).toBeVisible();
   expect(pluginRequests.every((url) => new URL(url).origin === baseOrigin)).toBeTruthy();
   expect(externalRequests).toEqual([]);
@@ -306,17 +317,14 @@ test('compares two scenarios in the browser without saving them', async ({ page 
 test('uses saved product context for a local test', async ({ page }) => {
   await openTester(page);
   await selectCountry(page, 'US');
-  const productOption = page.locator('#srt-product option').nth(1);
-  await expect(productOption).toHaveCount(1);
-  const productName = (await productOption.innerText()).trim().replace(/\s+/g, ' ').replace(/ \(#\d+\)$/, '');
-  await page.locator('#srt-product').selectOption({ index: 1 });
+  const product = await chooseFirstProduct(page);
   await expect(page.locator('input[name="value"]')).toBeDisabled();
   await expect(page.locator('input[name="weight"]')).toBeDisabled();
   await page.locator('input[name="quantity"]').fill('2');
   await page.locator('#srt-submit').click();
 
   await expect(page.locator('#srt-results')).toContainText('Package items');
-  await expect(page.locator('#srt-results')).toContainText(productName);
+  await expect(page.locator('#srt-results')).toContainText('#' + product.id);
 });
 
 test('builds and tests an advanced multi-item package', async ({ page }) => {
@@ -324,8 +332,8 @@ test('builds and tests an advanced multi-item package', async ({ page }) => {
   await selectCountry(page, 'US');
   await page.locator('#srt-advanced-toggle').click();
   await expect(page.locator('#srt-advanced-panel')).toBeVisible();
-  await page.locator('#srt-items-list [data-item-row] .srt-item-value').first().fill('12');
-  await page.locator('#srt-items-list [data-item-row] .srt-item-weight').first().fill('1.5');
+  await page.locator('#srt-items-list [data-item-row] .srt-item-value').first().fill('24');
+  await page.locator('#srt-items-list [data-item-row] .srt-item-weight').first().fill('3');
   await page.locator('#srt-items-list [data-item-row] .srt-item-quantity').first().fill('2');
   await page.locator('#srt-add-item').click();
   await expect(page.locator('#srt-items-list [data-item-row]')).toHaveCount(2);
@@ -345,4 +353,155 @@ test('applies a quick scenario preset without leaving the page', async ({ page }
   await expect(page.locator('input[name="value"]')).toHaveValue('120');
   await expect(page.locator('input[name="weight"]')).toHaveValue('25');
   await expect(page.locator('#srt-summary-totals')).toContainText('25.00');
+});
+
+test('preserves advanced edits and excludes collapsed controls from validation', async ({ page }) => {
+  await openTester(page);
+  await selectCountry(page, 'US');
+  await page.locator('#srt-advanced-toggle').click();
+  const value = page.locator('.srt-item-value').first();
+  await value.fill('12');
+  await page.locator('#srt-add-item').click();
+  await page.locator('.srt-item-value').nth(1).fill('8');
+  await page.locator('#srt-advanced-toggle').click();
+  await page.locator('#srt-advanced-toggle').click();
+  await expect(value).toHaveValue('12');
+  await expect(page.locator('.srt-item-value').nth(1)).toHaveValue('8');
+  await value.fill('-1');
+  await page.locator('#srt-advanced-toggle').click();
+  await expect(value).toBeDisabled();
+  await page.locator('input[name="value"]').fill('25');
+  await page.locator('#srt-submit').click();
+  await expect(page.locator('#srt-results')).toContainText('25.00');
+});
+
+test('switching to advanced preserves non-divisible package totals', async ({ page }) => {
+  await openTester(page);
+  await selectCountry(page, 'US');
+  await page.locator('input[name="value"]').fill('50');
+  await page.locator('input[name="weight"]').fill('2');
+  await page.locator('input[name="quantity"]').fill('3');
+  await page.locator('#srt-advanced-toggle').click();
+  await expect(page.locator('[data-value-label]').first()).toHaveText('Line value (all units)');
+  const response = page.waitForResponse(r => r.url().includes('/srt/v1/test') && r.request().method() === 'POST');
+  await page.locator('#srt-submit').click();
+  const result = await (await response).json();
+  expect(result.package.value).toBe('50.00');
+  expect(result.package.weight).toBe('2.000');
+  expect(result.package.quantity).toBe(3);
+});
+
+test('saved products show pending totals instead of synthetic zero totals', async ({ page }) => {
+  await openTester(page);
+  await selectCountry(page, 'US');
+  await chooseFirstProduct(page);
+  await expect(page.locator('#srt-summary-totals')).toHaveText('Saved-product totals are calculated when you run the test.');
+  await page.locator('#srt-advanced-toggle').click();
+  await expect(page.locator('#srt-summary-totals')).toHaveText('Saved-product totals are calculated when you run the test.');
+});
+
+test('product popover shows suggestions first and synthetic last without selecting automatically', async ({ page }) => {
+  await openTester(page);
+  await selectCountry(page, 'US');
+  await expect(page.locator('#srt-search-products')).toHaveCount(0);
+  await page.locator('#srt-product-search').hover();
+  const options = page.locator('.srt-field-product .srt-product-option');
+  await expect(options.first()).not.toHaveAttribute('data-product-id', '0');
+  expect(await options.count()).toBeLessThanOrEqual(11);
+  await expect(options.last()).toHaveText('Synthetic package');
+  await expect(page.locator('#srt-product')).toHaveValue('0');
+  await page.locator('#srt-product-search').focus();
+  await page.locator('#srt-product-search').press('ArrowDown');
+  await page.locator('#srt-product-search').press('Enter');
+  await expect(page.locator('#srt-product')).not.toHaveValue('0');
+  await page.locator('#srt-product-search').click();
+  await options.last().click();
+  await expect(page.locator('#srt-product')).toHaveValue('0');
+  await expect(page.locator('input[name="value"]')).toBeEnabled();
+  await page.locator('#srt-advanced-toggle').click();
+  const row = page.locator('[data-item-row]').first();
+  const product = await chooseFirstProduct(page, row);
+  await expect(row.locator('[data-item-field="source"]')).toHaveValue('product');
+  await expect(row.locator('[data-item-field="product_id"]')).toHaveValue(product.id);
+  await expect(row.locator('.srt-item-value')).toBeDisabled();
+  await row.locator('.srt-product-search').click();
+  await row.locator('.is-synthetic').click();
+  await expect(row.locator('[data-item-field="source"]')).toHaveValue('custom');
+  await expect(row.locator('.srt-item-value')).toBeEnabled();
+});
+
+test('limits advanced rows to ten', async ({ page }) => {
+  await openTester(page);
+  await selectCountry(page, 'US');
+  await page.locator('#srt-advanced-toggle').click();
+  for (let i = 0; i < 11; i++) { await page.locator('#srt-add-item').click(); }
+  await expect(page.locator('[data-item-row]')).toHaveCount(10);
+});
+
+test('country picker shows full names and distinct alpha-2/alpha-3 codes', async ({ page }) => {
+  await openTester(page);
+  const search = page.locator('#srt-country-search');
+  for (const [query, code, label] of [
+    ['USA', 'US', 'United States of America (US/USA)'],
+    ['GBR', 'GB', 'United Kingdom of Great Britain and Northern Ireland (GB/GBR)'],
+    ['BGD', 'BD', 'Bangladesh (BD/BGD)'],
+    ['UAE', 'AE', 'United Arab Emirates (AE/ARE/UAE)'],
+    ['ARE', 'AE', 'United Arab Emirates (AE/ARE/UAE)'],
+    ['AE', 'AE', 'United Arab Emirates (AE/ARE/UAE)'],
+    ['US', 'US', 'United States of America (US/USA)'],
+    ['United States', 'US', 'United States of America (US/USA)']
+  ]) {
+    await search.fill(query);
+    const option = page.locator(`[data-country-code="${code}"]`);
+    await expect(option).toHaveText(label);
+    await option.click();
+    await expect(search).toHaveValue(new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$'));
+    await expect(page.locator('#srt-country')).toHaveValue(code);
+  }
+});
+
+test('empty country search is alphabetical and includes the Kosovo flag', async ({ page }) => {
+  await openTester(page);
+  await page.locator('#srt-country-search').focus();
+  const options = page.locator('#srt-country-options [role="option"]');
+  await expect(options.first()).toHaveAttribute('data-country-code', 'AF');
+  await expect(options.nth(1)).toHaveAttribute('data-country-code', 'AX');
+  await expect(options.nth(2)).toHaveAttribute('data-country-code', 'AL');
+  const kosovo = page.locator('[data-country-code="XK"]');
+  await expect(kosovo).toHaveText('Kosovo (XK)');
+  await expect(kosovo.locator('.srt-country-flag')).toHaveAttribute('data-flag', '🇽🇰');
+  const names = await options.evaluateAll(elements => elements.map(element => element.textContent));
+  expect(names.indexOf('Kosovo (XK)')).toBeGreaterThan(names.indexOf('Kiribati (KI/KIR)'));
+  expect(names.indexOf('Kosovo (XK)')).toBeLessThan(names.indexOf('Kuwait (KW/KWT)'));
+  await page.locator('#srt-country-search').fill('USA');
+  await expect(options.first()).toHaveAttribute('data-country-code', 'US');
+  await page.locator('#srt-country-search').fill('');
+  await expect(options.first()).toHaveAttribute('data-country-code', 'AF');
+});
+
+test('product search is debounced after three characters and ignores stale responses', async ({ page }) => {
+  await openTester(page);
+  await selectCountry(page, 'US');
+  const requests = [];
+  await page.route(/\/srt\/v1\/products(?:\?|&)/, async route => {
+    const query = new URL(route.request().url()).searchParams.get('search');
+    requests.push(query);
+    if (query === 'abc') { await new Promise(resolve => setTimeout(resolve, 800)); }
+    await route.fulfill({ json: { products: query ? [{ id: query === 'abc' ? 101 : 102, name: query + ' product' }] : [], more: false } });
+  });
+  const input = page.locator('#srt-product-search');
+  const staleResponse = page.waitForResponse(response => new URL(response.url()).searchParams.get('search') === 'abc');
+  await input.fill('ab');
+  await expect(page.locator('.srt-field-product .srt-product-search-status')).toContainText('at least 3');
+  await input.fill('abc');
+  await expect.poll(() => requests.includes('abc')).toBe(true);
+  await input.fill('abcd');
+  await expect(page.locator('.srt-field-product .srt-product-option').first()).toHaveText('abcd product');
+  await expect.poll(() => requests.includes('abcd')).toBe(true);
+  await staleResponse;
+  await expect(page.locator('.srt-field-product .srt-product-option').first()).toHaveText('abcd product');
+  expect(requests).not.toContain('ab');
+  await input.press('Escape');
+  await expect(page.locator('.srt-field-product .srt-product-popover')).toBeHidden();
+  await expect(page.locator('#srt-product')).toHaveValue('0');
 });

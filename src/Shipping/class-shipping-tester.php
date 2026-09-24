@@ -85,8 +85,15 @@ class Shipping_Tester {
 				if ( method_exists( $product, 'needs_shipping' ) && ! $product->needs_shipping() ) {
 					return new \WP_Error( 'srt_non_shippable_product', __( 'Choose products that require shipping.', 'shipping-rules-tester-for-woocommerce' ) );
 				}
+				if ( ! $product->is_type( 'simple' ) && ! $product->is_type( 'variation' ) ) {
+					return new \WP_Error( 'srt_product_type', __( 'Choose a simple product or a specific variation.', 'shipping-rules-tester-for-woocommerce' ) );
+				}
 
-				$item['value']  = wc_format_decimal( $this->get_product_number( $product, 'get_price' ) * absint( $item['quantity'] ), 2 );
+				$net_value = ( new Tax_Context() )->product_value( $product, absint( $item['quantity'] ), $input );
+				if ( is_wp_error( $net_value ) ) {
+					return $net_value;
+				}
+				$item['value']  = wc_format_decimal( $net_value, wc_get_price_decimals() );
 				$item['weight'] = wc_format_decimal( $this->get_product_number( $product, 'get_weight' ) * absint( $item['quantity'] ), 3 );
 			} elseif ( empty( $item['legacy_totals'] ) ) {
 				$item['value']  = wc_format_decimal( (float) $item['value'] * absint( $item['quantity'] ), 2 );
@@ -110,6 +117,7 @@ class Shipping_Tester {
 		$input['quantity']   = $total_quantity;
 		$input['product_id'] = count( $resolved_items ) === 1 && is_object( $resolved_items[0]['product'] ) ? absint( $resolved_items[0]['product']->get_id() ) : 0;
 		foreach ( $input['items'] as &$item ) {
+			$item['totals'] = ! empty( $item['legacy_totals'] );
 			unset( $item['legacy_totals'] );
 		}
 		unset( $item );
@@ -146,8 +154,19 @@ class Shipping_Tester {
 
 			$requires_cart = 'free_shipping' === $method->id && method_exists( $method, 'get_option' ) && '' !== $method->get_option( 'requires', '' );
 			if ( ! $requires_cart && in_array( $method->id, self::LOCAL_METHODS, true ) ) {
+				if ( wc_tax_enabled() && wc_string_to_bool( apply_filters( 'woocommerce_shipping_prices_include_tax', false ) ) ) {
+					$row['note'] = __( 'Tax-inclusive shipping extensions need a real checkout test.', 'shipping-rules-tester-for-woocommerce' );
+					$rows[]      = $row;
+					continue;
+				}
+				$tax_known = true;
 				try {
-					$rates = $method->get_rates_for_package( $package );
+					$calculated = ( new Tax_Context() )->calculate( $method, $package );
+					$rates      = $calculated['rates'];
+					$tax_known  = $calculated['tax_known'];
+					if ( ! $tax_known ) {
+						$row['note'] = __( 'Shipping cost excludes tax. Billing-address tax cannot be evaluated from a shipping destination.', 'shipping-rules-tester-for-woocommerce' );
+					}
 				} catch ( \Throwable $exception ) {
 					$rates         = array();
 					$row['status'] = 'error';
@@ -157,10 +176,10 @@ class Shipping_Tester {
 					if ( is_array( $rates ) && ! empty( $rates ) ) {
 						$costs = array();
 						foreach ( $rates as $rate ) {
-							$formatted_rate = $this->formatter->format_rate( $rate );
+							$formatted_rate = $this->formatter->format_rate( $rate, $tax_known );
 							$row['rates'][] = $formatted_rate;
 							if ( $formatted_rate['available'] ) {
-								$costs[] = $formatted_rate['total'];
+								$costs[] = $tax_known ? $formatted_rate['total'] : $formatted_rate['cost'];
 							}
 						}
 						if ( ! empty( $costs ) ) {

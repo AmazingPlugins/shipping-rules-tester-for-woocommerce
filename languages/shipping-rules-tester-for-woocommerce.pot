@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AP Shipping Rules Tester for WooCommerce 1.2.0\n"
+"Project-Id-Version: AP Shipping Rules Tester for WooCommerce 1.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/shipping-rules-tester-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21T06:58:32+00:00\n"
+"POT-Creation-Date: 2026-09-24T08:28:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: shipping-rules-tester-for-woocommerce\n"
@@ -41,315 +41,364 @@ msgstr ""
 
 #: src/Admin/class-admin.php:49
 #: src/Admin/class-admin.php:50
-#: templates/admin-page.php:21
+#: templates/admin-page.php:23
 msgid "Shipping Rules Tester"
 msgstr ""
 
 #: src/Admin/class-admin.php:74
-#: src/Admin/class-admin.php:131
-#: templates/admin-page.php:190
+#: src/Admin/class-admin.php:149
+#: templates/admin-page.php:188
 msgid "Test shipping rules"
 msgstr ""
 
-#: src/Admin/class-admin.php:103
-msgid "The shipping test could not be completed."
-msgstr ""
-
-#: templates/admin-page.php:210
-msgid "Result actions"
-msgstr ""
-
-#: templates/admin-page.php:211
-msgid "Edit parameters"
-msgstr ""
-
-#: src/Admin/class-admin.php:105
-msgid "Choose a country from the list."
-msgstr ""
-
 #: src/Admin/class-admin.php:106
-msgid "No countries found."
-msgstr ""
-
-#: src/Admin/class-admin.php:104
-msgid "Testing shipping rules…"
-msgstr ""
-
-#: src/Admin/class-admin.php:105
-#: templates/admin-page.php:125
-msgid "Advanced scenario"
-msgstr ""
-
-#: src/Admin/class-admin.php:106
-msgid "Hide advanced scenario"
+msgid "Search products"
 msgstr ""
 
 #: src/Admin/class-admin.php:107
-#: templates/admin-page.php:114
-msgid "Quick scenarios"
+msgid "Type at least 3 characters to search by name, SKU, or ID."
 msgstr ""
 
 #: src/Admin/class-admin.php:108
-#: templates/admin-page.php:115
-msgid "Standard order"
+msgid "Searching products…"
 msgstr ""
 
 #: src/Admin/class-admin.php:109
-#: templates/admin-page.php:116
-msgid "Free-shipping check"
+msgid "Product suggestions"
 msgstr ""
 
 #: src/Admin/class-admin.php:110
-#: templates/admin-page.php:117
-msgid "Heavy parcel"
+#: templates/admin-page.php:96
+#: templates/admin-page.php:208
+msgid "Synthetic package"
 msgstr ""
 
 #: src/Admin/class-admin.php:111
-#: templates/admin-page.php:118
-msgid "Local pickup"
+msgid "Showing the first 10 matches. Refine your search for another product."
 msgstr ""
 
 #: src/Admin/class-admin.php:112
-#: templates/admin-page.php:141
-msgid "Item"
+msgid "No shippable simple products or variations found. Refine your search."
 msgstr ""
 
 #: src/Admin/class-admin.php:113
-#: templates/admin-page.php:146
-msgid "Item type"
+msgid "Tax not tested"
 msgstr ""
 
 #: src/Admin/class-admin.php:114
-#: src/Shipping/class-shipping-tester.php:234
-#: templates/admin-page.php:148
-msgid "Synthetic item"
+msgid "Line value (all units)"
 msgstr ""
 
 #: src/Admin/class-admin.php:115
-#: templates/admin-page.php:149
-#: templates/admin-page.php:153
-msgid "Saved product"
+msgid "Line weight (all units)"
 msgstr ""
 
 #: src/Admin/class-admin.php:116
-#: templates/admin-page.php:185
-msgid "Add another item"
+#: templates/admin-page.php:155
+msgid "Value per item"
 msgstr ""
 
 #: src/Admin/class-admin.php:117
-#: templates/admin-page.php:142
-msgid "Remove item"
+#: templates/admin-page.php:159
+msgid "Weight per item"
 msgstr ""
 
 #: src/Admin/class-admin.php:118
-#: templates/admin-page.php:191
-msgid "Reset"
+msgid "Saved-product totals are calculated when you run the test."
 msgstr ""
 
 #: src/Admin/class-admin.php:119
-msgid "Package items"
+msgid "The shipping test could not be completed."
 msgstr ""
 
 #: src/Admin/class-admin.php:120
-msgid "Package totals"
+msgid "Choose a country from the list."
 msgstr ""
 
 #: src/Admin/class-admin.php:121
-msgid "Items"
+msgid "No countries found."
 msgstr ""
 
 #: src/Admin/class-admin.php:122
-msgid "Methods checked"
+msgid "Testing shipping rules…"
 msgstr ""
 
 #: src/Admin/class-admin.php:123
-msgid "Rates found"
+#: templates/admin-page.php:128
+msgid "Advanced scenario"
 msgstr ""
 
 #: src/Admin/class-admin.php:124
-msgid "Rate"
+msgid "Hide advanced scenario"
 msgstr ""
 
 #: src/Admin/class-admin.php:125
-msgid "Cost"
+#: templates/admin-page.php:117
+msgid "Quick scenarios"
 msgstr ""
 
 #: src/Admin/class-admin.php:126
-msgid "Matched"
+#: templates/admin-page.php:118
+msgid "Standard order"
 msgstr ""
 
 #: src/Admin/class-admin.php:127
-msgid "Error"
+#: templates/admin-page.php:119
+msgid "Free-shipping check"
 msgstr ""
 
 #: src/Admin/class-admin.php:128
-msgid "Country only"
+#: templates/admin-page.php:120
+msgid "Heavy parcel"
 msgstr ""
 
 #: src/Admin/class-admin.php:129
-#: templates/admin-page.php:205
-msgid "Choose a country"
+#: templates/admin-page.php:121
+msgid "Local pickup"
 msgstr ""
 
 #: src/Admin/class-admin.php:130
-msgid "Testing…"
+#: templates/admin-page.php:145
+msgid "Item"
+msgstr ""
+
+#: src/Admin/class-admin.php:131
+msgid "Item type"
 msgstr ""
 
 #: src/Admin/class-admin.php:132
-msgid "Results stay in this browser tab only."
+#: src/Shipping/class-shipping-tester.php:253
+msgid "Synthetic item"
 msgstr ""
 
 #: src/Admin/class-admin.php:133
-msgid "Matched shipping zone"
+msgid "Saved product"
 msgstr ""
 
 #: src/Admin/class-admin.php:134
-msgid "Shipping methods"
+#: templates/admin-page.php:183
+msgid "Add another item"
 msgstr ""
 
 #: src/Admin/class-admin.php:135
-msgid "No enabled shipping methods were found in this zone."
+#: templates/admin-page.php:146
+msgid "Remove item"
 msgstr ""
 
 #: src/Admin/class-admin.php:136
-msgid "Method"
+#: templates/admin-page.php:189
+#: templates/admin-page.php:195
+msgid "Reset"
 msgstr ""
 
 #: src/Admin/class-admin.php:137
-msgid "Result"
+msgid "Package items"
 msgstr ""
 
 #: src/Admin/class-admin.php:138
-msgid "Details"
+msgid "Package totals"
 msgstr ""
 
 #: src/Admin/class-admin.php:139
-msgid "tax"
+msgid "Items"
 msgstr ""
 
 #: src/Admin/class-admin.php:140
-msgid "total"
+msgid "Methods checked"
 msgstr ""
 
 #: src/Admin/class-admin.php:141
-msgid "No rate"
+msgid "Rates found"
 msgstr ""
 
 #: src/Admin/class-admin.php:142
-msgid "Unavailable"
+msgid "Rate"
 msgstr ""
 
 #: src/Admin/class-admin.php:143
-msgid "Disabled"
+msgid "Cost"
 msgstr ""
 
 #: src/Admin/class-admin.php:144
-msgid "Not tested"
+msgid "Matched"
 msgstr ""
 
 #: src/Admin/class-admin.php:145
-msgid "This method returned a zero-cost rate. Check its configured cost; free shipping and local pickup commonly return zero."
+msgid "Error"
 msgstr ""
 
 #: src/Admin/class-admin.php:146
+msgid "Country only"
+msgstr ""
+
+#: src/Admin/class-admin.php:147
+#: templates/admin-page.php:207
+msgid "Choose a country"
+msgstr ""
+
+#: src/Admin/class-admin.php:148
+msgid "Testing…"
+msgstr ""
+
+#: src/Admin/class-admin.php:150
+msgid "Results stay in this browser tab only."
+msgstr ""
+
+#: src/Admin/class-admin.php:151
+msgid "Matched shipping zone"
+msgstr ""
+
+#: src/Admin/class-admin.php:152
+msgid "Shipping methods"
+msgstr ""
+
+#: src/Admin/class-admin.php:153
+msgid "No enabled shipping methods were found in this zone."
+msgstr ""
+
+#: src/Admin/class-admin.php:154
+msgid "Method"
+msgstr ""
+
+#: src/Admin/class-admin.php:155
+msgid "Result"
+msgstr ""
+
+#: src/Admin/class-admin.php:156
+msgid "Details"
+msgstr ""
+
+#: src/Admin/class-admin.php:157
+msgid "tax"
+msgstr ""
+
+#: src/Admin/class-admin.php:158
+msgid "total"
+msgstr ""
+
+#: src/Admin/class-admin.php:159
+msgid "No rate"
+msgstr ""
+
+#: src/Admin/class-admin.php:160
+msgid "Unavailable"
+msgstr ""
+
+#: src/Admin/class-admin.php:161
+msgid "Disabled"
+msgstr ""
+
+#: src/Admin/class-admin.php:162
+msgid "Not tested"
+msgstr ""
+
+#: src/Admin/class-admin.php:163
+msgid "This method returned a zero-cost rate. Check its configured cost; free shipping and local pickup commonly return zero."
+msgstr ""
+
+#: src/Admin/class-admin.php:164
 msgid "Scenario comparison"
 msgstr ""
 
 #. translators: %d: scenario number.
-#: src/Admin/class-admin.php:148
+#: src/Admin/class-admin.php:166
 #, php-format
 msgid "Scenario %d"
 msgstr ""
 
-#: src/Admin/class-admin.php:149
-#: templates/admin-page.php:206
+#: src/Admin/class-admin.php:167
+#: templates/admin-page.php:208
 msgid "Package"
 msgstr ""
 
-#: src/Admin/class-admin.php:150
-#: templates/admin-page.php:192
+#: src/Admin/class-admin.php:168
+#: templates/admin-page.php:196
 msgid "Keep result and test another"
 msgstr ""
 
-#: src/Admin/class-admin.php:151
-#: templates/admin-page.php:193
+#: src/Admin/class-admin.php:169
+#: templates/admin-page.php:197
 msgid "Clear comparison"
 msgstr ""
 
-#: src/Admin/class-admin.php:152
+#: src/Admin/class-admin.php:170
 msgid "Result kept. Change the inputs and run another test."
 msgstr ""
 
-#: src/Admin/class-admin.php:153
+#: src/Admin/class-admin.php:171
 msgid "fallback zone"
 msgstr ""
 
-#: src/Admin/class-admin.php:154
-#: templates/admin-page.php:205
+#: src/Admin/class-admin.php:172
+#: templates/admin-page.php:207
 msgid "Destination"
 msgstr ""
 
-#: src/Admin/class-admin.php:155
+#: src/Admin/class-admin.php:173
 msgid "value"
 msgstr ""
 
-#: src/Admin/class-admin.php:156
+#: src/Admin/class-admin.php:174
 msgid "weight"
 msgstr ""
 
-#: src/Admin/class-admin.php:157
+#: src/Admin/class-admin.php:175
 msgid "quantity"
 msgstr ""
 
-#: src/Admin/class-admin.php:158
+#: src/Admin/class-admin.php:176
 msgid "Zone matching rules"
 msgstr ""
 
-#: src/Admin/class-admin.php:159
+#: src/Admin/class-admin.php:177
 msgid "No explicit location rules apply. WooCommerce uses this as the fallback zone."
 msgstr ""
 
-#: src/Admin/class-admin.php:160
+#: src/Admin/class-admin.php:178
 msgid "Product"
 msgstr ""
 
-#: src/Admin/class-admin.php:161
+#: src/Admin/class-admin.php:179
 msgid "Product details"
 msgstr ""
 
-#: src/Admin/class-admin.php:162
+#: src/Admin/class-admin.php:180
 msgid "shipping class"
 msgstr ""
 
-#: src/Admin/class-admin.php:163
+#: src/Admin/class-admin.php:181
 msgid "dimensions"
 msgstr ""
 
-#: src/Admin/class-admin.php:164
+#: src/Admin/class-admin.php:182
 msgid "tax class"
 msgstr ""
 
-#: src/Admin/class-admin.php:165
+#: src/Admin/class-admin.php:183
 msgid "price per item"
 msgstr ""
 
-#: src/Admin/class-admin.php:166
+#: src/Admin/class-admin.php:184
 msgid "weight per item"
 msgstr ""
 
-#: src/Admin/class-admin.php:167
+#: src/Admin/class-admin.php:185
 msgid "none"
 msgstr ""
 
-#: src/Admin/class-admin.php:168
+#: src/Admin/class-admin.php:186
 msgid "standard"
 msgstr ""
 
-#: src/Admin/class-rest-controller.php:57
+#: src/Admin/class-rest-controller.php:67
+msgid "Enter a product ID or at least three characters of a name or SKU, up to 100 characters."
+msgstr ""
+
+#: src/Admin/class-rest-controller.php:124
 msgid "You do not have permission to run this test."
 msgstr ""
 
-#: src/Admin/class-rest-controller.php:66
+#: src/Admin/class-rest-controller.php:133
 msgid "Security check failed."
 msgstr ""
 
@@ -389,236 +438,259 @@ msgstr ""
 msgid "Choose products that require shipping."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:121
+#: src/Shipping/class-shipping-tester.php:89
+msgid "Choose a simple product or a specific variation."
+msgstr ""
+
+#: src/Shipping/class-shipping-tester.php:129
 msgid "WooCommerce could not match this destination to a shipping zone."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:142
+#: src/Shipping/class-shipping-tester.php:150
 msgid "Skipped because this shipping method is disabled."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:154
+#: src/Shipping/class-shipping-tester.php:158
+msgid "Tax-inclusive shipping extensions need a real checkout test."
+msgstr ""
+
+#: src/Shipping/class-shipping-tester.php:168
+msgid "Shipping cost excludes tax. Billing-address tax cannot be evaluated from a shipping destination."
+msgstr ""
+
+#: src/Shipping/class-shipping-tester.php:173
 msgid "The method reported an error while testing this package."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:171
+#: src/Shipping/class-shipping-tester.php:190
 msgid "The method returned a rate that could not be read."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:175
+#: src/Shipping/class-shipping-tester.php:194
 msgid "The method did not return a rate for this package."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:179
+#: src/Shipping/class-shipping-tester.php:198
 msgid "Skipped because this free-shipping rule requires live cart or coupon context that a sample package cannot provide."
 msgstr ""
 
-#: src/Shipping/class-shipping-tester.php:181
+#: src/Shipping/class-shipping-tester.php:200
 msgid "Skipped because this method may need an external rate provider or product-specific data."
 msgstr ""
 
-#: templates/admin-page.php:20
+#: src/Shipping/class-tax-context.php:37
+msgid "This tax-inclusive product needs a billing address to determine its net value. Use a synthetic net package value instead."
+msgstr ""
+
+#: templates/admin-page.php:16
 msgid "About other admin notices:"
 msgstr ""
 
-#: templates/admin-page.php:21
+#: templates/admin-page.php:16
 msgid "Scheduled Actions and other WordPress or WooCommerce notices are unrelated to Shipping Rules Tester. This plugin does not schedule tasks or send notifications."
 msgstr ""
 
-#: templates/admin-page.php:24
+#: templates/admin-page.php:22
 msgid "Shipping diagnostics"
 msgstr ""
 
-#: templates/admin-page.php:26
-msgid "See exactly which zone and rates WooCommerce will choose for a package before a customer reaches checkout."
+#: templates/admin-page.php:24
+msgid "Check the shipping zone and supported built-in rates for a sample package. Confirm the result at checkout before changing your shipping setup."
 msgstr ""
 
-#: templates/admin-page.php:28
+#: templates/admin-page.php:26
 msgid "Test properties"
 msgstr ""
 
-#: templates/admin-page.php:29
-msgid "Local only"
+#: templates/admin-page.php:27
+msgid "Built-in methods"
 msgstr ""
 
-#: templates/admin-page.php:30
+#: templates/admin-page.php:28
 msgid "Nothing saved"
 msgstr ""
 
-#: templates/admin-page.php:38
+#: templates/admin-page.php:40
 msgid "Where is it going?"
 msgstr ""
 
-#: templates/admin-page.php:39
+#: templates/admin-page.php:41
 msgid "Use the destination a customer would enter at checkout."
 msgstr ""
 
-#: templates/admin-page.php:49
-msgid "Search by name or code"
-msgstr ""
-
-#: templates/admin-page.php:48
+#: templates/admin-page.php:47
 msgid "Country"
 msgstr ""
 
-#: templates/admin-page.php:51
+#: templates/admin-page.php:48
+msgid "Search by name or code"
+msgstr ""
+
+#: templates/admin-page.php:50
 msgid "Country options"
 msgstr ""
 
-#: templates/admin-page.php:53
+#: templates/admin-page.php:52
 msgid "Select a country"
 msgstr ""
 
-#: templates/admin-page.php:63
+#: templates/admin-page.php:62
 msgid "State or province (optional)"
 msgstr ""
 
-#: templates/admin-page.php:65
+#: templates/admin-page.php:64
 msgid "Select a state or province"
 msgstr ""
 
-#: templates/admin-page.php:68
+#: templates/admin-page.php:67
 msgid "No state or province? Continue"
 msgstr ""
 
-#: templates/admin-page.php:72
+#: templates/admin-page.php:71
 msgid "Postcode (optional)"
 msgstr ""
 
-#: templates/admin-page.php:75
+#: templates/admin-page.php:74
 msgid "No postcode? Continue"
 msgstr ""
 
-#: templates/admin-page.php:78
+#: templates/admin-page.php:77
 msgid "City (optional)"
 msgstr ""
 
-#: templates/admin-page.php:73
+#: templates/admin-page.php:87
 msgid "What is in the package?"
 msgstr ""
 
-#: templates/admin-page.php:74
+#: templates/admin-page.php:88
 msgid "Start with a quick package, or open the advanced builder for product-level rules."
 msgstr ""
 
-#: templates/admin-page.php:80
+#: templates/admin-page.php:94
 msgid "Product context (optional)"
 msgstr ""
 
-#: templates/admin-page.php:82
-#: templates/admin-page.php:206
-msgid "Synthetic package"
-msgstr ""
-
-#: templates/admin-page.php:94
+#: templates/admin-page.php:98
 msgid "Use a real product when shipping class, dimensions, or product weight matter."
 msgstr ""
 
+#: templates/admin-page.php:99
+msgid "Values exclude product tax. Advanced line totals cover all units; new rows use per-item values."
+msgstr ""
+
 #. translators: %s: currency code.
-#: templates/admin-page.php:98
+#: templates/admin-page.php:102
 #, php-format
 msgid "Package value (%s)"
 msgstr ""
 
 #. translators: %s: weight unit.
-#: templates/admin-page.php:102
+#: templates/admin-page.php:106
 #, php-format
 msgid "Total package weight (%s)"
 msgstr ""
 
-#: templates/admin-page.php:106
+#: templates/admin-page.php:110
 msgid "Item quantity"
 msgstr ""
 
-#: templates/admin-page.php:113
+#: templates/admin-page.php:116
 msgid "Start with a scenario"
 msgstr ""
 
-#: templates/admin-page.php:126
+#: templates/admin-page.php:129
 msgid "Multiple items, shipping classes, and dimensions"
 msgstr ""
 
-#: templates/admin-page.php:133
+#: templates/admin-page.php:134
+msgid "While this builder is open, its rows replace the quick package above. Collapsing it uses the quick package again and keeps your rows for later."
+msgstr ""
+
+#: templates/admin-page.php:137
 msgid "Build a realistic package"
 msgstr ""
 
-#: templates/admin-page.php:134
+#: templates/admin-page.php:138
 msgid "Add up to ten items. Synthetic items let you test shipping classes and dimensions without creating a product."
 msgstr ""
 
-#: templates/admin-page.php:136
+#: templates/admin-page.php:140
 msgid "Still read-only"
 msgstr ""
 
-#. translators: %s: currency code.
-#: templates/admin-page.php:157
-#, php-format
-msgid "Item value (%s)"
+#: templates/admin-page.php:151
+msgid "Product or synthetic item"
 msgstr ""
 
-#. translators: %s: weight unit.
-#: templates/admin-page.php:161
-#, php-format
-msgid "Item weight (%s)"
-msgstr ""
-
-#: templates/admin-page.php:165
+#: templates/admin-page.php:163
 msgid "Quantity"
 msgstr ""
 
-#: templates/admin-page.php:169
+#: templates/admin-page.php:167
 msgid "Shipping class"
 msgstr ""
 
-#: templates/admin-page.php:171
-#: templates/admin-page.php:224
+#: templates/admin-page.php:169
+#: templates/admin-page.php:227
 msgid "No override"
 msgstr ""
 
-#: templates/admin-page.php:175
+#: templates/admin-page.php:173
 msgid "Dimensions"
 msgstr ""
 
-#: templates/admin-page.php:177
+#: templates/admin-page.php:175
 msgid "Length"
 msgstr ""
 
-#: templates/admin-page.php:178
+#: templates/admin-page.php:176
 msgid "Width"
 msgstr ""
 
-#: templates/admin-page.php:179
+#: templates/admin-page.php:177
 msgid "Height"
 msgstr ""
 
-#: templates/admin-page.php:202
+#: templates/admin-page.php:193
+msgid "Result actions"
+msgstr ""
+
+#: templates/admin-page.php:194
+msgid "Edit parameters"
+msgstr ""
+
+#: templates/admin-page.php:204
 msgid "Live scenario"
 msgstr ""
 
-#: templates/admin-page.php:203
+#: templates/admin-page.php:205
 msgid "Your test updates here as you work."
 msgstr ""
 
-#: templates/admin-page.php:207
+#: templates/admin-page.php:209
 msgid "Totals"
 msgstr ""
 
-#: templates/admin-page.php:212
+#: templates/admin-page.php:214
 msgid "What this test does"
 msgstr ""
 
-#: templates/admin-page.php:214
+#: templates/admin-page.php:216
 msgid "Matches the destination to your configured zone"
 msgstr ""
 
-#: templates/admin-page.php:215
-msgid "Runs safe built-in methods locally"
+#: templates/admin-page.php:217
+msgid "Calculates supported built-in methods"
 msgstr ""
 
-#: templates/admin-page.php:216
+#: templates/admin-page.php:218
 msgid "Shows why a method was skipped"
 msgstr ""
 
-#: templates/admin-page.php:217
-msgid "Changes nothing on your store"
+#: templates/admin-page.php:219
+msgid "Does not save test inputs or results"
+msgstr ""
+
+#: templates/admin-page.php:221
+msgid "Coupons, billing addresses, customer exemptions, and live-cart rules need a checkout test. Installed extensions can affect WooCommerce calculations and run their own hooks."
 msgstr ""

@@ -89,7 +89,8 @@ class Admin {
 		}
 
 		wp_enqueue_style( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.css', array(), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.css' ) );
-		wp_enqueue_script( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.js', array( 'wp-api-fetch' ), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.js' ), true );
+		wp_enqueue_script( 'srt-product-picker', SRT_PLUGIN_URL . 'assets/product-picker.js', array( 'wp-api-fetch' ), (string) filemtime( SRT_PLUGIN_DIR . 'assets/product-picker.js' ), true );
+		wp_enqueue_script( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.js', array( 'wp-api-fetch', 'srt-product-picker' ), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.js' ), true );
 		wp_localize_script(
 			'srt-admin',
 			'srtData',
@@ -97,10 +98,24 @@ class Admin {
 				'restUrl'       => '/srt/v1/test',
 				'nonce'         => wp_create_nonce( 'wp_rest' ),
 				'states'        => WC()->countries->get_states(),
+				'countryMeta'   => wp_json_file_decode( SRT_PLUGIN_DIR . 'assets/countries.json', array( 'associative' => true ) ),
 				'currency'      => strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) ),
 				'weightUnit'    => sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) ),
 				'dimensionUnit' => sanitize_text_field( (string) get_option( 'woocommerce_dimension_unit', 'cm' ) ),
 				'i18n'          => array(
+					'productSearch'  => __( 'Search products', 'shipping-rules-tester-for-woocommerce' ),
+					'searchHint'     => __( 'Type at least 3 characters to search by name, SKU, or ID.', 'shipping-rules-tester-for-woocommerce' ),
+					'searchLoading'  => __( 'Searching products…', 'shipping-rules-tester-for-woocommerce' ),
+					'searchTop'      => __( 'Product suggestions', 'shipping-rules-tester-for-woocommerce' ),
+					'synthetic'      => __( 'Synthetic package', 'shipping-rules-tester-for-woocommerce' ),
+					'searchMore'     => __( 'Showing the first 10 matches. Refine your search for another product.', 'shipping-rules-tester-for-woocommerce' ),
+					'searchEmpty'    => __( 'No shippable simple products or variations found. Refine your search.', 'shipping-rules-tester-for-woocommerce' ),
+					'taxNotTested'   => __( 'Tax not tested', 'shipping-rules-tester-for-woocommerce' ),
+					'lineValue'      => __( 'Line value (all units)', 'shipping-rules-tester-for-woocommerce' ),
+					'lineWeight'     => __( 'Line weight (all units)', 'shipping-rules-tester-for-woocommerce' ),
+					'unitValue'      => __( 'Value per item', 'shipping-rules-tester-for-woocommerce' ),
+					'unitWeight'     => __( 'Weight per item', 'shipping-rules-tester-for-woocommerce' ),
+					'productPending' => __( 'Saved-product totals are calculated when you run the test.', 'shipping-rules-tester-for-woocommerce' ),
 					'error'          => __( 'The shipping test could not be completed.', 'shipping-rules-tester-for-woocommerce' ),
 					'chooseFromList' => __( 'Choose a country from the list.', 'shipping-rules-tester-for-woocommerce' ),
 					'noResults'      => __( 'No countries found.', 'shipping-rules-tester-for-woocommerce' ),
@@ -179,15 +194,6 @@ class Admin {
 	 */
 	public function render_page() {
 		$countries        = WC()->countries->get_countries();
-		$products         = wc_get_products(
-			array(
-				'limit'   => 100,
-				'orderby' => 'name',
-				'order'   => 'ASC',
-				'status'  => array( 'publish', 'private', 'draft' ),
-				'return'  => 'objects',
-			)
-		);
 		$shipping_classes = get_terms(
 			array(
 				'taxonomy'   => 'product_shipping_class',

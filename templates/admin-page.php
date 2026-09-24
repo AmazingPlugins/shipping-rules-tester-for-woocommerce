@@ -4,7 +4,6 @@
  *
  * @package ShippingRulesTester
  * @var array $countries WooCommerce countries.
- * @var array $products Available WooCommerce products.
  * @var array $shipping_classes Available product shipping classes.
  * @var string $currency Store currency code.
  * @var string $weight_unit Store weight unit.
@@ -22,10 +21,10 @@ defined( 'ABSPATH' ) || exit;
 			<div class="srt-hero-copy">
 				<p class="srt-eyebrow"><?php echo esc_html__( 'Shipping diagnostics', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 				<h1><?php echo esc_html__( 'Shipping Rules Tester', 'shipping-rules-tester-for-woocommerce' ); ?></h1>
-				<p><?php echo esc_html__( 'See exactly which zone and rates WooCommerce will choose for a package before a customer reaches checkout.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
+				<p><?php echo esc_html__( 'Check the shipping zone and supported built-in rates for a sample package. Confirm the result at checkout before changing your shipping setup.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 			</div>
 			<div class="srt-hero-badges" aria-label="<?php echo esc_attr__( 'Test properties', 'shipping-rules-tester-for-woocommerce' ); ?>">
-				<span class="srt-badge srt-badge-local"><span aria-hidden="true">●</span> <?php echo esc_html__( 'Local only', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+				<span class="srt-badge srt-badge-local"><span aria-hidden="true">●</span> <?php echo esc_html__( 'Built-in methods', 'shipping-rules-tester-for-woocommerce' ); ?></span>
 				<span class="srt-badge"><?php echo esc_html__( 'Nothing saved', 'shipping-rules-tester-for-woocommerce' ); ?></span>
 			</div>
 		</header>
@@ -91,23 +90,14 @@ defined( 'ABSPATH' ) || exit;
 						</div>
 
 						<div class="srt-quick-package">
-							<label class="srt-field srt-field-product">
+							<div class="srt-field srt-field-product">
 								<span><?php echo esc_html__( 'Product context (optional)', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-								<select name="product_id" id="srt-product">
+								<select name="product_id" id="srt-product" hidden>
 									<option value="0"><?php echo esc_html__( 'Synthetic package', 'shipping-rules-tester-for-woocommerce' ); ?></option>
-									<?php // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- This is a local loop variable in the template.
-									foreach ( $products as $srt_product ) :
-										?>
-										<?php if ( ! is_object( $srt_product ) || ! method_exists( $srt_product, 'get_id' ) || ! method_exists( $srt_product, 'get_name' ) ) : ?>
-											<?php continue; ?>
-										<?php endif; ?>
-										<option value="<?php echo esc_attr( (string) absint( $srt_product->get_id() ) ); ?>">
-											<?php echo esc_html( sprintf( '%s (#%d)', $srt_product->get_name(), absint( $srt_product->get_id() ) ) ); ?>
-										</option>
-									<?php endforeach; ?>
 								</select>
 								<small><?php echo esc_html__( 'Use a real product when shipping class, dimensions, or product weight matter.', 'shipping-rules-tester-for-woocommerce' ); ?></small>
-							</label>
+								<small><?php echo esc_html__( 'Values exclude product tax. Advanced line totals cover all units; new rows use per-item values.', 'shipping-rules-tester-for-woocommerce' ); ?></small>
+							</div>
 							<label class="srt-field">
 								<span><?php /* translators: %s: currency code. */ echo esc_html( sprintf( __( 'Package value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?> <em>*</em></span>
 								<input type="number" name="value" min="0" max="100000" step="0.01" value="0" inputmode="decimal" required>
@@ -141,6 +131,7 @@ defined( 'ABSPATH' ) || exit;
 						</div>
 
 						<div id="srt-advanced-panel" class="srt-advanced-panel" hidden>
+							<p><?php echo esc_html__( 'While this builder is open, its rows replace the quick package above. Collapsing it uses the quick package again and keeps your rows for later.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 							<div class="srt-advanced-heading">
 								<div>
 									<h3><?php echo esc_html__( 'Build a realistic package', 'shipping-rules-tester-for-woocommerce' ); ?></h3>
@@ -155,23 +146,17 @@ defined( 'ABSPATH' ) || exit;
 										<button type="button" class="srt-remove-item" hidden><?php echo esc_html__( 'Remove item', 'shipping-rules-tester-for-woocommerce' ); ?></button>
 									</div>
 									<div class="srt-item-grid">
-										<label class="srt-field srt-item-source-field">
-											<span><?php echo esc_html__( 'Item type', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-											<select class="srt-item-source" data-item-field="source">
-												<option value="custom"><?php echo esc_html__( 'Synthetic item', 'shipping-rules-tester-for-woocommerce' ); ?></option>
-												<option value="product"><?php echo esc_html__( 'Saved product', 'shipping-rules-tester-for-woocommerce' ); ?></option>
-											</select>
-										</label>
-										<label class="srt-field srt-item-product-field" hidden>
-											<span><?php echo esc_html__( 'Saved product', 'shipping-rules-tester-for-woocommerce' ); ?></span>
-											<select class="srt-item-product" data-item-field="product_id"></select>
-										</label>
+										<input type="hidden" class="srt-item-source" data-item-field="source" value="custom">
+										<div class="srt-field srt-item-product-field">
+											<span><?php echo esc_html__( 'Product or synthetic item', 'shipping-rules-tester-for-woocommerce' ); ?></span>
+											<select class="srt-item-product" data-item-field="product_id" hidden></select>
+										</div>
 										<label class="srt-field">
-											<span><?php /* translators: %s: currency code. */ echo esc_html( sprintf( __( 'Item value (%s)', 'shipping-rules-tester-for-woocommerce' ), $currency ) ); ?> <em>*</em></span>
+											<span><span data-value-label><?php echo esc_html__( 'Value per item', 'shipping-rules-tester-for-woocommerce' ); ?></span> (<?php echo esc_html( $currency ); ?>) <em>*</em></span>
 											<input type="number" class="srt-item-value" data-item-field="value" min="0" max="100000" step="0.01" value="0" inputmode="decimal">
 										</label>
 										<label class="srt-field">
-											<span><?php /* translators: %s: weight unit. */ echo esc_html( sprintf( __( 'Item weight (%s)', 'shipping-rules-tester-for-woocommerce' ), $weight_unit ) ); ?> <em>*</em></span>
+											<span><span data-weight-label><?php echo esc_html__( 'Weight per item', 'shipping-rules-tester-for-woocommerce' ); ?></span> (<?php echo esc_html( $weight_unit ); ?>) <em>*</em></span>
 											<input type="number" class="srt-item-weight" data-item-field="weight" min="0" max="100000" step="0.001" value="0" inputmode="decimal">
 										</label>
 										<label class="srt-field">
@@ -206,9 +191,9 @@ defined( 'ABSPATH' ) || exit;
 				</form>
 				<div id="srt-status" class="srt-status" role="status" aria-live="polite"></div>
 				<div class="srt-result-actions" id="srt-result-actions" aria-label="<?php echo esc_attr__( 'Result actions', 'shipping-rules-tester-for-woocommerce' ); ?>" hidden>
-					<button type="button" class="button" id="srt-edit-parameters"><?php echo esc_html__( 'Edit parameters', 'shipping-rules-tester-for-woocommerce' ); ?></button>
-					<button type="button" class="button srt-reset" id="srt-result-reset"><?php echo esc_html__( 'Reset', 'shipping-rules-tester-for-woocommerce' ); ?></button>
-					<button type="button" class="button srt-keep" id="srt-keep" hidden><?php echo esc_html__( 'Keep result and test another', 'shipping-rules-tester-for-woocommerce' ); ?></button>
+					<button type="button" class="button srt-action-edit" id="srt-edit-parameters"><span class="dashicons dashicons-edit" aria-hidden="true"></span><span><?php echo esc_html__( 'Edit parameters', 'shipping-rules-tester-for-woocommerce' ); ?></span></button>
+					<button type="button" class="button srt-reset" id="srt-result-reset"><span class="dashicons dashicons-image-rotate" aria-hidden="true"></span><span><?php echo esc_html__( 'Reset', 'shipping-rules-tester-for-woocommerce' ); ?></span></button>
+					<button type="button" class="button srt-keep" id="srt-keep" hidden><span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span><span><?php echo esc_html__( 'Keep result and test another', 'shipping-rules-tester-for-woocommerce' ); ?></span></button>
 					<button type="button" class="button srt-clear" id="srt-clear" hidden><?php echo esc_html__( 'Clear comparison', 'shipping-rules-tester-for-woocommerce' ); ?></button>
 				</div>
 				<div id="srt-results" class="srt-results" hidden></div>
@@ -229,10 +214,11 @@ defined( 'ABSPATH' ) || exit;
 					<div class="srt-side-card-heading"><span class="srt-side-icon srt-side-icon-shield" aria-hidden="true">✓</span><h2><?php echo esc_html__( 'What this test does', 'shipping-rules-tester-for-woocommerce' ); ?></h2></div>
 					<ul class="srt-check-list">
 						<li><?php echo esc_html__( 'Matches the destination to your configured zone', 'shipping-rules-tester-for-woocommerce' ); ?></li>
-						<li><?php echo esc_html__( 'Runs safe built-in methods locally', 'shipping-rules-tester-for-woocommerce' ); ?></li>
+						<li><?php echo esc_html__( 'Calculates supported built-in methods', 'shipping-rules-tester-for-woocommerce' ); ?></li>
 						<li><?php echo esc_html__( 'Shows why a method was skipped', 'shipping-rules-tester-for-woocommerce' ); ?></li>
-						<li><?php echo esc_html__( 'Changes nothing on your store', 'shipping-rules-tester-for-woocommerce' ); ?></li>
+						<li><?php echo esc_html__( 'Does not save test inputs or results', 'shipping-rules-tester-for-woocommerce' ); ?></li>
 					</ul>
+					<p class="srt-side-description"><?php echo esc_html__( 'Coupons, billing addresses, customer exemptions, and live-cart rules need a checkout test. Installed extensions can affect WooCommerce calculations and run their own hooks.', 'shipping-rules-tester-for-woocommerce' ); ?></p>
 				</section>
 			</aside>
 		</div>
