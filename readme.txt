@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, shipping zones, shipping rates
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,9 @@ Yes. The tester does not read or change order data and does not depend on the or
 2. Matched zone, package summary, and shipping method results.
 
 == Changelog ==
+
+= 1.2.5 =
+* Removed the explanatory notice about other plugins' admin messages.
 
 = 1.2.4 =
 * Matched translations and the release folder to the assigned WordPress.org slug.
