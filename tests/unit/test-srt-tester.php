@@ -11,6 +11,39 @@ use PHPUnit\Framework\TestCase;
  * Test SRT_Tester validation and calculation behavior.
  */
 class Test_SRT_Tester extends TestCase {
+	/** Preserve total-valued imported rows while multiplying new per-unit rows. */
+	public function test_advanced_line_totals_preserve_precision() {
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array(
+			'country' => 'US',
+			'items' => array(
+				array( 'value' => '50', 'weight' => '2', 'quantity' => '3', 'totals' => true ),
+				array( 'value' => '5', 'weight' => '1', 'quantity' => '2' ),
+			),
+		) );
+		$this->assertSame( '60.00', $result['package']['value'] );
+		$this->assertSame( '4.000', $result['package']['weight'] );
+		$this->assertSame( 5, $result['package']['quantity'] );
+	}
+
+	/** Unknown tax must never be displayed as zero tax or a definitive total. */
+	public function test_unknown_tax_has_no_total() {
+		$result = ( new \AmazingPlugins\SRT\Shipping\Result_Formatter() )->format_rate( new WC_Shipping_Rate( 10, array( 2 ) ), false );
+		$this->assertSame( '$10.00', $result['cost'] );
+		$this->assertSame( '', $result['tax'] );
+		$this->assertSame( '', $result['total'] );
+		$this->assertFalse( $result['tax_known'] );
+	}
+
+	/** The local calculator must restore method state even when it throws. */
+	public function test_tax_status_is_restored_after_exception() {
+		$method = new class( 'flat_rate', 'Broken rate', array() ) extends SRT_Test_Throwing_Method {
+			public $tax_status = 'taxable';
+		};
+		WC_Shipping_Zone::$methods = array( $method );
+		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$this->assertSame( 'error', $result['methods'][0]['status'] );
+		$this->assertSame( 'taxable', $method->tax_status );
+	}
 
 	/**
 	 * Reset shared test fixtures.

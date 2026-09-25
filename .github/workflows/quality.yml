@@ -8,6 +8,40 @@ permissions:
   contents: read
 
 jobs:
+  browser:
+    name: Browser / HPOS ${{ matrix.hpos }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        hpos: ['yes', 'no']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build and extract release package
+        run: |
+          scripts/build-release.sh
+          unzip -q dist/*.zip -d dist/extracted
+      - name: Run isolated browser and integration suites
+        env:
+          SRT_RUN_BROWSER: 'yes'
+          SRT_RUN_PLUGIN_CHECK: ${{ matrix.hpos }}
+          SRT_HPOS_MODE: ${{ matrix.hpos }}
+          SRT_PLUGIN_DIR: ${{ github.workspace }}/dist/extracted/ap-shipping-rules-tester-for-woocommerce
+        run: tests/integration/hpos-sandbox.sh
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failures-${{ matrix.hpos }}
+          path: test-results/
+          retention-days: 7
+
   quality:
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
@@ -46,7 +80,9 @@ jobs:
         run: find src templates -type f -name '*.php' -print0 | xargs -0 -n1 php -l
 
       - name: Check JavaScript syntax
-        run: node --check assets/admin.js
+        run: |
+          node --check assets/admin.js
+          node --check assets/product-picker.js
 
       - name: Check diff whitespace
         run: git diff --check
@@ -81,4 +117,8 @@ jobs:
           SRT_HPOS_MODE: ${{ matrix.hpos }}
           SRT_WP_IMAGE: wordpress:${{ matrix.wordpress }}
           SRT_WC_VERSION: ${{ matrix.woocommerce }}
-        run: tests/integration/hpos-sandbox.sh
+          SRT_PLUGIN_DIR: ${{ github.workspace }}/dist/extracted/ap-shipping-rules-tester-for-woocommerce
+        run: |
+          scripts/build-release.sh
+          unzip -q dist/*.zip -d dist/extracted
+          tests/integration/hpos-sandbox.sh

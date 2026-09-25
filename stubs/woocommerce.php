@@ -50,6 +50,40 @@ function wc_get_product( $product_id ) {
 function wc_get_products( array $args = array() ): array {
 }
 
+function wc_tax_enabled(): bool {}
+function wc_prices_include_tax(): bool {}
+function wc_get_price_decimals(): int {}
+function wc_string_to_bool( $value ): bool {}
+
+class WC_Data_Store {
+	/** @return object */
+	public static function load( $type ) {}
+}
+
+class WC_Tax {
+	/** @return array */
+	public static function get_base_tax_rates( $class = '' ) {}
+	/** @return array */
+	public static function find_rates( $args = array() ) {}
+	/** @return array */
+	public static function find_shipping_rates( $args = array() ) {}
+	/** @return array */
+	public static function calc_tax( $price, $rates, $inclusive = false ) {}
+	/** @return array */
+	public static function calc_shipping_tax( $price, $rates ) {}
+	/** @return string[] */
+	public static function get_tax_class_slugs() {}
+}
+
+class WC_Shipping_Rate {
+	/** @return float */
+	public function get_cost() {}
+	/** @return void */
+	public function set_taxes( $taxes ) {}
+	/** @return void */
+	public function set_tax_status( $status ) {}
+}
+
 /**
  * Shipping zones API.
  */

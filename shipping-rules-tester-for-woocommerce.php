@@ -1,15 +1,16 @@
 <?php
 /**
  * Plugin Name: AP Shipping Rules Tester for WooCommerce
- * Plugin URI:  https://amazingplugins.com/plugins/shipping-rules-tester/
+ * Plugin URI:  https://amazingplugins.com/plugins/shipping-rules-tester-for-woocommerce/
  * Description: Test WooCommerce shipping zones and methods with a sample destination and package.
- * Version:     1.2.0
+ * Version:     1.2.4
  * Author:      AmazingPlugins
  * Author URI:  https://amazingplugins.com
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 6.6
- * Text Domain: shipping-rules-tester-for-woocommerce
+ * Text Domain: ap-shipping-rules-tester-for-woocommerce
+ * Domain Path: /languages
  * Requires Plugins: woocommerce
  * Requires PHP: 7.4
  * WC requires at least: 7.0

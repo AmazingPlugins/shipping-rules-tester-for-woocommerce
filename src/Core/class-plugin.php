@@ -19,7 +19,7 @@ final class Plugin {
 	/**
 	 * Plugin version.
 	 */
-	const VERSION = '1.2.0';
+	const VERSION = '1.2.4';
 
 	/**
 	 * Singleton instance.
@@ -59,6 +59,7 @@ final class Plugin {
 		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-input-normalizer.php';
 		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-package-builder.php';
 		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-result-formatter.php';
+		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-tax-context.php';
 		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-shipping-tester.php';
 		require_once SRT_PLUGIN_DIR . 'src/Admin/class-rest-controller.php';
 		require_once SRT_PLUGIN_DIR . 'src/Admin/class-admin.php';

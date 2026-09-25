@@ -2,6 +2,11 @@
 .github
 .gitignore
 .distignore
+.wordpress-org
+.DS_Store
+assets/screenshot-*
+assets/banner-*
+assets/icon-*
 .phpunit.result.cache
 .playwright-mcp
 dist

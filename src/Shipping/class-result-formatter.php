@@ -20,9 +20,10 @@ class Result_Formatter {
 	 * Format a WooCommerce shipping rate.
 	 *
 	 * @param object $rate Rate object.
+	 * @param bool   $tax_known Whether sample tax was evaluated.
 	 * @return array
 	 */
-	public function format_rate( $rate ) {
+	public function format_rate( $rate, $tax_known = true ) {
 		if ( ! is_object( $rate ) || ! method_exists( $rate, 'get_cost' ) || ! method_exists( $rate, 'get_taxes' ) ) {
 			return $this->unavailable_rate();
 		}
@@ -45,8 +46,9 @@ class Result_Formatter {
 		return array(
 			'id'        => method_exists( $rate, 'get_id' ) ? sanitize_text_field( (string) $rate->get_id() ) : '',
 			'cost'      => $this->format_money( $cost ),
-			'tax'       => $this->format_money( $tax ),
-			'total'     => $this->format_money( $total ),
+			'tax'       => $tax_known ? $this->format_money( $tax ) : '',
+			'total'     => $tax_known ? $this->format_money( $total ) : '',
+			'tax_known' => $tax_known,
 			'zero_cost' => 0.0 === $total,
 			'available' => true,
 		);

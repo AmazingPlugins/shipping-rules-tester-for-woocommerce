@@ -27,7 +27,7 @@ class Input_Normalizer {
 		$country   = isset( $raw['country'] ) && is_scalar( $raw['country'] ) ? strtoupper( sanitize_text_field( (string) $raw['country'] ) ) : '';
 		$countries = \WC()->countries->get_countries();
 		if ( ! isset( $countries[ $country ] ) ) {
-			return new \WP_Error( 'srt_invalid_country', __( 'Choose a valid destination country.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_invalid_country', __( 'Choose a valid destination country.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		$value      = $this->parse_decimal( isset( $raw['value'] ) ? $raw['value'] : 0, 2 );
@@ -35,7 +35,7 @@ class Input_Normalizer {
 		$quantity   = $this->parse_quantity( isset( $raw['quantity'] ) ? $raw['quantity'] : 1 );
 		$product_id = $this->parse_product_id( isset( $raw['product_id'] ) ? $raw['product_id'] : 0 );
 		if ( is_wp_error( $value ) || is_wp_error( $weight ) || is_wp_error( $quantity ) || is_wp_error( $product_id ) ) {
-			return new \WP_Error( 'srt_invalid_package', __( 'Enter package values within the supported ranges.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_invalid_package', __( 'Enter package values within the supported ranges.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 		$items = $this->parse_items(
 			isset( $raw['items'] ) ? $raw['items'] : null,
@@ -98,13 +98,13 @@ class Input_Normalizer {
 			$raw_items = json_decode( $raw_items, true );
 		}
 		if ( ! is_array( $raw_items ) || empty( $raw_items ) || count( $raw_items ) > 10 ) {
-			return new \WP_Error( 'srt_invalid_items', __( 'Add between one and ten package items.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_invalid_items', __( 'Add between one and ten package items.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		$items = array();
 		foreach ( $raw_items as $raw_item ) {
 			if ( ! is_array( $raw_item ) ) {
-				return new \WP_Error( 'srt_invalid_items', __( 'Each package item must be valid.', 'shipping-rules-tester-for-woocommerce' ) );
+				return new \WP_Error( 'srt_invalid_items', __( 'Each package item must be valid.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 			}
 
 			$item = $this->normalize_item( $raw_item );
@@ -126,7 +126,7 @@ class Input_Normalizer {
 	private function normalize_item( array $raw_item ) {
 		$source = isset( $raw_item['source'] ) && is_scalar( $raw_item['source'] ) ? sanitize_key( (string) $raw_item['source'] ) : 'custom';
 		if ( ! in_array( $source, array( 'custom', 'product' ), true ) ) {
-			return new \WP_Error( 'srt_invalid_items', __( 'Choose a valid package item type.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_invalid_items', __( 'Choose a valid package item type.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		$product_id     = $this->parse_product_id( isset( $raw_item['product_id'] ) ? $raw_item['product_id'] : 0 );
@@ -138,14 +138,15 @@ class Input_Normalizer {
 		$width          = $this->parse_decimal( isset( $raw_item['width'] ) ? $raw_item['width'] : 0, 3 );
 		$height         = $this->parse_decimal( isset( $raw_item['height'] ) ? $raw_item['height'] : 0, 3 );
 		if ( is_wp_error( $product_id ) || is_wp_error( $value ) || is_wp_error( $weight ) || is_wp_error( $quantity ) || is_wp_error( $shipping_class ) || is_wp_error( $length ) || is_wp_error( $width ) || is_wp_error( $height ) ) {
-			return new \WP_Error( 'srt_invalid_items', __( 'Check the values in each package item.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_invalid_items', __( 'Check the values in each package item.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 		if ( 'product' === $source && $product_id < 1 ) {
-			return new \WP_Error( 'srt_invalid_items', __( 'Choose a saved product or use a synthetic item.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_invalid_items', __( 'Choose a saved product or use a synthetic item.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		return array(
 			'source'            => $source,
+			'legacy_totals'     => isset( $raw_item['totals'] ) && true === $raw_item['totals'],
 			'product_id'        => 'product' === $source ? $product_id : 0,
 			'value'             => wc_format_decimal( $value, 2 ),
 			'weight'            => wc_format_decimal( $weight, 3 ),
