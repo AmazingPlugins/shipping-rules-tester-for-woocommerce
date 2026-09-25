@@ -1,18 +1,5 @@
-#wpbody-content > .notice {
-	box-sizing: border-box;
-	max-width: 620px;
-	margin-left: 0;
-	margin-right: 0;
-	width: 100%;
-}
-
-#wpbody-content > .update-nag {
-	max-width: none;
-}
-
 .srt-wrap {
 	max-width: 1280px;
-	margin-right: 20px;
 }
 
 .srt-app {
