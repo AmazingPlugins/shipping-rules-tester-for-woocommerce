@@ -9,6 +9,13 @@
 			</property>
 		</properties>
 	</rule>
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="ap-shipping-rules-tester-for-woocommerce" />
+			</property>
+		</properties>
+	</rule>
 	<file>shipping-rules-tester-for-woocommerce.php</file>
 	<file>src</file>
 	<file>templates</file>

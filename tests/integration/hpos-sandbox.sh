@@ -13,6 +13,7 @@ WP_IMAGE=${SRT_WP_IMAGE:-wordpress:latest}
 HPOS_MODE=${SRT_HPOS_MODE:-yes}
 WC_VERSION=${SRT_WC_VERSION:-}
 RUN_BROWSER=${SRT_RUN_BROWSER:-no}
+RUN_PLUGIN_CHECK=${SRT_RUN_PLUGIN_CHECK:-no}
 ADMIN_PASSWORD=$(openssl rand -hex 18)
 
 case "$HPOS_MODE" in
@@ -57,7 +58,7 @@ docker run -d "$@" \
 	-e WORDPRESS_DB_USER=wpuser \
 	-e WORDPRESS_DB_PASSWORD=wppass \
 	-e WORDPRESS_DB_NAME=wordpress \
-	-v "$PLUGIN_DIR:/var/www/html/wp-content/plugins/shipping-rules-tester-for-woocommerce:ro" \
+	-v "$PLUGIN_DIR:/var/www/html/wp-content/plugins/ap-shipping-rules-tester-for-woocommerce:ro" \
 	-v "$TEST_DIR/tests:/tmp/srt-tests:ro" \
 	"$WP_IMAGE" >/dev/null
 
@@ -80,7 +81,7 @@ if [ -n "$WC_VERSION" ]; then
 else
 	docker exec "$WP_CONTAINER" wp plugin install woocommerce --activate --allow-root >/dev/null
 fi
-docker exec "$WP_CONTAINER" wp plugin activate shipping-rules-tester-for-woocommerce --allow-root >/dev/null
+docker exec "$WP_CONTAINER" wp plugin activate ap-shipping-rules-tester-for-woocommerce --allow-root >/dev/null
 docker exec "$WP_CONTAINER" wp option update woocommerce_custom_orders_table_enabled "$HPOS_MODE" --allow-root >/dev/null
 
 docker exec "$WP_CONTAINER" wp eval-file \
@@ -111,6 +112,13 @@ if [ "$HPOS_MODE" != "$(docker exec "$WP_CONTAINER" wp option get woocommerce_cu
 fi
 
 echo "WooCommerce order storage sandbox passed ($HPOS_MODE)."
+
+if [ "$RUN_PLUGIN_CHECK" = yes ]; then
+	docker exec "$WP_CONTAINER" wp plugin install plugin-check --activate --allow-root >/dev/null
+	docker exec "$WP_CONTAINER" wp plugin check ap-shipping-rules-tester-for-woocommerce \
+		--require=/var/www/html/wp-content/plugins/plugin-check/cli.php \
+		--allow-root
+fi
 
 if [ "$RUN_BROWSER" = yes ]; then
 	PORT=$(docker port "$WP_CONTAINER" 80/tcp | head -n 1 | sed 's/.*://')

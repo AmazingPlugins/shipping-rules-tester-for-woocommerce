@@ -4,7 +4,7 @@ Tags: woocommerce, shipping, shipping zones, shipping rates
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ Methods that need live cart data or an external provider are listed as skipped. 
 == Installation ==
 
 1. Install and activate WooCommerce.
-2. Upload the `shipping-rules-tester-for-woocommerce` folder to `/wp-content/plugins/`, or install the ZIP from the Plugins screen.
+2. Upload the `ap-shipping-rules-tester-for-woocommerce` folder to `/wp-content/plugins/`, or install the ZIP from the Plugins screen.
 3. Activate the plugin.
 4. Go to **WooCommerce > Shipping Rules Tester**.
 5. Enter a sample destination and package, then choose **Test shipping rules**.
@@ -93,6 +93,10 @@ Yes. The tester does not read or change order data and does not depend on the or
 2. Matched zone, package summary, and shipping method results.
 
 == Changelog ==
+
+= 1.2.4 =
+* Matched translations and the release folder to the assigned WordPress.org slug.
+* Corrected the plugin page URL and removed directory screenshots from the installable ZIP.
 
 = 1.2.3 =
 * Restyled result actions with icons, keyboard focus states, and mobile-friendly buttons.

@@ -79,14 +79,14 @@ class Shipping_Tester {
 			if ( 'product' === $item['source'] ) {
 				$product = wc_get_product( absint( $item['product_id'] ) );
 				if ( ! is_object( $product ) ) {
-					return new \WP_Error( 'srt_invalid_product', __( 'One of the selected products could not be found.', 'shipping-rules-tester-for-woocommerce' ) );
+					return new \WP_Error( 'srt_invalid_product', __( 'One of the selected products could not be found.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 				}
 
 				if ( method_exists( $product, 'needs_shipping' ) && ! $product->needs_shipping() ) {
-					return new \WP_Error( 'srt_non_shippable_product', __( 'Choose products that require shipping.', 'shipping-rules-tester-for-woocommerce' ) );
+					return new \WP_Error( 'srt_non_shippable_product', __( 'Choose products that require shipping.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 				}
 				if ( ! $product->is_type( 'simple' ) && ! $product->is_type( 'variation' ) ) {
-					return new \WP_Error( 'srt_product_type', __( 'Choose a simple product or a specific variation.', 'shipping-rules-tester-for-woocommerce' ) );
+					return new \WP_Error( 'srt_product_type', __( 'Choose a simple product or a specific variation.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 				}
 
 				$net_value = ( new Tax_Context() )->product_value( $product, absint( $item['quantity'] ), $input );
@@ -126,7 +126,7 @@ class Shipping_Tester {
 		$package = $this->package_builder->build( $input, $single_product, $resolved_items );
 		$zone    = \WC_Shipping_Zones::get_zone_matching_package( $package );
 		if ( ! is_a( $zone, 'WC_Shipping_Zone' ) ) {
-			return new \WP_Error( 'srt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'srt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		$methods = $zone->get_shipping_methods( false );
@@ -147,7 +147,7 @@ class Shipping_Tester {
 			);
 			if ( ! $method->is_enabled() ) {
 				$row['status'] = 'disabled';
-				$row['note']   = __( 'Skipped because this shipping method is disabled.', 'shipping-rules-tester-for-woocommerce' );
+				$row['note']   = __( 'Skipped because this shipping method is disabled.', 'ap-shipping-rules-tester-for-woocommerce' );
 				$rows[]        = $row;
 				continue;
 			}
@@ -155,7 +155,7 @@ class Shipping_Tester {
 			$requires_cart = 'free_shipping' === $method->id && method_exists( $method, 'get_option' ) && '' !== $method->get_option( 'requires', '' );
 			if ( ! $requires_cart && in_array( $method->id, self::LOCAL_METHODS, true ) ) {
 				if ( wc_tax_enabled() && wc_string_to_bool( apply_filters( 'woocommerce_shipping_prices_include_tax', false ) ) ) {
-					$row['note'] = __( 'Tax-inclusive shipping extensions need a real checkout test.', 'shipping-rules-tester-for-woocommerce' );
+					$row['note'] = __( 'Tax-inclusive shipping extensions need a real checkout test.', 'ap-shipping-rules-tester-for-woocommerce' );
 					$rows[]      = $row;
 					continue;
 				}
@@ -165,12 +165,12 @@ class Shipping_Tester {
 					$rates      = $calculated['rates'];
 					$tax_known  = $calculated['tax_known'];
 					if ( ! $tax_known ) {
-						$row['note'] = __( 'Shipping cost excludes tax. Billing-address tax cannot be evaluated from a shipping destination.', 'shipping-rules-tester-for-woocommerce' );
+						$row['note'] = __( 'Shipping cost excludes tax. Billing-address tax cannot be evaluated from a shipping destination.', 'ap-shipping-rules-tester-for-woocommerce' );
 					}
 				} catch ( \Throwable $exception ) {
 					$rates         = array();
 					$row['status'] = 'error';
-					$row['note']   = __( 'The method reported an error while testing this package.', 'shipping-rules-tester-for-woocommerce' );
+					$row['note']   = __( 'The method reported an error while testing this package.', 'ap-shipping-rules-tester-for-woocommerce' );
 				}
 				if ( 'error' !== $row['status'] ) {
 					if ( is_array( $rates ) && ! empty( $rates ) ) {
@@ -187,17 +187,17 @@ class Shipping_Tester {
 							$row['cost']   = implode( ', ', $costs );
 						} else {
 							$row['status'] = 'unavailable';
-							$row['note']   = __( 'The method returned a rate that could not be read.', 'shipping-rules-tester-for-woocommerce' );
+							$row['note']   = __( 'The method returned a rate that could not be read.', 'ap-shipping-rules-tester-for-woocommerce' );
 						}
 					} else {
 						$row['status'] = 'no-rate';
-						$row['note']   = __( 'The method did not return a rate for this package.', 'shipping-rules-tester-for-woocommerce' );
+						$row['note']   = __( 'The method did not return a rate for this package.', 'ap-shipping-rules-tester-for-woocommerce' );
 					}
 				}
 			} elseif ( $requires_cart ) {
-				$row['note'] = __( 'Skipped because this free-shipping rule requires live cart or coupon context that a sample package cannot provide.', 'shipping-rules-tester-for-woocommerce' );
+				$row['note'] = __( 'Skipped because this free-shipping rule requires live cart or coupon context that a sample package cannot provide.', 'ap-shipping-rules-tester-for-woocommerce' );
 			} else {
-				$row['note'] = __( 'Skipped because this method may need an external rate provider or product-specific data.', 'shipping-rules-tester-for-woocommerce' );
+				$row['note'] = __( 'Skipped because this method may need an external rate provider or product-specific data.', 'ap-shipping-rules-tester-for-woocommerce' );
 			}
 			$rows[] = $row;
 		}
@@ -250,7 +250,7 @@ class Shipping_Tester {
 		return array(
 			'source'            => 'custom',
 			'id'                => 0,
-			'name'              => __( 'Synthetic item', 'shipping-rules-tester-for-woocommerce' ),
+			'name'              => __( 'Synthetic item', 'ap-shipping-rules-tester-for-woocommerce' ),
 			'type'              => 'custom',
 			'price'             => $quantity > 0 ? (float) $item['value'] / $quantity : 0,
 			'weight'            => $quantity > 0 ? (float) $item['weight'] / $quantity : 0,

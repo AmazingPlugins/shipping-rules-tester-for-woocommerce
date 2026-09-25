@@ -34,7 +34,7 @@ class Tax_Context {
 			$rates = \WC_Tax::get_base_tax_rates( $product->get_tax_class( 'unfiltered' ) );
 		} else {
 			if ( 'billing' === get_option( 'woocommerce_tax_based_on', 'shipping' ) ) {
-				return new \WP_Error( 'srt_billing_price', __( 'This tax-inclusive product needs a billing address to determine its net value. Use a synthetic net package value instead.', 'shipping-rules-tester-for-woocommerce' ) );
+				return new \WP_Error( 'srt_billing_price', __( 'This tax-inclusive product needs a billing address to determine its net value. Use a synthetic net package value instead.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 			}
 			$location              = $this->location( $input, false );
 			$location['tax_class'] = $product->get_tax_class();

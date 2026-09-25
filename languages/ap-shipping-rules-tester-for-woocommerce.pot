@@ -2,17 +2,17 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AP Shipping Rules Tester for WooCommerce 1.2.3\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/shipping-rules-tester-for-woocommerce\n"
+"Project-Id-Version: AP Shipping Rules Tester for WooCommerce 1.2.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ap-shipping-rules-tester-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-24T08:28:28+00:00\n"
+"POT-Creation-Date: 2026-09-25T06:53:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: shipping-rules-tester-for-woocommerce\n"
+"X-Domain: ap-shipping-rules-tester-for-woocommerce\n"
 
 #. Plugin Name of the plugin
 #: shipping-rules-tester-for-woocommerce.php
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: shipping-rules-tester-for-woocommerce.php
-msgid "https://amazingplugins.com/plugins/shipping-rules-tester/"
+msgid "https://amazingplugins.com/plugins/shipping-rules-tester-for-woocommerce/"
 msgstr ""
 
 #. Description of the plugin

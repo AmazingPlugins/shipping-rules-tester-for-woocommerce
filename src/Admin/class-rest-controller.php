@@ -64,7 +64,7 @@ class REST_Controller {
 		$term = $request->get_param( 'search' );
 		$term = null === $term ? '' : $term;
 		if ( ! is_string( $term ) || strlen( $term ) > 100 || ( '' !== trim( $term ) && strlen( trim( $term ) ) < 3 && ! preg_match( '/^[0-9]+$/', trim( $term ) ) ) ) {
-			return new \WP_Error( 'srt_product_search', __( 'Enter a product ID or at least three characters of a name or SKU, up to 100 characters.', 'shipping-rules-tester-for-woocommerce' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'srt_product_search', __( 'Enter a product ID or at least three characters of a name or SKU, up to 100 characters.', 'ap-shipping-rules-tester-for-woocommerce' ), array( 'status' => 400 ) );
 		}
 		$term = sanitize_text_field( $term );
 		$ids  = array();
@@ -121,7 +121,7 @@ class REST_Controller {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return new \WP_Error(
 				'srt_forbidden',
-				__( 'You do not have permission to run this test.', 'shipping-rules-tester-for-woocommerce' ),
+				__( 'You do not have permission to run this test.', 'ap-shipping-rules-tester-for-woocommerce' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -130,7 +130,7 @@ class REST_Controller {
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new \WP_Error(
 				'srt_invalid_nonce',
-				__( 'Security check failed.', 'shipping-rules-tester-for-woocommerce' ),
+				__( 'Security check failed.', 'ap-shipping-rules-tester-for-woocommerce' ),
 				array( 'status' => 403 )
 			);
 		}

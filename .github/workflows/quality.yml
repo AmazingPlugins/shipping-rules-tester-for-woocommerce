@@ -24,10 +24,16 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - name: Build and extract release package
+        run: |
+          scripts/build-release.sh
+          unzip -q dist/*.zip -d dist/extracted
       - name: Run isolated browser and integration suites
         env:
           SRT_RUN_BROWSER: 'yes'
+          SRT_RUN_PLUGIN_CHECK: ${{ matrix.hpos }}
           SRT_HPOS_MODE: ${{ matrix.hpos }}
+          SRT_PLUGIN_DIR: ${{ github.workspace }}/dist/extracted/ap-shipping-rules-tester-for-woocommerce
         run: tests/integration/hpos-sandbox.sh
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -111,4 +117,8 @@ jobs:
           SRT_HPOS_MODE: ${{ matrix.hpos }}
           SRT_WP_IMAGE: wordpress:${{ matrix.wordpress }}
           SRT_WC_VERSION: ${{ matrix.woocommerce }}
-        run: tests/integration/hpos-sandbox.sh
+          SRT_PLUGIN_DIR: ${{ github.workspace }}/dist/extracted/ap-shipping-rules-tester-for-woocommerce
+        run: |
+          scripts/build-release.sh
+          unzip -q dist/*.zip -d dist/extracted
+          tests/integration/hpos-sandbox.sh

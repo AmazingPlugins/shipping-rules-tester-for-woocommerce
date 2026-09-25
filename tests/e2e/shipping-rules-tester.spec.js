@@ -49,7 +49,7 @@ test('runs a local shipping test and renders the result', async ({ page }) => {
   const externalRequests = [];
   const baseOrigin = new URL(process.env.SRT_TEST_URL || 'http://localhost:8089').origin;
   page.on('request', (request) => {
-    if (request.url().includes('/shipping-rules-tester-for-woocommerce/')) {
+    if (request.url().includes('/ap-shipping-rules-tester-for-woocommerce/')) {
       pluginRequests.push(request.url());
     }
   });
