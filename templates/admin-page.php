@@ -12,7 +12,8 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<div class="wrap srt-wrap">
+<div class="wrap">
+<div class="srt-wrap">
 	<div class="srt-app">
 		<header class="srt-hero">
 			<div class="srt-hero-copy">
@@ -229,4 +230,5 @@ defined( 'ABSPATH' ) || exit;
 			<?php endforeach; ?>
 		</select>
 	</div>
+</div>
 </div>

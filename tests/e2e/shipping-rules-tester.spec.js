@@ -207,7 +207,7 @@ test('keeps WordPress notices outside the tester UI', async ({ page }) => {
     container.appendChild(notice);
   });
 
-  const schedulerNotice = page.locator('#wpbody-content > .notice.notice-warning').filter({
+  const schedulerNotice = page.locator('#wpbody-content > .wrap > .notice.notice-warning').filter({
     hasText: 'Action Scheduler: 5 past-due actions found.',
   });
   await expect(schedulerNotice).toBeVisible();
