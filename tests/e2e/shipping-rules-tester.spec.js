@@ -197,7 +197,7 @@ test('reveals destination fields progressively using the selected country region
   await expect(postcode).toHaveValue('');
 });
 
-test('places the unrelated-notice clarification outside the tester UI', async ({ page }) => {
+test('keeps WordPress notices outside the tester UI', async ({ page }) => {
   await openTester(page);
 
   await page.locator('.srt-hero-copy').evaluate((container) => {
@@ -207,31 +207,16 @@ test('places the unrelated-notice clarification outside the tester UI', async ({
     container.appendChild(notice);
   });
 
-  const notice = page.locator('#wpbody-content > .notice.notice-info').filter({
-    hasText: 'About other admin notices:',
-  });
   const schedulerNotice = page.locator('#wpbody-content > .notice.notice-warning').filter({
     hasText: 'Action Scheduler: 5 past-due actions found.',
   });
-  await expect(notice).toContainText('About other admin notices:');
-  await expect(notice).toContainText('unrelated to Shipping Rules Tester');
-  await expect(notice).toContainText('does not schedule tasks or send notifications');
   await expect(schedulerNotice).toBeVisible();
   await expect(page.locator('.srt-wrap .notice')).toHaveCount(0);
-
-  const appearsBeforeTester = await notice.evaluate((element) => (
-    element.compareDocumentPosition(document.querySelector('.srt-wrap')) & Node.DOCUMENT_POSITION_FOLLOWING
-  ));
-  expect(appearsBeforeTester).toBeTruthy();
 
   const schedulerAppearsBeforeTester = await schedulerNotice.evaluate((element) => (
     element.compareDocumentPosition(document.querySelector('.srt-wrap')) & Node.DOCUMENT_POSITION_FOLLOWING
   ));
   expect(schedulerAppearsBeforeTester).toBeTruthy();
-
-  const noticeBoxes = await Promise.all([notice, schedulerNotice].map((panel) => panel.boundingBox()));
-  expect(noticeBoxes[0].x).toBe(noticeBoxes[1].x);
-  expect(noticeBoxes[0].width).toBe(noticeBoxes[1].width);
 });
 
 test('shows a server validation error for out-of-range input', async ({ page }) => {

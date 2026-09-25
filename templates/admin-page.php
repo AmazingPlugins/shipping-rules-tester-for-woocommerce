@@ -12,9 +12,6 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<div class="notice notice-info">
-	<p><strong><?php echo esc_html__( 'About other admin notices:', 'ap-shipping-rules-tester-for-woocommerce' ); ?></strong> <?php echo esc_html__( 'Scheduled Actions and other WordPress or WooCommerce notices are unrelated to Shipping Rules Tester. This plugin does not schedule tasks or send notifications.', 'ap-shipping-rules-tester-for-woocommerce' ); ?></p>
-</div>
 <div class="wrap srt-wrap">
 	<div class="srt-app">
 		<header class="srt-hero">
