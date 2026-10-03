@@ -46,7 +46,7 @@ try {
 		$srt_zones[] = $srt_zone_id;
 	}
 
-	$srt_tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+	$srt_tester = new \AmazingPlugins\APSRT\Shipping\Shipping_Tester();
 	$srt_cases  = array(
 		array( 'country' => 'US', 'state' => 'NY', 'postcode' => '10001', 'zone' => 'SRT postcode zone', 'fallback' => false, 'location' => array( 'type' => 'postcode', 'code' => '10001' ) ),
 		array( 'country' => 'US', 'state' => 'NY', 'postcode' => '10002', 'zone' => 'SRT state zone', 'fallback' => false, 'location' => array( 'type' => 'state', 'code' => 'US:NY' ) ),

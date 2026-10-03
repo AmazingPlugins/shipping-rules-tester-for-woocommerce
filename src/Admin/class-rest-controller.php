@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace AmazingPlugins\SRT\Admin;
+namespace AmazingPlugins\APSRT\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ class REST_Controller {
 	/**
 	 * Shipping tester.
 	 *
-	 * @var \AmazingPlugins\SRT\Shipping\Shipping_Tester
+	 * @var \AmazingPlugins\APSRT\Shipping\Shipping_Tester
 	 */
 	private $tester;
 
@@ -27,7 +27,7 @@ class REST_Controller {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+		$this->tester = new \AmazingPlugins\APSRT\Shipping\Shipping_Tester();
 	}
 
 	/**
@@ -35,7 +35,7 @@ class REST_Controller {
 	 */
 	public function register_routes() {
 		register_rest_route(
-			'srt/v1',
+			'apsrt/v1',
 			'/products',
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -44,7 +44,7 @@ class REST_Controller {
 			)
 		);
 		register_rest_route(
-			'srt/v1',
+			'apsrt/v1',
 			'/test',
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
@@ -64,7 +64,7 @@ class REST_Controller {
 		$term = $request->get_param( 'search' );
 		$term = null === $term ? '' : $term;
 		if ( ! is_string( $term ) || strlen( $term ) > 100 || ( '' !== trim( $term ) && strlen( trim( $term ) ) < 3 && ! preg_match( '/^[0-9]+$/', trim( $term ) ) ) ) {
-			return new \WP_Error( 'srt_product_search', __( 'Enter a product ID or at least three characters of a name or SKU, up to 100 characters.', 'ap-shipping-rules-tester-for-woocommerce' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'apsrt_product_search', __( 'Enter a product ID or at least three characters of a name or SKU, up to 100 characters.', 'ap-shipping-rules-tester-for-woocommerce' ), array( 'status' => 400 ) );
 		}
 		$term = sanitize_text_field( $term );
 		$ids  = array();
@@ -120,7 +120,7 @@ class REST_Controller {
 	public function check_permission() {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return new \WP_Error(
-				'srt_forbidden',
+				'apsrt_forbidden',
 				__( 'You do not have permission to run this test.', 'ap-shipping-rules-tester-for-woocommerce' ),
 				array( 'status' => 403 )
 			);
@@ -129,7 +129,7 @@ class REST_Controller {
 		$nonce = isset( $_SERVER['HTTP_X_WP_NONCE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_WP_NONCE'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new \WP_Error(
-				'srt_invalid_nonce',
+				'apsrt_invalid_nonce',
 				__( 'Security check failed.', 'ap-shipping-rules-tester-for-woocommerce' ),
 				array( 'status' => 403 )
 			);

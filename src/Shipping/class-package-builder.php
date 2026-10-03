@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace AmazingPlugins\SRT\Shipping;
+namespace AmazingPlugins\APSRT\Shipping;
 
 defined( 'ABSPATH' ) || exit;
 

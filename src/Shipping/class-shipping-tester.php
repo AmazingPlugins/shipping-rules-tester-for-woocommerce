@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace AmazingPlugins\SRT\Shipping;
+namespace AmazingPlugins\APSRT\Shipping;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -79,14 +79,14 @@ class Shipping_Tester {
 			if ( 'product' === $item['source'] ) {
 				$product = wc_get_product( absint( $item['product_id'] ) );
 				if ( ! is_object( $product ) ) {
-					return new \WP_Error( 'srt_invalid_product', __( 'One of the selected products could not be found.', 'ap-shipping-rules-tester-for-woocommerce' ) );
+					return new \WP_Error( 'apsrt_invalid_product', __( 'One of the selected products could not be found.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 				}
 
 				if ( method_exists( $product, 'needs_shipping' ) && ! $product->needs_shipping() ) {
-					return new \WP_Error( 'srt_non_shippable_product', __( 'Choose products that require shipping.', 'ap-shipping-rules-tester-for-woocommerce' ) );
+					return new \WP_Error( 'apsrt_non_shippable_product', __( 'Choose products that require shipping.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 				}
 				if ( ! $product->is_type( 'simple' ) && ! $product->is_type( 'variation' ) ) {
-					return new \WP_Error( 'srt_product_type', __( 'Choose a simple product or a specific variation.', 'ap-shipping-rules-tester-for-woocommerce' ) );
+					return new \WP_Error( 'apsrt_product_type', __( 'Choose a simple product or a specific variation.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 				}
 
 				$net_value = ( new Tax_Context() )->product_value( $product, absint( $item['quantity'] ), $input );
@@ -126,7 +126,7 @@ class Shipping_Tester {
 		$package = $this->package_builder->build( $input, $single_product, $resolved_items );
 		$zone    = \WC_Shipping_Zones::get_zone_matching_package( $package );
 		if ( ! is_a( $zone, 'WC_Shipping_Zone' ) ) {
-			return new \WP_Error( 'srt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'ap-shipping-rules-tester-for-woocommerce' ) );
+			return new \WP_Error( 'apsrt_no_zone', __( 'WooCommerce could not match this destination to a shipping zone.', 'ap-shipping-rules-tester-for-woocommerce' ) );
 		}
 
 		$methods = $zone->get_shipping_methods( false );

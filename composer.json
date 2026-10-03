@@ -20,12 +20,12 @@
   },
   "autoload": {
     "psr-4": {
-      "AmazingPlugins\\SRT\\": "src/"
+      "AmazingPlugins\\APSRT\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "AmazingPlugins\\SRT\\Tests\\": "tests/"
+      "AmazingPlugins\\APSRT\\Tests\\": "tests/"
     }
   },
   "scripts": {

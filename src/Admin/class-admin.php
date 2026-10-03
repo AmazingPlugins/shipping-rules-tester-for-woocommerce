@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace AmazingPlugins\SRT\Admin;
+namespace AmazingPlugins\APSRT\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -37,7 +37,7 @@ class Admin {
 		add_action( 'admin_menu', array( $this, 'add_menu' ), 50 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'rest_api_init', array( $this->rest_controller, 'register_routes' ) );
-		add_filter( 'plugin_action_links_' . plugin_basename( SRT_PLUGIN_FILE ), array( $this, 'add_plugin_action_link' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( APSRT_PLUGIN_FILE ), array( $this, 'add_plugin_action_link' ) );
 	}
 
 	/**
@@ -88,17 +88,17 @@ class Admin {
 			return;
 		}
 
-		wp_enqueue_style( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.css', array(), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.css' ) );
-		wp_enqueue_script( 'srt-product-picker', SRT_PLUGIN_URL . 'assets/product-picker.js', array( 'wp-api-fetch' ), (string) filemtime( SRT_PLUGIN_DIR . 'assets/product-picker.js' ), true );
-		wp_enqueue_script( 'srt-admin', SRT_PLUGIN_URL . 'assets/admin.js', array( 'wp-api-fetch', 'srt-product-picker' ), (string) filemtime( SRT_PLUGIN_DIR . 'assets/admin.js' ), true );
+		wp_enqueue_style( 'apsrt-admin', APSRT_PLUGIN_URL . 'assets/admin.css', array(), (string) filemtime( APSRT_PLUGIN_DIR . 'assets/admin.css' ) );
+		wp_enqueue_script( 'apsrt-product-picker', APSRT_PLUGIN_URL . 'assets/product-picker.js', array( 'wp-api-fetch' ), (string) filemtime( APSRT_PLUGIN_DIR . 'assets/product-picker.js' ), true );
+		wp_enqueue_script( 'apsrt-admin', APSRT_PLUGIN_URL . 'assets/admin.js', array( 'wp-api-fetch', 'apsrt-product-picker' ), (string) filemtime( APSRT_PLUGIN_DIR . 'assets/admin.js' ), true );
 		wp_localize_script(
-			'srt-admin',
-			'srtData',
+			'apsrt-admin',
+			'apsrtData',
 			array(
-				'restUrl'       => '/srt/v1/test',
+				'restUrl'       => '/apsrt/v1/test',
 				'nonce'         => wp_create_nonce( 'wp_rest' ),
 				'states'        => WC()->countries->get_states(),
-				'countryMeta'   => wp_json_file_decode( SRT_PLUGIN_DIR . 'assets/countries.json', array( 'associative' => true ) ),
+				'countryMeta'   => wp_json_file_decode( APSRT_PLUGIN_DIR . 'assets/countries.json', array( 'associative' => true ) ),
 				'currency'      => strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) ),
 				'weightUnit'    => sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) ),
 				'dimensionUnit' => sanitize_text_field( (string) get_option( 'woocommerce_dimension_unit', 'cm' ) ),
@@ -206,6 +206,6 @@ class Admin {
 		$currency       = strtoupper( sanitize_text_field( (string) get_option( 'woocommerce_currency', 'USD' ) ) );
 		$weight_unit    = sanitize_text_field( (string) get_option( 'woocommerce_weight_unit', 'kg' ) );
 		$dimension_unit = sanitize_text_field( (string) get_option( 'woocommerce_dimension_unit', 'cm' ) );
-		require SRT_PLUGIN_DIR . 'templates/admin-page.php';
+		require APSRT_PLUGIN_DIR . 'templates/admin-page.php';
 	}
 }

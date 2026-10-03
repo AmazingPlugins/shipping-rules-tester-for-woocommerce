@@ -38,7 +38,7 @@ try {
 	$srt_zone->add_shipping_method( 'local_pickup' );
 	$srt_zone->add_shipping_method( 'free_shipping' );
 
-	$srt_result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+	$srt_result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 		array(
 			'country'  => 'AQ',
 			'postcode' => '00000',

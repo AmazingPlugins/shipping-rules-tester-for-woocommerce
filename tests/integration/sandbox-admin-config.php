@@ -18,7 +18,7 @@ try {
 	foreach ( array( 'kg', 'g', 'lbs', 'oz' ) as $srt_weight_unit ) {
 		update_option( 'woocommerce_weight_unit', $srt_weight_unit );
 		ob_start();
-		( new \AmazingPlugins\SRT\Admin\Admin() )->render_page();
+		( new \AmazingPlugins\APSRT\Admin\Admin() )->render_page();
 		$srt_markup = ob_get_clean();
 
 		if ( false === strpos( $srt_markup, 'Package value (USD)' ) ) {

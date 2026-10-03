@@ -22,12 +22,12 @@ try {
 	$admin = get_users( array( 'role' => 'administrator', 'number' => 1, 'fields' => 'ids' ) );
 	wp_set_current_user( $admin[0] );
 	$_SERVER['HTTP_X_WP_NONCE'] = wp_create_nonce( 'wp_rest' );
-	$suggestions = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/srt/v1/products' ) );
+	$suggestions = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/apsrt/v1/products' ) );
 	if ( 200 !== $suggestions->get_status() || 10 !== count( $suggestions->get_data()['products'] ) ) {
 		throw new RuntimeException( 'Initial catalog suggestions did not return ten products.' );
 	}
 	foreach ( array( 'SRT-VARIATION-UNIQUE' => $ids[0], 'SRT-CATALOG-21' => end( $ids ) ) as $search => $expected ) {
-		$request = new WP_REST_Request( 'GET', '/srt/v1/products' );
+		$request = new WP_REST_Request( 'GET', '/apsrt/v1/products' );
 		$request->set_param( 'search', $search );
 		$response = rest_get_server()->dispatch( $request );
 		$data = $response->get_data();

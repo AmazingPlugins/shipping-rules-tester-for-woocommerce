@@ -10,8 +10,8 @@
 
   function requestProducts(query) {
     return wp.apiFetch({
-      path: '/srt/v1/products?search=' + encodeURIComponent(query),
-      headers: { 'X-WP-Nonce': srtData.nonce }
+      path: '/apsrt/v1/products?search=' + encodeURIComponent(query),
+      headers: { 'X-WP-Nonce': apsrtData.nonce }
     });
   }
 
@@ -38,9 +38,9 @@
     input.className = 'srt-product-search';
     input.maxLength = 100;
     input.autocomplete = 'off';
-    input.placeholder = srtData.i18n.searchHint;
+    input.placeholder = apsrtData.i18n.searchHint;
     input.setAttribute('role', 'combobox');
-    input.setAttribute('aria-label', srtData.i18n.productSearch);
+    input.setAttribute('aria-label', apsrtData.i18n.productSearch);
     input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-expanded', 'false');
     input.setAttribute('aria-controls', id + '-options');
@@ -57,7 +57,7 @@
     list.className = 'srt-product-options';
     list.id = id + '-options';
     list.setAttribute('role', 'listbox');
-    list.setAttribute('aria-label', srtData.i18n.searchTop);
+    list.setAttribute('aria-label', apsrtData.i18n.searchTop);
     popup.append(status, list);
     root.append(input, popup);
     select.after(root);
@@ -68,7 +68,7 @@
 
     function label() {
       var option = select.options[select.selectedIndex];
-      return option ? option.textContent.trim() : srtData.i18n.synthetic;
+      return option ? option.textContent.trim() : apsrtData.i18n.synthetic;
     }
 
     function close() {
@@ -88,7 +88,7 @@
       status.textContent = message;
       activeIndex = -1;
       input.removeAttribute('aria-activedescendant');
-      products.slice(0, 10).concat([{ id: 0, name: srtData.i18n.synthetic }]).forEach(function (product) {
+      products.slice(0, 10).concat([{ id: 0, name: apsrtData.i18n.synthetic }]).forEach(function (product) {
         var option = document.createElement('div');
         option.className = 'srt-product-option' + (product.id === 0 ? ' is-synthetic' : '');
         option.id = id + '-option-' + product.id;
@@ -104,15 +104,15 @@
       var token = ++generation;
       window.clearTimeout(timer);
       var searching = query.length >= 3;
-      render([], searching ? srtData.i18n.searchLoading : srtData.i18n.searchHint);
+      render([], searching ? apsrtData.i18n.searchLoading : apsrtData.i18n.searchHint);
       function fetchResults() {
         (searching ? requestProducts(query) : initialProducts()).then(function (data) {
           if (token !== generation || popup.hidden || !root.isConnected) { return; }
-          var message = searching ? (data.products.length ? srtData.i18n.searchTop : srtData.i18n.searchEmpty) : srtData.i18n.searchHint;
-          render(data.products, data.more && searching ? srtData.i18n.searchMore : message);
+          var message = searching ? (data.products.length ? apsrtData.i18n.searchTop : apsrtData.i18n.searchEmpty) : apsrtData.i18n.searchHint;
+          render(data.products, data.more && searching ? apsrtData.i18n.searchMore : message);
         }).catch(function (error) {
           if (token === generation && !popup.hidden && root.isConnected) {
-            render([], error.message || srtData.i18n.error);
+            render([], error.message || apsrtData.i18n.error);
           }
         });
       }

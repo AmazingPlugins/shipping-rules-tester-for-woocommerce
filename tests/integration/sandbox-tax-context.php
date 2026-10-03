@@ -52,7 +52,7 @@ try {
 	WC()->customer->set_is_vat_exempt( true );
 	WC()->cart = null;
 	$sample_customer = WC()->customer;
-	$tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+	$tester = new \AmazingPlugins\APSRT\Shipping\Shipping_Tester();
 	$input = array( 'country' => 'US', 'state' => 'CA', 'postcode' => '90210', 'value' => '50' );
 	$method = static function ( $result, $id ) {
 		foreach ( $result['methods'] as $row ) {

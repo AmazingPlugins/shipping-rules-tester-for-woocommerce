@@ -368,7 +368,7 @@ test('switching to advanced preserves non-divisible package totals', async ({ pa
   await page.locator('input[name="quantity"]').fill('3');
   await page.locator('#srt-advanced-toggle').click();
   await expect(page.locator('[data-value-label]').first()).toHaveText('Line value (all units)');
-  const response = page.waitForResponse(r => r.url().includes('/srt/v1/test') && r.request().method() === 'POST');
+  const response = page.waitForResponse(r => r.url().includes('/apsrt/v1/test') && r.request().method() === 'POST');
   await page.locator('#srt-submit').click();
   const result = await (await response).json();
   expect(result.package.value).toBe('50.00');
@@ -468,7 +468,7 @@ test('product search is debounced after three characters and ignores stale respo
   await openTester(page);
   await selectCountry(page, 'US');
   const requests = [];
-  await page.route(/\/srt\/v1\/products(?:\?|&)/, async route => {
+  await page.route(/apsrt\/v1\/products|rest_route=(?:%2F|\/)apsrt(?:%2F|\/)v1(?:%2F|\/)products/, async route => {
     const query = new URL(route.request().url()).searchParams.get('search');
     requests.push(query);
     if (query === 'abc') { await new Promise(resolve => setTimeout(resolve, 800)); }

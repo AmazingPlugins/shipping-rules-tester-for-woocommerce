@@ -36,7 +36,7 @@ try {
 	$srt_product_id = $srt_product->save();
 	$srt_test_before = $srt_product_snapshot();
 
-	$srt_result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+	$srt_result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 		array(
 			'country'   => 'US',
 			'product_id' => (string) $srt_product_id,
