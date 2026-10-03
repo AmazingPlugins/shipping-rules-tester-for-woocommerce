@@ -468,7 +468,7 @@ test('product search is debounced after three characters and ignores stale respo
   await openTester(page);
   await selectCountry(page, 'US');
   const requests = [];
-  await page.route(/\/srt\/v1\/products(?:\?|&)/, async route => {
+  await page.route(/apsrt\/v1\/products|rest_route=(?:%2F|\/)apsrt(?:%2F|\/)v1(?:%2F|\/)products/, async route => {
     const query = new URL(route.request().url()).searchParams.get('search');
     requests.push(query);
     if (query === 'abc') { await new Promise(resolve => setTimeout(resolve, 800)); }
