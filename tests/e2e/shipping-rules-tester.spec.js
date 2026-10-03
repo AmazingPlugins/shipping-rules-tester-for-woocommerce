@@ -368,7 +368,7 @@ test('switching to advanced preserves non-divisible package totals', async ({ pa
   await page.locator('input[name="quantity"]').fill('3');
   await page.locator('#srt-advanced-toggle').click();
   await expect(page.locator('[data-value-label]').first()).toHaveText('Line value (all units)');
-  const response = page.waitForResponse(r => r.url().includes('/srt/v1/test') && r.request().method() === 'POST');
+  const response = page.waitForResponse(r => r.url().includes('/apsrt/v1/test') && r.request().method() === 'POST');
   await page.locator('#srt-submit').click();
   const result = await (await response).json();
   expect(result.package.value).toBe('50.00');

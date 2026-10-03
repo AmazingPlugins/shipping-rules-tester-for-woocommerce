@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace AmazingPlugins\SRT\Core;
+namespace AmazingPlugins\APSRT\Core;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ final class Plugin {
 	/**
 	 * Plugin version.
 	 */
-	const VERSION = '1.2.6';
+	const VERSION = '1.2.7';
 
 	/**
 	 * Singleton instance.
@@ -56,15 +56,15 @@ final class Plugin {
 			return;
 		}
 
-		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-input-normalizer.php';
-		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-package-builder.php';
-		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-result-formatter.php';
-		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-tax-context.php';
-		require_once SRT_PLUGIN_DIR . 'src/Shipping/class-shipping-tester.php';
-		require_once SRT_PLUGIN_DIR . 'src/Admin/class-rest-controller.php';
-		require_once SRT_PLUGIN_DIR . 'src/Admin/class-admin.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Shipping/class-input-normalizer.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Shipping/class-package-builder.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Shipping/class-result-formatter.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Shipping/class-tax-context.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Shipping/class-shipping-tester.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Admin/class-rest-controller.php';
+		require_once APSRT_PLUGIN_DIR . 'src/Admin/class-admin.php';
 
-		$admin = new \AmazingPlugins\SRT\Admin\Admin();
+		$admin = new \AmazingPlugins\APSRT\Admin\Admin();
 		$admin->init();
 	}
 }

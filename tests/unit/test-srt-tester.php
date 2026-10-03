@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class Test_SRT_Tester extends TestCase {
 	/** Preserve total-valued imported rows while multiplying new per-unit rows. */
 	public function test_advanced_line_totals_preserve_precision() {
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array(
 			'country' => 'US',
 			'items' => array(
 				array( 'value' => '50', 'weight' => '2', 'quantity' => '3', 'totals' => true ),
@@ -27,7 +27,7 @@ class Test_SRT_Tester extends TestCase {
 
 	/** Unknown tax must never be displayed as zero tax or a definitive total. */
 	public function test_unknown_tax_has_no_total() {
-		$result = ( new \AmazingPlugins\SRT\Shipping\Result_Formatter() )->format_rate( new WC_Shipping_Rate( 10, array( 2 ) ), false );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Result_Formatter() )->format_rate( new WC_Shipping_Rate( 10, array( 2 ) ), false );
 		$this->assertSame( '$10.00', $result['cost'] );
 		$this->assertSame( '', $result['tax'] );
 		$this->assertSame( '', $result['total'] );
@@ -40,7 +40,7 @@ class Test_SRT_Tester extends TestCase {
 			public $tax_status = 'taxable';
 		};
 		WC_Shipping_Zone::$methods = array( $method );
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 		$this->assertSame( 'error', $result['methods'][0]['status'] );
 		$this->assertSame( 'taxable', $method->tax_status );
 	}
@@ -60,7 +60,7 @@ class Test_SRT_Tester extends TestCase {
 	public function test_valid_input_returns_calculated_rate() {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country' => 'US',
 				'state'   => 'ny',
@@ -90,7 +90,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country'  => 'US',
 				'value'    => '50',
@@ -112,7 +112,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country' => 'US',
 				'items'   => array(
@@ -156,7 +156,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country'   => 'US',
 				'product_id' => '42',
@@ -181,14 +181,14 @@ class Test_SRT_Tester extends TestCase {
 	 * Missing and virtual products are rejected before shipping runs.
 	 */
 	public function test_invalid_product_context_returns_error() {
-		$tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+		$tester = new \AmazingPlugins\APSRT\Shipping\Shipping_Tester();
 
 		$missing = $tester->test( array( 'country' => 'US', 'product_id' => '404' ) );
-		$this->assertSame( 'srt_invalid_product', $missing->get_error_code() );
+		$this->assertSame( 'apsrt_invalid_product', $missing->get_error_code() );
 
 		$GLOBALS['srt_test_products'][9] = new SRT_Test_Product( 9, 'Download', '5', '0', false );
 		$virtual = $tester->test( array( 'country' => 'US', 'product_id' => '9' ) );
-		$this->assertSame( 'srt_non_shippable_product', $virtual->get_error_code() );
+		$this->assertSame( 'apsrt_non_shippable_product', $virtual->get_error_code() );
 	}
 
 	/**
@@ -198,7 +198,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country'  => 'us',
 				'state'    => 'n\\y',
@@ -220,7 +220,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( 12.5, array( 1.25 ), 'flat_rate:7' ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( '$12.50', $result['methods'][0]['rates'][0]['cost'] );
 		$this->assertSame( '$1.25', $result['methods'][0]['rates'][0]['tax'] );
@@ -236,7 +236,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'local_pickup', 'Local pickup', array( new WC_Shipping_Rate( 0 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertTrue( $result['methods'][0]['rates'][0]['zero_cost'] );
 	}
@@ -248,7 +248,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array( new WC_Shipping_Rate( array( 'bad' ) ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( 'unavailable', $result['methods'][0]['status'] );
 		$this->assertFalse( $result['methods'][0]['rates'][0]['available'] );
@@ -261,7 +261,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'provider_rate', 'Provider rate', array( new WC_Shipping_Rate( 20 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( 'not-tested', $result['methods'][0]['status'] );
 		$this->assertSame( 0, $method->calls );
@@ -274,7 +274,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Disabled_Method( 'flat_rate', 'Disabled rate', array( new WC_Shipping_Rate( 20 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( 'disabled', $result['methods'][0]['status'] );
 		$this->assertSame( 0, $method->calls );
@@ -286,7 +286,7 @@ class Test_SRT_Tester extends TestCase {
 	public function test_method_exception_is_contained() {
 		WC_Shipping_Zone::$methods = array( new SRT_Test_Throwing_Method( 'flat_rate', 'Broken rate', array() ) );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( 'error', $result['methods'][0]['status'] );
 		$this->assertSame( 'The method reported an error while testing this package.', $result['methods'][0]['note'] );
@@ -299,7 +299,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Method( 'flat_rate', 'Flat rate', array() );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( 'no-rate', $result['methods'][0]['status'] );
 		$this->assertSame( 'The method did not return a rate for this package.', $result['methods'][0]['note'] );
@@ -309,7 +309,7 @@ class Test_SRT_Tester extends TestCase {
 	 * Invalid country is rejected before the shipping API runs.
 	 */
 	public function test_invalid_country_returns_error() {
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'XX' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'XX' ) );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
 		$this->assertSame( 'Choose a valid destination country.', $result->get_error_message() );
@@ -319,7 +319,7 @@ class Test_SRT_Tester extends TestCase {
 	 * Malformed numeric values are rejected instead of silently becoming zero.
 	 */
 	public function test_malformed_numeric_value_returns_error() {
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country' => 'US',
 				'value'   => 'not-a-number',
@@ -328,14 +328,14 @@ class Test_SRT_Tester extends TestCase {
 		);
 
 		$this->assertInstanceOf( WP_Error::class, $result );
-		$this->assertSame( 'srt_invalid_package', $result->get_error_code() );
+		$this->assertSame( 'apsrt_invalid_package', $result->get_error_code() );
 	}
 
 	/**
 	 * Array input is rejected without a PHP warning or type coercion.
 	 */
 	public function test_array_numeric_value_returns_error() {
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country' => 'US',
 				'value'   => array( '50' ),
@@ -352,7 +352,7 @@ class Test_SRT_Tester extends TestCase {
 		$method = new SRT_Test_Free_Shipping_Method( 'free_shipping', 'Free shipping', array( new WC_Shipping_Rate( 0 ) ) );
 		WC_Shipping_Zone::$methods = array( $method );
 
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test( array( 'country' => 'US' ) );
 
 		$this->assertSame( 'not-tested', $result['methods'][0]['status'] );
 		$this->assertSame( 0, $method->calls );
@@ -362,7 +362,7 @@ class Test_SRT_Tester extends TestCase {
 	 * Quantity and decimal bounds are enforced.
 	 */
 	public function test_out_of_range_package_returns_error() {
-		$result = ( new \AmazingPlugins\SRT\Shipping\Shipping_Tester() )->test(
+		$result = ( new \AmazingPlugins\APSRT\Shipping\Shipping_Tester() )->test(
 			array(
 				'country' => 'US',
 				'value'   => '100000.01',
@@ -378,7 +378,7 @@ class Test_SRT_Tester extends TestCase {
 	 * Signed and scientific numeric forms are rejected.
 	 */
 	public function test_unsupported_numeric_forms_return_error() {
-		$tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+		$tester = new \AmazingPlugins\APSRT\Shipping\Shipping_Tester();
 
 		foreach ( array( '-1', '+1', '1e2', '.5' ) as $value ) {
 			$result = $tester->test(

@@ -26,7 +26,7 @@
 
     Array.prototype.forEach.call(countrySelect.options, function (option) {
       var code = option.value;
-      var metadata = (srtData.countryMeta || {})[code] || {};
+      var metadata = (apsrtData.countryMeta || {})[code] || {};
       option.dataset.countryAlias = [option.textContent].concat(metadata.aliases || []).join(' ');
       option.dataset.countryAlpha3 = metadata.alpha3 || '';
       option.dataset.countryDisplayCode = metadata.displayCode || metadata.alpha3 || '';
@@ -153,7 +153,7 @@
         var noResults = document.createElement('div');
         noResults.className = 'srt-country-empty';
         noResults.setAttribute('role', 'status');
-        noResults.textContent = srtData.i18n.noResults;
+        noResults.textContent = apsrtData.i18n.noResults;
         countryOptions.appendChild(noResults);
       }
 
@@ -166,7 +166,7 @@
         countrySelect.value = '';
         countrySelect.dispatchEvent(new Event('change', { bubbles: true }));
       }
-      countrySearch.setCustomValidity(countrySearch.value ? srtData.i18n.chooseFromList : '');
+      countrySearch.setCustomValidity(countrySearch.value ? apsrtData.i18n.chooseFromList : '');
       if (countrySearch.value) {
         countrySearch.setAttribute('aria-invalid', 'true');
       } else {
@@ -275,12 +275,12 @@
 
   function statusLabel(status) {
     var labels = {
-      matched: srtData.i18n.matched,
-      'not-tested': srtData.i18n.notTested,
-      disabled: srtData.i18n.disabled,
-      'no-rate': srtData.i18n.noRate,
-      unavailable: srtData.i18n.unavailable,
-      error: srtData.i18n.errorStatus
+      matched: apsrtData.i18n.matched,
+      'not-tested': apsrtData.i18n.notTested,
+      disabled: apsrtData.i18n.disabled,
+      'no-rate': apsrtData.i18n.noRate,
+      unavailable: apsrtData.i18n.unavailable,
+      error: apsrtData.i18n.errorStatus
     };
     return labels[status] || labels['not-tested'];
   }
@@ -379,8 +379,8 @@
     row.dataset.totals = 'true';
     setRowField(row, 'value', value);
     setRowField(row, 'weight', weight);
-    row.querySelector('[data-value-label]').textContent = srtData.i18n.lineValue;
-    row.querySelector('[data-weight-label]').textContent = srtData.i18n.lineWeight;
+    row.querySelector('[data-value-label]').textContent = apsrtData.i18n.lineValue;
+    row.querySelector('[data-weight-label]').textContent = apsrtData.i18n.lineWeight;
     setRowField(row, 'quantity', quantity);
     setRowField(row, 'shipping_class_id', '0');
     setRowField(row, 'length', '0');
@@ -409,28 +409,28 @@
 
 	var rows = items.map(function (item, index) {
 	  var dimensions = item.dimensions ? [item.dimensions.length, item.dimensions.width, item.dimensions.height].map(formatNumber).join(' × ') : '';
-	  var itemName = item.name || srtData.i18n.syntheticItem;
+	  var itemName = item.name || apsrtData.i18n.syntheticItem;
 	  if (item.id) {
 	    itemName += ' (#' + item.id + ')';
 	  }
 	  var details = [
 	    escapeHtml(item.quantity + ' × ' + itemName),
-        escapeHtml(srtData.i18n.value + ': ' + srtData.currency + ' ' + formatNumber(item.line_value)),
-        escapeHtml(srtData.i18n.weight + ': ' + formatNumber(item.line_weight) + ' ' + srtData.weightUnit)
+        escapeHtml(apsrtData.i18n.value + ': ' + apsrtData.currency + ' ' + formatNumber(item.line_value)),
+        escapeHtml(apsrtData.i18n.weight + ': ' + formatNumber(item.line_weight) + ' ' + apsrtData.weightUnit)
       ];
       if (item.shipping_class) {
-        details.push(escapeHtml(srtData.i18n.shippingClass + ': ' + item.shipping_class));
+        details.push(escapeHtml(apsrtData.i18n.shippingClass + ': ' + item.shipping_class));
       }
       if (item.shipping_class_id) {
-        details.push(escapeHtml(srtData.i18n.shippingClass + ': #' + item.shipping_class_id));
+        details.push(escapeHtml(apsrtData.i18n.shippingClass + ': #' + item.shipping_class_id));
       }
       if (dimensions) {
-        details.push(escapeHtml(srtData.i18n.dimensions + ': ' + dimensions + ' ' + srtData.dimensionUnit));
+        details.push(escapeHtml(apsrtData.i18n.dimensions + ': ' + dimensions + ' ' + apsrtData.dimensionUnit));
       }
-      return '<p><strong>' + escapeHtml(srtData.i18n.item + ' ' + (index + 1)) + ':</strong> ' + details.join(' · ') + '</p>';
+      return '<p><strong>' + escapeHtml(apsrtData.i18n.item + ' ' + (index + 1)) + ':</strong> ' + details.join(' · ') + '</p>';
     }).join('');
 
-    return '<div class="srt-product-details"><h4>' + escapeHtml(srtData.i18n.packageItems) + '</h4>' + rows + '</div>';
+    return '<div class="srt-product-details"><h4>' + escapeHtml(apsrtData.i18n.packageItems) + '</h4>' + rows + '</div>';
   }
 
   function renderRates(method) {
@@ -440,9 +440,9 @@
 
     return '<div class="srt-rate-list">' + method.rates.map(function (rate) {
       var label = rate.id ? rate.id + ': ' : '';
-      var amount = rate.available ? rate.cost + ' + ' + rate.tax + ' ' + srtData.i18n.tax + ' = ' + rate.total : srtData.i18n.unavailable;
+      var amount = rate.available ? rate.cost + ' + ' + rate.tax + ' ' + apsrtData.i18n.tax + ' = ' + rate.total : apsrtData.i18n.unavailable;
       if (rate.available && rate.tax_known === false) {
-        amount = rate.cost + ' · ' + srtData.i18n.taxNotTested;
+        amount = rate.cost + ' · ' + apsrtData.i18n.taxNotTested;
       }
       return '<span class="srt-rate-chip"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(amount) + '</span></span>';
     }).join('') + '</div>';
@@ -450,14 +450,14 @@
 
   function renderMethods(methods) {
     if (!methods.length) {
-      return '<p class="srt-method-note">' + escapeHtml(srtData.i18n.noMethods) + '</p>';
+      return '<p class="srt-method-note">' + escapeHtml(apsrtData.i18n.noMethods) + '</p>';
     }
 
     return '<div class="srt-method-list">' + methods.map(function (method) {
       var status = method.status || 'not-tested';
       var details = method.note || '';
       if (method.rates && method.rates.length && method.rates.every(function (rate) { return rate.available && rate.zero_cost; })) {
-        details += (details ? ' ' : '') + srtData.i18n.zeroCost;
+        details += (details ? ' ' : '') + apsrtData.i18n.zeroCost;
       }
       return '<article class="srt-method-card ' + statusClass(status) + '">' +
         '<div class="srt-method-head"><h4>' + escapeHtml(method.id) + '</h4><span class="srt-method-status ' + statusClass(status) + '">' + escapeHtml(statusLabel(status)) + '</span></div>' +
@@ -476,8 +476,8 @@
     }, 0);
     var packageData = data.package || {};
     var destination = [packageData.country, packageData.state, packageData.postcode, packageData.city].filter(function (value) { return value; }).join(', ');
-    var zone = data.fallback ? data.zone + ' · ' + srtData.i18n.fallback : data.zone;
-    var scenarioTitle = srtData.i18n.scenario.replace('%d', String(index));
+    var zone = data.fallback ? data.zone + ' · ' + apsrtData.i18n.fallback : data.zone;
+    var scenarioTitle = apsrtData.i18n.scenario.replace('%d', String(index));
     var zoneRules = '';
 
     if (data.zone_locations && data.zone_locations.length) {
@@ -485,15 +485,15 @@
         return escapeHtml(location.type + ': ' + location.code);
       }).join(', ');
     } else if (data.fallback) {
-      zoneRules = escapeHtml(srtData.i18n.fallbackRule);
+      zoneRules = escapeHtml(apsrtData.i18n.fallbackRule);
     }
 
     return '<section class="srt-scenario" aria-labelledby="srt-scenario-' + index + '">' +
       '<div class="srt-result-panel">' +
-      '<div class="srt-result-header"><div><span class="srt-result-kicker">' + escapeHtml(srtData.i18n.matchedZone) + '</span><h2 id="srt-scenario-' + index + '">' + escapeHtml(zone) + '</h2></div><span class="srt-zone-badge">' + escapeHtml(scenarioTitle) + '</span></div>' +
-      '<div class="srt-result-stats"><div class="srt-result-stat"><span>' + escapeHtml(srtData.i18n.itemsChecked) + '</span><strong>' + escapeHtml(String(items.length)) + '</strong></div><div class="srt-result-stat"><span>' + escapeHtml(srtData.i18n.methodsChecked) + '</span><strong>' + escapeHtml(String(methods.length)) + '</strong></div><div class="srt-result-stat"><span>' + escapeHtml(srtData.i18n.ratesFound) + '</span><strong>' + escapeHtml(String(rates)) + '</strong></div></div>' +
-      '<div class="srt-result-body"><div class="srt-result-context"><p><strong>' + escapeHtml(srtData.i18n.destination) + ':</strong> ' + escapeHtml(destination || srtData.i18n.countryOnly) + '</p><p><strong>' + escapeHtml(srtData.i18n.packageTotals) + ':</strong> ' + escapeHtml(srtData.currency + ' ' + formatNumber(packageData.value) + ' · ' + formatNumber(packageData.weight) + ' ' + srtData.weightUnit + ' · ' + packageData.quantity + ' ' + srtData.i18n.quantity) + '</p>' + (zoneRules ? '<p><strong>' + escapeHtml(srtData.i18n.zoneRules) + ':</strong> ' + zoneRules + '</p>' : '') + renderItemDetails(data) + '</div>' +
-      '<div class="srt-result-block"><h3>' + escapeHtml(srtData.i18n.methods) + '</h3>' + renderMethods(methods) + '</div></div>' +
+      '<div class="srt-result-header"><div><span class="srt-result-kicker">' + escapeHtml(apsrtData.i18n.matchedZone) + '</span><h2 id="srt-scenario-' + index + '">' + escapeHtml(zone) + '</h2></div><span class="srt-zone-badge">' + escapeHtml(scenarioTitle) + '</span></div>' +
+      '<div class="srt-result-stats"><div class="srt-result-stat"><span>' + escapeHtml(apsrtData.i18n.itemsChecked) + '</span><strong>' + escapeHtml(String(items.length)) + '</strong></div><div class="srt-result-stat"><span>' + escapeHtml(apsrtData.i18n.methodsChecked) + '</span><strong>' + escapeHtml(String(methods.length)) + '</strong></div><div class="srt-result-stat"><span>' + escapeHtml(apsrtData.i18n.ratesFound) + '</span><strong>' + escapeHtml(String(rates)) + '</strong></div></div>' +
+      '<div class="srt-result-body"><div class="srt-result-context"><p><strong>' + escapeHtml(apsrtData.i18n.destination) + ':</strong> ' + escapeHtml(destination || apsrtData.i18n.countryOnly) + '</p><p><strong>' + escapeHtml(apsrtData.i18n.packageTotals) + ':</strong> ' + escapeHtml(apsrtData.currency + ' ' + formatNumber(packageData.value) + ' · ' + formatNumber(packageData.weight) + ' ' + apsrtData.weightUnit + ' · ' + packageData.quantity + ' ' + apsrtData.i18n.quantity) + '</p>' + (zoneRules ? '<p><strong>' + escapeHtml(apsrtData.i18n.zoneRules) + ':</strong> ' + zoneRules + '</p>' : '') + renderItemDetails(data) + '</div>' +
+      '<div class="srt-result-block"><h3>' + escapeHtml(apsrtData.i18n.methods) + '</h3>' + renderMethods(methods) + '</div></div>' +
       '</div></section>';
   }
 
@@ -506,7 +506,7 @@
     var content = data.map(function (scenario, index) {
       return renderScenario(scenario, index + 1);
     }).join('');
-    container.innerHTML = '<div class="srt-comparison"><h2>' + escapeHtml(srtData.i18n.comparison) + '</h2><p class="srt-side-description">' + escapeHtml(srtData.i18n.comparisonHint) + '</p>' + content + '</div>';
+    container.innerHTML = '<div class="srt-comparison"><h2>' + escapeHtml(apsrtData.i18n.comparison) + '</h2><p class="srt-side-description">' + escapeHtml(apsrtData.i18n.comparisonHint) + '</p>' + content + '</div>';
     container.hidden = false;
   }
 
@@ -630,7 +630,7 @@
         cityField.value = '';
         stateField.options.length = 1;
 
-        var countryStates = srtData.states && srtData.states[selectedCountry] ? srtData.states[selectedCountry] : {};
+        var countryStates = apsrtData.states && apsrtData.states[selectedCountry] ? apsrtData.states[selectedCountry] : {};
         Object.keys(countryStates).forEach(function (stateCode) {
           var option = document.createElement('option');
           option.value = stateCode;
@@ -667,8 +667,8 @@
 
     function updateLiveSummary() {
       var selectedCountryOption = countryField.options[countryField.selectedIndex];
-      var countryLabel = selectedCountryOption ? (selectedCountryOption.dataset.countryName || selectedCountryOption.text) : srtData.i18n.countryOnly;
-      var selectedProduct = productSelect.options[productSelect.selectedIndex] ? productSelect.options[productSelect.selectedIndex].text : srtData.i18n.syntheticItem;
+      var countryLabel = selectedCountryOption ? (selectedCountryOption.dataset.countryName || selectedCountryOption.text) : apsrtData.i18n.countryOnly;
+      var selectedProduct = productSelect.options[productSelect.selectedIndex] ? productSelect.options[productSelect.selectedIndex].text : apsrtData.i18n.syntheticItem;
       var summaryPackage = document.getElementById('srt-summary-package');
       var summaryDestination = document.getElementById('srt-summary-destination');
       var summaryTotals = document.getElementById('srt-summary-totals');
@@ -681,15 +681,15 @@
         value = rows.reduce(function (total, item) { return total + ((parseFloat(item.value) || 0) * (item.totals ? 1 : (parseInt(item.quantity, 10) || 1))); }, 0);
         weight = rows.reduce(function (total, item) { return total + ((parseFloat(item.weight) || 0) * (item.totals ? 1 : (parseInt(item.quantity, 10) || 1))); }, 0);
         quantity = rows.reduce(function (total, item) { return total + (parseInt(item.quantity, 10) || 1); }, 0);
-        summaryPackage.textContent = srtData.i18n.packageItems;
+        summaryPackage.textContent = apsrtData.i18n.packageItems;
       } else {
-        summaryPackage.textContent = productSelect.value !== '0' ? selectedProduct : srtData.i18n.syntheticItem;
+        summaryPackage.textContent = productSelect.value !== '0' ? selectedProduct : apsrtData.i18n.syntheticItem;
       }
 
-      summaryDestination.textContent = countryField.value ? countryLabel : srtData.i18n.chooseCountry;
-      summaryTotals.textContent = formatNumber(value) + ' ' + srtData.currency + ' · ' + formatNumber(weight) + ' ' + srtData.weightUnit + ' · ' + quantity + ' ' + srtData.i18n.quantity;
+      summaryDestination.textContent = countryField.value ? countryLabel : apsrtData.i18n.chooseCountry;
+      summaryTotals.textContent = formatNumber(value) + ' ' + apsrtData.currency + ' · ' + formatNumber(weight) + ' ' + apsrtData.weightUnit + ' · ' + quantity + ' ' + apsrtData.i18n.quantity;
       if ((!advancedPanel.hidden && getRows().some(function (row) { return readRow(row).source === 'product'; })) || (advancedPanel.hidden && productSelect.value !== '0')) {
-        summaryTotals.textContent = srtData.i18n.productPending;
+        summaryTotals.textContent = apsrtData.i18n.productPending;
       }
     }
 
@@ -717,8 +717,8 @@
       }
       var row = itemTemplate.cloneNode(true);
       row.dataset.totals = 'false';
-      row.querySelector('[data-value-label]').textContent = srtData.i18n.unitValue;
-      row.querySelector('[data-weight-label]').textContent = srtData.i18n.unitWeight;
+      row.querySelector('[data-value-label]').textContent = apsrtData.i18n.unitValue;
+      row.querySelector('[data-weight-label]').textContent = apsrtData.i18n.unitWeight;
       setRowField(row, 'source', 'custom');
       setRowField(row, 'product_id', '0');
       setRowField(row, 'value', '0');
@@ -745,7 +745,7 @@
       setAdvancedFieldsRequired(willOpen);
       advancedPanel.hidden = !willOpen;
       advancedToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-      advancedToggle.querySelector('.srt-toggle-label').textContent = willOpen ? srtData.i18n.hideAdvanced : srtData.i18n.advanced;
+      advancedToggle.querySelector('.srt-toggle-label').textContent = willOpen ? apsrtData.i18n.hideAdvanced : apsrtData.i18n.advanced;
       updateProductInputs();
     });
 
@@ -845,16 +845,16 @@
       makePayload(form, advancedPanel);
       results.hidden = true;
       results.innerHTML = '';
-      setStatus(srtData.i18n.testing, 'loading');
+      setStatus(apsrtData.i18n.testing, 'loading');
       form.setAttribute('aria-busy', 'true');
       button.disabled = true;
-      submitLabel.textContent = srtData.i18n.testingShort;
+      submitLabel.textContent = apsrtData.i18n.testingShort;
 
       wp.apiFetch({
-        path: srtData.restUrl,
+        path: apsrtData.restUrl,
         method: 'POST',
         headers: {
-          'X-WP-Nonce': srtData.nonce
+          'X-WP-Nonce': apsrtData.nonce
         },
         data: getFormData(form)
       }).then(function (data) {
@@ -868,11 +868,11 @@
         updateComparisonControls();
         showFocusedResult();
       }).catch(function (error) {
-        setStatus(error && error.message ? error.message : srtData.i18n.error, 'error');
+        setStatus(error && error.message ? error.message : apsrtData.i18n.error, 'error');
       }).finally(function () {
         form.removeAttribute('aria-busy');
         button.disabled = false;
-        submitLabel.textContent = srtData.i18n.testButton;
+        submitLabel.textContent = apsrtData.i18n.testButton;
       });
     });
 
@@ -884,7 +884,7 @@
       currentResult = null;
       results.hidden = true;
       results.innerHTML = '';
-      setStatus(srtData.i18n.kept, 'success');
+      setStatus(apsrtData.i18n.kept, 'success');
       updateComparisonControls();
       showEditor();
     });
@@ -924,7 +924,7 @@
       advancedInitialized = false;
       advancedPanel.hidden = true;
       advancedToggle.setAttribute('aria-expanded', 'false');
-      advancedToggle.querySelector('.srt-toggle-label').textContent = srtData.i18n.advanced;
+      advancedToggle.querySelector('.srt-toggle-label').textContent = apsrtData.i18n.advanced;
       updateRowNumbers();
       setAdvancedFieldsRequired(false);
       updateProductInputs();

@@ -38,7 +38,7 @@ $srt_http_callback = static function ( $pre, $args, $url ) use ( &$srt_http_requ
 };
 add_filter( 'pre_http_request', $srt_http_callback, 10, 3 );
 
-$srt_tester = new \AmazingPlugins\SRT\Shipping\Shipping_Tester();
+$srt_tester = new \AmazingPlugins\APSRT\Shipping\Shipping_Tester();
 $srt_result = $srt_tester->test(
 	array(
 		'country'  => 'US',
@@ -67,7 +67,7 @@ if ( $srt_options_before !== $srt_options_after || $srt_orders_before !== $srt_o
 	$srt_fail( 'The tester changed WooCommerce options, orders, or products.' );
 }
 
-$srt_request  = new WP_REST_Request( 'POST', '/srt/v1/test' );
+$srt_request  = new WP_REST_Request( 'POST', '/apsrt/v1/test' );
 $srt_response = rest_get_server()->dispatch( $srt_request );
 if ( 403 !== $srt_response->get_status() ) {
 	$srt_fail( 'The REST route did not reject an unauthenticated request.' );
@@ -95,9 +95,9 @@ if ( is_wp_error( $srt_limited_user_id ) ) {
 $srt_limited_user_created = empty( $srt_limited_users );
 wp_set_current_user( $srt_limited_user_id );
 $_SERVER['HTTP_X_WP_NONCE'] = wp_create_nonce( 'wp_rest' );
-$srt_capability_request  = new WP_REST_Request( 'POST', '/srt/v1/test' );
+$srt_capability_request  = new WP_REST_Request( 'POST', '/apsrt/v1/test' );
 $srt_capability_response = rest_get_server()->dispatch( $srt_capability_request );
-if ( 403 !== $srt_capability_response->get_status() || 'srt_forbidden' !== $srt_capability_response->get_data()['code'] ) {
+if ( 403 !== $srt_capability_response->get_status() || 'apsrt_forbidden' !== $srt_capability_response->get_data()['code'] ) {
 	$srt_fail( 'The REST route did not reject a user without manage_woocommerce.' );
 }
 if ( $srt_limited_user_created ) {
@@ -106,9 +106,9 @@ if ( $srt_limited_user_created ) {
 
 wp_set_current_user( $srt_admin_user_id );
 $_SERVER['HTTP_X_WP_NONCE'] = 'invalid';
-$srt_nonce_request  = new WP_REST_Request( 'POST', '/srt/v1/test' );
+$srt_nonce_request  = new WP_REST_Request( 'POST', '/apsrt/v1/test' );
 $srt_nonce_response = rest_get_server()->dispatch( $srt_nonce_request );
-if ( 403 !== $srt_nonce_response->get_status() || 'srt_invalid_nonce' !== $srt_nonce_response->get_data()['code'] ) {
+if ( 403 !== $srt_nonce_response->get_status() || 'apsrt_invalid_nonce' !== $srt_nonce_response->get_data()['code'] ) {
 	$srt_fail( 'The REST route did not reject an invalid nonce.' );
 }
 wp_set_current_user( 0 );
