@@ -62,7 +62,7 @@ class Package_Builder {
 				$product_id = absint( $item_product->get_parent_id() );
 			}
 
-			$key              = 0 === $index ? 'srt-sample-item' : 'srt-sample-item-' . ( $index + 1 );
+			$key              = 0 === $index ? 'apsrt-sample-item' : 'apsrt-sample-item-' . ( $index + 1 );
 			$contents[ $key ] = array(
 				'key'               => $key,
 				'product_id'        => $product_id,

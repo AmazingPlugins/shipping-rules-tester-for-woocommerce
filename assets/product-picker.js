@@ -25,17 +25,17 @@
     return suggestions;
   }
 
-  window.srtCreateProductPicker = function (select) {
-    if (select.srtPicker) { return select.srtPicker; }
-    var id = select.id || 'srt-item-product-' + (++nextID);
+  window.apsrtCreateProductPicker = function (select) {
+    if (select.apsrtPicker) { return select.apsrtPicker; }
+    var id = select.id || 'apsrt-item-product-' + (++nextID);
     select.id = id;
     select.hidden = true;
     var root = document.createElement('div');
-    root.className = 'srt-product-picker';
+    root.className = 'apsrt-product-picker';
     var input = document.createElement('input');
     input.type = 'search';
     input.id = id + '-search';
-    input.className = 'srt-product-search';
+    input.className = 'apsrt-product-search';
     input.maxLength = 100;
     input.autocomplete = 'off';
     input.placeholder = apsrtData.i18n.searchHint;
@@ -46,15 +46,15 @@
     input.setAttribute('aria-controls', id + '-options');
 
     var popup = document.createElement('div');
-    popup.className = 'srt-product-popover';
+    popup.className = 'apsrt-product-popover';
     popup.hidden = true;
     var status = document.createElement('p');
-    status.className = 'srt-product-search-status';
+    status.className = 'apsrt-product-search-status';
     status.setAttribute('role', 'status');
     status.id = id + '-hint';
     input.setAttribute('aria-describedby', status.id);
     var list = document.createElement('div');
-    list.className = 'srt-product-options';
+    list.className = 'apsrt-product-options';
     list.id = id + '-options';
     list.setAttribute('role', 'listbox');
     list.setAttribute('aria-label', apsrtData.i18n.searchTop);
@@ -90,7 +90,7 @@
       input.removeAttribute('aria-activedescendant');
       products.slice(0, 10).concat([{ id: 0, name: apsrtData.i18n.synthetic }]).forEach(function (product) {
         var option = document.createElement('div');
-        option.className = 'srt-product-option' + (product.id === 0 ? ' is-synthetic' : '');
+        option.className = 'apsrt-product-option' + (product.id === 0 ? ' is-synthetic' : '');
         option.id = id + '-option-' + product.id;
         option.dataset.productId = String(product.id);
         option.textContent = product.name;
@@ -188,7 +188,7 @@
     select.addEventListener('change', sync);
 
     var api = { close: close, sync: sync };
-    select.srtPicker = api;
+    select.apsrtPicker = api;
     sync();
     return api;
   };

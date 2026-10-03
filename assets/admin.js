@@ -5,7 +5,7 @@
   'use strict';
 
   function moveExternalAdminNotices() {
-    var wrapper = document.querySelector('.srt-wrap');
+    var wrapper = document.querySelector('.apsrt-wrap');
     if (!wrapper || !wrapper.parentNode) {
       return;
     }
@@ -17,9 +17,9 @@
 
   function setupCountryCombobox() {
     var countrySelect = document.querySelector('select[name="country"]');
-    var countrySearch = document.getElementById('srt-country-search');
-    var countryOptions = document.getElementById('srt-country-options');
-    var countryPicker = document.querySelector('.srt-country-picker');
+    var countrySearch = document.getElementById('apsrt-country-search');
+    var countryOptions = document.getElementById('apsrt-country-options');
+    var countryPicker = document.querySelector('.apsrt-country-picker');
     if (!countrySelect || !countrySearch || !countryOptions || !countryPicker) {
       return;
     }
@@ -133,14 +133,14 @@
 
       matchingOptions.forEach(function (option) {
         var result = document.createElement('div');
-        result.className = 'srt-country-option';
-        result.id = 'srt-country-option-' + option.value.toLowerCase();
+        result.className = 'apsrt-country-option';
+        result.id = 'apsrt-country-option-' + option.value.toLowerCase();
         result.setAttribute('role', 'option');
         result.setAttribute('aria-selected', option.value === countrySelect.value ? 'true' : 'false');
         result.dataset.countryCode = option.value;
         if (option.dataset.countryFlag) {
           var flag = document.createElement('span');
-          flag.className = 'srt-country-flag';
+          flag.className = 'apsrt-country-flag';
           flag.setAttribute('aria-hidden', 'true');
           flag.dataset.flag = option.dataset.countryFlag;
           result.appendChild(flag);
@@ -151,7 +151,7 @@
 
       if (!matchingOptions.length) {
         var noResults = document.createElement('div');
-        noResults.className = 'srt-country-empty';
+        noResults.className = 'apsrt-country-empty';
         noResults.setAttribute('role', 'status');
         noResults.textContent = apsrtData.i18n.noResults;
         countryOptions.appendChild(noResults);
@@ -252,7 +252,7 @@
   moveExternalAdminNotices();
 
   var adminNoticesObserver = new MutationObserver(moveExternalAdminNotices);
-  var testerWrapper = document.querySelector('.srt-wrap');
+  var testerWrapper = document.querySelector('.apsrt-wrap');
   if (testerWrapper) {
     adminNoticesObserver.observe(testerWrapper, { childList: true, subtree: true });
   }
@@ -286,7 +286,7 @@
   }
 
   function getRows() {
-    return Array.prototype.slice.call(document.querySelectorAll('#srt-items-list [data-item-row]'));
+    return Array.prototype.slice.call(document.querySelectorAll('#apsrt-items-list [data-item-row]'));
   }
 
   function getRowField(row, field) {
@@ -322,7 +322,7 @@
 
     if (productSelect) {
       productSelect.disabled = false;
-      if (productSelect.srtPicker) { productSelect.srtPicker.sync(); }
+      if (productSelect.apsrtPicker) { productSelect.apsrtPicker.sync(); }
     }
     [value, weight, shippingClass].forEach(function (field) {
       if (field) {
@@ -337,8 +337,8 @@
   function updateRowNumbers() {
     var rows = getRows();
     rows.forEach(function (row, index) {
-      var number = row.querySelector('.srt-item-number');
-      var remove = row.querySelector('.srt-remove-item');
+      var number = row.querySelector('.apsrt-item-number');
+      var remove = row.querySelector('.apsrt-remove-item');
       if (number) {
         number.textContent = String(index + 1);
       }
@@ -365,7 +365,7 @@
   }
 
   function syncFirstRowFromQuick(form, row) {
-    var quickProduct = form.querySelector('#srt-product');
+    var quickProduct = form.querySelector('#apsrt-product');
     var quickValue = form.querySelector('input[name="value"]');
     var quickWeight = form.querySelector('input[name="weight"]');
     var quickQuantity = form.querySelector('input[name="quantity"]');
@@ -390,7 +390,7 @@
   }
 
   function makePayload(form, advancedPanel) {
-    var payload = form.querySelector('#srt-items-payload');
+    var payload = form.querySelector('#apsrt-items-payload');
     if (!advancedPanel.hidden) {
       payload.value = JSON.stringify(getRows().map(readRow));
     } else {
@@ -430,7 +430,7 @@
       return '<p><strong>' + escapeHtml(apsrtData.i18n.item + ' ' + (index + 1)) + ':</strong> ' + details.join(' · ') + '</p>';
     }).join('');
 
-    return '<div class="srt-product-details"><h4>' + escapeHtml(apsrtData.i18n.packageItems) + '</h4>' + rows + '</div>';
+    return '<div class="apsrt-product-details"><h4>' + escapeHtml(apsrtData.i18n.packageItems) + '</h4>' + rows + '</div>';
   }
 
   function renderRates(method) {
@@ -438,31 +438,31 @@
       return '';
     }
 
-    return '<div class="srt-rate-list">' + method.rates.map(function (rate) {
+    return '<div class="apsrt-rate-list">' + method.rates.map(function (rate) {
       var label = rate.id ? rate.id + ': ' : '';
       var amount = rate.available ? rate.cost + ' + ' + rate.tax + ' ' + apsrtData.i18n.tax + ' = ' + rate.total : apsrtData.i18n.unavailable;
       if (rate.available && rate.tax_known === false) {
         amount = rate.cost + ' · ' + apsrtData.i18n.taxNotTested;
       }
-      return '<span class="srt-rate-chip"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(amount) + '</span></span>';
+      return '<span class="apsrt-rate-chip"><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(amount) + '</span></span>';
     }).join('') + '</div>';
   }
 
   function renderMethods(methods) {
     if (!methods.length) {
-      return '<p class="srt-method-note">' + escapeHtml(apsrtData.i18n.noMethods) + '</p>';
+      return '<p class="apsrt-method-note">' + escapeHtml(apsrtData.i18n.noMethods) + '</p>';
     }
 
-    return '<div class="srt-method-list">' + methods.map(function (method) {
+    return '<div class="apsrt-method-list">' + methods.map(function (method) {
       var status = method.status || 'not-tested';
       var details = method.note || '';
       if (method.rates && method.rates.length && method.rates.every(function (rate) { return rate.available && rate.zero_cost; })) {
         details += (details ? ' ' : '') + apsrtData.i18n.zeroCost;
       }
-      return '<article class="srt-method-card ' + statusClass(status) + '">' +
-        '<div class="srt-method-head"><h4>' + escapeHtml(method.id) + '</h4><span class="srt-method-status ' + statusClass(status) + '">' + escapeHtml(statusLabel(status)) + '</span></div>' +
+      return '<article class="apsrt-method-card ' + statusClass(status) + '">' +
+        '<div class="apsrt-method-head"><h4>' + escapeHtml(method.id) + '</h4><span class="apsrt-method-status ' + statusClass(status) + '">' + escapeHtml(statusLabel(status)) + '</span></div>' +
         renderRates(method) +
-        (details ? '<p class="srt-method-note">' + escapeHtml(details) + '</p>' : '') +
+        (details ? '<p class="apsrt-method-note">' + escapeHtml(details) + '</p>' : '') +
         '</article>';
     }).join('') + '</div>';
   }
@@ -488,12 +488,12 @@
       zoneRules = escapeHtml(apsrtData.i18n.fallbackRule);
     }
 
-    return '<section class="srt-scenario" aria-labelledby="srt-scenario-' + index + '">' +
-      '<div class="srt-result-panel">' +
-      '<div class="srt-result-header"><div><span class="srt-result-kicker">' + escapeHtml(apsrtData.i18n.matchedZone) + '</span><h2 id="srt-scenario-' + index + '">' + escapeHtml(zone) + '</h2></div><span class="srt-zone-badge">' + escapeHtml(scenarioTitle) + '</span></div>' +
-      '<div class="srt-result-stats"><div class="srt-result-stat"><span>' + escapeHtml(apsrtData.i18n.itemsChecked) + '</span><strong>' + escapeHtml(String(items.length)) + '</strong></div><div class="srt-result-stat"><span>' + escapeHtml(apsrtData.i18n.methodsChecked) + '</span><strong>' + escapeHtml(String(methods.length)) + '</strong></div><div class="srt-result-stat"><span>' + escapeHtml(apsrtData.i18n.ratesFound) + '</span><strong>' + escapeHtml(String(rates)) + '</strong></div></div>' +
-      '<div class="srt-result-body"><div class="srt-result-context"><p><strong>' + escapeHtml(apsrtData.i18n.destination) + ':</strong> ' + escapeHtml(destination || apsrtData.i18n.countryOnly) + '</p><p><strong>' + escapeHtml(apsrtData.i18n.packageTotals) + ':</strong> ' + escapeHtml(apsrtData.currency + ' ' + formatNumber(packageData.value) + ' · ' + formatNumber(packageData.weight) + ' ' + apsrtData.weightUnit + ' · ' + packageData.quantity + ' ' + apsrtData.i18n.quantity) + '</p>' + (zoneRules ? '<p><strong>' + escapeHtml(apsrtData.i18n.zoneRules) + ':</strong> ' + zoneRules + '</p>' : '') + renderItemDetails(data) + '</div>' +
-      '<div class="srt-result-block"><h3>' + escapeHtml(apsrtData.i18n.methods) + '</h3>' + renderMethods(methods) + '</div></div>' +
+    return '<section class="apsrt-scenario" aria-labelledby="apsrt-scenario-' + index + '">' +
+      '<div class="apsrt-result-panel">' +
+      '<div class="apsrt-result-header"><div><span class="apsrt-result-kicker">' + escapeHtml(apsrtData.i18n.matchedZone) + '</span><h2 id="apsrt-scenario-' + index + '">' + escapeHtml(zone) + '</h2></div><span class="apsrt-zone-badge">' + escapeHtml(scenarioTitle) + '</span></div>' +
+      '<div class="apsrt-result-stats"><div class="apsrt-result-stat"><span>' + escapeHtml(apsrtData.i18n.itemsChecked) + '</span><strong>' + escapeHtml(String(items.length)) + '</strong></div><div class="apsrt-result-stat"><span>' + escapeHtml(apsrtData.i18n.methodsChecked) + '</span><strong>' + escapeHtml(String(methods.length)) + '</strong></div><div class="apsrt-result-stat"><span>' + escapeHtml(apsrtData.i18n.ratesFound) + '</span><strong>' + escapeHtml(String(rates)) + '</strong></div></div>' +
+      '<div class="apsrt-result-body"><div class="apsrt-result-context"><p><strong>' + escapeHtml(apsrtData.i18n.destination) + ':</strong> ' + escapeHtml(destination || apsrtData.i18n.countryOnly) + '</p><p><strong>' + escapeHtml(apsrtData.i18n.packageTotals) + ':</strong> ' + escapeHtml(apsrtData.currency + ' ' + formatNumber(packageData.value) + ' · ' + formatNumber(packageData.weight) + ' ' + apsrtData.weightUnit + ' · ' + packageData.quantity + ' ' + apsrtData.i18n.quantity) + '</p>' + (zoneRules ? '<p><strong>' + escapeHtml(apsrtData.i18n.zoneRules) + ':</strong> ' + zoneRules + '</p>' : '') + renderItemDetails(data) + '</div>' +
+      '<div class="apsrt-result-block"><h3>' + escapeHtml(apsrtData.i18n.methods) + '</h3>' + renderMethods(methods) + '</div></div>' +
       '</div></section>';
   }
 
@@ -506,7 +506,7 @@
     var content = data.map(function (scenario, index) {
       return renderScenario(scenario, index + 1);
     }).join('');
-    container.innerHTML = '<div class="srt-comparison"><h2>' + escapeHtml(apsrtData.i18n.comparison) + '</h2><p class="srt-side-description">' + escapeHtml(apsrtData.i18n.comparisonHint) + '</p>' + content + '</div>';
+    container.innerHTML = '<div class="apsrt-comparison"><h2>' + escapeHtml(apsrtData.i18n.comparison) + '</h2><p class="apsrt-side-description">' + escapeHtml(apsrtData.i18n.comparisonHint) + '</p>' + content + '</div>';
     container.hidden = false;
   }
 
@@ -519,55 +519,55 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var form = document.getElementById('srt-form');
+    var form = document.getElementById('apsrt-form');
     if (!form) {
       return;
     }
 
-    var button = document.getElementById('srt-submit');
-    var submitLabel = button.querySelector('.srt-submit-label');
-    var resultActions = document.getElementById('srt-result-actions');
-    var editParametersButton = document.getElementById('srt-edit-parameters');
-    var resultResetButton = document.getElementById('srt-result-reset');
-    var keepButton = document.getElementById('srt-keep');
-    var clearButton = document.getElementById('srt-clear');
-    var resetButton = document.getElementById('srt-reset');
-    var productSelect = document.getElementById('srt-product');
+    var button = document.getElementById('apsrt-submit');
+    var submitLabel = button.querySelector('.apsrt-submit-label');
+    var resultActions = document.getElementById('apsrt-result-actions');
+    var editParametersButton = document.getElementById('apsrt-edit-parameters');
+    var resultResetButton = document.getElementById('apsrt-result-reset');
+    var keepButton = document.getElementById('apsrt-keep');
+    var clearButton = document.getElementById('apsrt-clear');
+    var resetButton = document.getElementById('apsrt-reset');
+    var productSelect = document.getElementById('apsrt-product');
     var valueInput = form.querySelector('input[name="value"]');
     var weightInput = form.querySelector('input[name="weight"]');
     var quantityInput = form.querySelector('input[name="quantity"]');
-    var advancedToggle = document.getElementById('srt-advanced-toggle');
-    var advancedPanel = document.getElementById('srt-advanced-panel');
-    var itemsList = document.getElementById('srt-items-list');
+    var advancedToggle = document.getElementById('apsrt-advanced-toggle');
+    var advancedPanel = document.getElementById('apsrt-advanced-panel');
+    var itemsList = document.getElementById('apsrt-items-list');
     var itemTemplate = itemsList.querySelector('[data-item-row]');
     var productOptions = productSelect;
     var countryField = form.querySelector('select[name="country"]');
-    var countrySearchField = document.getElementById('srt-country-search');
-    var countryOptionsList = document.getElementById('srt-country-options');
-    var stateStep = document.getElementById('srt-state-step');
-    var stateField = document.getElementById('srt-state');
-    var skipStateButton = document.getElementById('srt-skip-state');
-    var postcodeStep = document.getElementById('srt-postcode-step');
-    var postcodeField = document.getElementById('srt-postcode');
-    var skipPostcodeButton = document.getElementById('srt-skip-postcode');
-    var cityStep = document.getElementById('srt-city-step');
-    var cityField = document.getElementById('srt-city');
-    var packageSection = document.getElementById('srt-package-section');
-    var formActions = document.getElementById('srt-form-actions');
-    var summaryCard = document.getElementById('srt-summary-card');
-    var shippingClassSource = document.getElementById('srt-shipping-class-source');
-    var status = document.getElementById('srt-status');
-    var results = document.getElementById('srt-results');
+    var countrySearchField = document.getElementById('apsrt-country-search');
+    var countryOptionsList = document.getElementById('apsrt-country-options');
+    var stateStep = document.getElementById('apsrt-state-step');
+    var stateField = document.getElementById('apsrt-state');
+    var skipStateButton = document.getElementById('apsrt-skip-state');
+    var postcodeStep = document.getElementById('apsrt-postcode-step');
+    var postcodeField = document.getElementById('apsrt-postcode');
+    var skipPostcodeButton = document.getElementById('apsrt-skip-postcode');
+    var cityStep = document.getElementById('apsrt-city-step');
+    var cityField = document.getElementById('apsrt-city');
+    var packageSection = document.getElementById('apsrt-package-section');
+    var formActions = document.getElementById('apsrt-form-actions');
+    var summaryCard = document.getElementById('apsrt-summary-card');
+    var shippingClassSource = document.getElementById('apsrt-shipping-class-source');
+    var status = document.getElementById('apsrt-status');
+    var results = document.getElementById('apsrt-results');
     var currentResult = null;
     var comparisonResults = [];
     var advancedInitialized = false;
     var destinationCountry = null;
     var stateSkipped = false;
     var postcodeSkipped = false;
-    var quickPicker = window.srtCreateProductPicker(productSelect);
+    var quickPicker = window.apsrtCreateProductPicker(productSelect);
 
     function setStatus(message, type) {
-      status.className = 'srt-status' + (type ? ' is-' + type : '');
+      status.className = 'apsrt-status' + (type ? ' is-' + type : '');
       status.textContent = message || '';
     }
 
@@ -610,7 +610,7 @@
       quantityInput.disabled = advanced;
       valueInput.disabled = advanced || usesProduct;
       weightInput.disabled = advanced || usesProduct;
-      form.querySelectorAll('.srt-preset').forEach(function (preset) { preset.disabled = advanced; });
+      form.querySelectorAll('.apsrt-preset').forEach(function (preset) { preset.disabled = advanced; });
       updateLiveSummary();
     }
 
@@ -659,7 +659,7 @@
       if (required) {
         getRows().forEach(setItemMode);
       }
-      getRows().forEach(function (row) { getRowField(row, 'product_id').srtPicker.sync(); });
+      getRows().forEach(function (row) { getRowField(row, 'product_id').apsrtPicker.sync(); });
       itemsList.querySelectorAll('[data-item-field="value"], [data-item-field="weight"], [data-item-field="quantity"]').forEach(function (field) {
         field.required = required;
       });
@@ -669,9 +669,9 @@
       var selectedCountryOption = countryField.options[countryField.selectedIndex];
       var countryLabel = selectedCountryOption ? (selectedCountryOption.dataset.countryName || selectedCountryOption.text) : apsrtData.i18n.countryOnly;
       var selectedProduct = productSelect.options[productSelect.selectedIndex] ? productSelect.options[productSelect.selectedIndex].text : apsrtData.i18n.syntheticItem;
-      var summaryPackage = document.getElementById('srt-summary-package');
-      var summaryDestination = document.getElementById('srt-summary-destination');
-      var summaryTotals = document.getElementById('srt-summary-totals');
+      var summaryPackage = document.getElementById('apsrt-summary-package');
+      var summaryDestination = document.getElementById('apsrt-summary-destination');
+      var summaryTotals = document.getElementById('apsrt-summary-totals');
       var value = parseFloat(valueInput.value) || 0;
       var weight = parseFloat(weightInput.value) || 0;
       var quantity = parseInt(quantityInput.value, 10) || 1;
@@ -694,12 +694,12 @@
     }
 
     function prepareRow(row) {
-      row.querySelectorAll('.srt-product-picker').forEach(function (picker) { picker.remove(); });
+      row.querySelectorAll('.apsrt-product-picker').forEach(function (picker) { picker.remove(); });
       var productField = getRowField(row, 'product_id');
       productField.removeAttribute('id');
       copyOptions(productOptions, getRowField(row, 'product_id'));
       copyOptions(shippingClassSource, getRowField(row, 'shipping_class_id'));
-      window.srtCreateProductPicker(productField);
+      window.apsrtCreateProductPicker(productField);
       setItemMode(row);
     }
 
@@ -745,14 +745,14 @@
       setAdvancedFieldsRequired(willOpen);
       advancedPanel.hidden = !willOpen;
       advancedToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-      advancedToggle.querySelector('.srt-toggle-label').textContent = willOpen ? apsrtData.i18n.hideAdvanced : apsrtData.i18n.advanced;
+      advancedToggle.querySelector('.apsrt-toggle-label').textContent = willOpen ? apsrtData.i18n.hideAdvanced : apsrtData.i18n.advanced;
       updateProductInputs();
     });
 
-    document.getElementById('srt-add-item').addEventListener('click', addItem);
+    document.getElementById('apsrt-add-item').addEventListener('click', addItem);
 
     itemsList.addEventListener('click', function (event) {
-      if (!event.target.classList.contains('srt-remove-item')) {
+      if (!event.target.classList.contains('apsrt-remove-item')) {
         return;
       }
       var row = event.target.closest('[data-item-row]');
@@ -768,7 +768,7 @@
     });
 
     itemsList.addEventListener('change', function (event) {
-      if (event.target.classList.contains('srt-item-product')) {
+      if (event.target.classList.contains('apsrt-item-product')) {
         var row = event.target.closest('[data-item-row]');
         setRowField(row, 'source', event.target.value === '0' ? 'custom' : 'product');
         setItemMode(row);
@@ -820,7 +820,7 @@
       updateProductInputs();
     });
 
-    document.querySelectorAll('.srt-preset').forEach(function (preset) {
+    document.querySelectorAll('.apsrt-preset').forEach(function (preset) {
       preset.addEventListener('click', function () {
         var values = {
           standard: { value: '50', weight: '2', quantity: '1' },
@@ -901,7 +901,7 @@
 
     function resetForm() {
       quickPicker.close();
-      getRows().forEach(function (item) { getRowField(item, 'product_id').srtPicker.close(); });
+      getRows().forEach(function (item) { getRowField(item, 'product_id').apsrtPicker.close(); });
       form.reset();
       countrySearchField.setCustomValidity('');
       countrySearchField.removeAttribute('aria-invalid');
@@ -924,7 +924,7 @@
       advancedInitialized = false;
       advancedPanel.hidden = true;
       advancedToggle.setAttribute('aria-expanded', 'false');
-      advancedToggle.querySelector('.srt-toggle-label').textContent = apsrtData.i18n.advanced;
+      advancedToggle.querySelector('.apsrt-toggle-label').textContent = apsrtData.i18n.advanced;
       updateRowNumbers();
       setAdvancedFieldsRequired(false);
       updateProductInputs();
