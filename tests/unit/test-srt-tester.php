@@ -78,8 +78,8 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( '$0.00', $result['methods'][0]['rates'][0]['tax'] );
 		$this->assertSame( 'NY', $result['package']['state'] );
 		$this->assertFalse( $result['methods'][0]['rates'][0]['zero_cost'] );
-		$this->assertSame( 2, $method->last_package['contents']['srt-sample-item']['quantity'] );
-		$this->assertTrue( $method->last_package['contents']['srt-sample-item']['data']->needs_shipping() );
+		$this->assertSame( 2, $method->last_package['contents']['apsrt-sample-item']['quantity'] );
+		$this->assertTrue( $method->last_package['contents']['apsrt-sample-item']['data']->needs_shipping() );
 		$this->assertSame( 0, $method->last_package['user']['ID'] );
 	}
 
@@ -141,10 +141,10 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( 3, $result['package']['quantity'] );
 		$this->assertCount( 2, $result['items'] );
 		$this->assertCount( 2, $method->last_package['contents'] );
-		$this->assertSame( 20.0, $method->last_package['contents']['srt-sample-item']['line_total'] );
-		$this->assertSame( 5.0, $method->last_package['contents']['srt-sample-item-2']['line_total'] );
-		$this->assertSame( 7, $method->last_package['contents']['srt-sample-item']['data']->shipping_class_id );
-		$this->assertSame( '10.000', $method->last_package['contents']['srt-sample-item']['data']->dimensions['length'] );
+		$this->assertSame( 20.0, $method->last_package['contents']['apsrt-sample-item']['line_total'] );
+		$this->assertSame( 5.0, $method->last_package['contents']['apsrt-sample-item-2']['line_total'] );
+		$this->assertSame( 7, $method->last_package['contents']['apsrt-sample-item']['data']->shipping_class_id );
+		$this->assertSame( '10.000', $method->last_package['contents']['apsrt-sample-item']['data']->dimensions['length'] );
 	}
 
 	/**
@@ -172,8 +172,8 @@ class Test_SRT_Tester extends TestCase {
 		$this->assertSame( 2.5, $result['product']['weight'] );
 		$this->assertSame( 'fragile', $result['product']['shipping_class'] );
 		$this->assertSame( array( 'length' => 10.0, 'width' => 20.0, 'height' => 30.0 ), $result['product']['dimensions'] );
-		$this->assertSame( 42, $method->last_package['contents']['srt-sample-item']['product_id'] );
-		$this->assertSame( 'fragile', $method->last_package['contents']['srt-sample-item']['data']->get_shipping_class() );
+		$this->assertSame( 42, $method->last_package['contents']['apsrt-sample-item']['product_id'] );
+		$this->assertSame( 'fragile', $method->last_package['contents']['apsrt-sample-item']['data']->get_shipping_class() );
 		$this->assertSame( '15.75', $product->get_price() );
 	}
 
