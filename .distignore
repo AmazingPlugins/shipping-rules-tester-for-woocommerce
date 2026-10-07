@@ -27,3 +27,4 @@ package.json
 playwright.config.js
 tests
 vendor
+RELEASING.md
