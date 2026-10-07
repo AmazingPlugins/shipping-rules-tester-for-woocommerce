@@ -122,3 +122,37 @@ jobs:
           scripts/build-release.sh
           unzip -q dist/*.zip -d dist/extracted
           tests/integration/hpos-sandbox.sh
+
+  deploy:
+    name: Publish to WordPress.org
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [browser, quality, integration]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the tag
+        uses: actions/checkout@v4
+
+      - name: Require the tag to match the plugin version
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          tag="${tag#v}"
+          header=$(sed -n 's/^ \* Version: *//p' shipping-rules-tester-for-woocommerce.php | head -n 1 | tr -d '[:space:]')
+          stable=$(sed -n 's/^Stable tag: *//p' readme.txt | head -n 1 | tr -d '[:space:]')
+          case "$tag" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *)
+              echo "Tag $tag must look like 1.2.3."
+              exit 1
+              ;;
+          esac
+          if [ "$tag" != "$header" ] || [ "$tag" != "$stable" ]; then
+            echo "Tag $tag does not match header '$header' and readme stable tag '$stable'."
+            exit 1
+          fi
+
+      - name: Deploy to WordPress.org
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # 2.3.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: ap-shipping-rules-tester-for-woocommerce
